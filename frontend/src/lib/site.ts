@@ -6,6 +6,18 @@ export const PLATFORM_TEAM_LABEL = `${PLATFORM_NAME} Team`;
 export const SITE_DESCRIPTION =
   "Connect fellows, clients, and liaison officers across Africa and beyond";
 
+/** Public company / Paystack information site (separate from the trading app). */
+export const COMPANY_SITE_URL = (
+  process.env.NEXT_PUBLIC_COMPANY_SITE_URL?.trim() ||
+  (process.env.NODE_ENV !== "production" ? "http://localhost:3002" : "")
+).replace(/\/$/, "");
+
+export function companyUrl(path = "/"): string {
+  if (!COMPANY_SITE_URL) return "#";
+  if (!path || path === "/") return COMPANY_SITE_URL;
+  return `${COMPANY_SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
 /** Absolute site origin for metadata (og:image, canonical URLs). */
 export function getSiteUrl(): URL {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
