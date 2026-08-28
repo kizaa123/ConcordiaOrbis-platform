@@ -16,12 +16,12 @@ const STEPS = [
     body: "Nothing is marked paid until the charge succeeds. A declined payment creates no order.",
   },
   {
-    title: "Product funds sit in escrow",
-    body: "You get a 4-digit release code. The fellow prepares delivery. Money stays held.",
+    title: "The fellow prepares delivery",
+    body: "You get a 4-digit confirmation code. The fellow ships the order. Nothing is marked received yet.",
   },
   {
-    title: "You release on delivery",
-    body: "Enter the code when goods arrive. Escrow is then split to the fellow, liaison officers, and the platform.",
+    title: "You confirm on delivery",
+    body: "Enter the code when goods arrive. That updates the fellow and the accountant that the order was received.",
   },
 ];
 
@@ -31,7 +31,7 @@ export default function PaymentsPage() {
       <PageHero
         eyebrow="Checkout"
         title="How payments work"
-        subtitle="Paystack takes the charge. ConcordiaOrbis holds product money until you confirm delivery."
+        subtitle="Paystack takes the charge. You confirm delivery so the fellow and accountant know the order arrived."
       />
       <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:py-24">
         <ol className="space-y-4">

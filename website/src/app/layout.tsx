@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     default: `${PLATFORM_NAME} — ${MOTTO}`,
     template: `%s · ${PLATFORM_NAME}`,
   },
-  description: `${TAGLINE}. Connecting verified fellows with clients. Secure commodity trading, escrow payments, and a trusted marketplace across Africa and beyond.`,
+  description: `${TAGLINE}. Connecting verified fellows with clients. Secure commodity trading, delivery confirmation, and a trusted marketplace across Africa and beyond.`,
   icons: { icon: [{ url: "/logo.svg", type: "image/svg+xml" }] },
 };
 

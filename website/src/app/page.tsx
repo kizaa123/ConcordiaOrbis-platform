@@ -15,7 +15,7 @@ import { scrollStagger } from "@/lib/scrollStagger";
 const STATS = [
   { value: "1,000+", label: "Verified users" },
   { value: "50+", label: "Districts covered" },
-  { value: "100%", label: "Escrow-protected orders" },
+  { value: "100%", label: "Delivery-confirmed orders" },
 ];
 
 const STEPS = [
@@ -33,15 +33,15 @@ const STEPS = [
   },
   {
     step: "03",
-    title: "Paystack holds the money",
-    desc: "Successful product payments sit in escrow until the client confirms delivery.",
+    title: "Paystack processes the payment",
+    desc: "The client pays on Paystack. When goods arrive, they confirm so the fellow and accountant are updated.",
     image: "/paystack-payment.png",
   },
   {
     step: "04",
-    title: "Release on arrival",
-    desc: "A 4-digit code frees escrow to the fellow, liaison officers, and the platform.",
-    image: "/payment-release.png",
+    title: "Confirm on arrival",
+    desc: "A 4-digit code tells the fellow and the accountant that the client received the order.",
+    image: "/order-completed.jpg",
   },
 ];
 
@@ -74,7 +74,7 @@ export default function HomePage() {
           <ScrollReveal trigger="mount" delay={scrollStagger(2, 70)} duration={500}>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-brand-100 sm:text-lg">
               We connect verified fellows with clients across Africa and beyond. Trade is private.
-              Product payments stay in escrow until delivery is confirmed.
+              Clients confirm delivery so the fellow and accountant know the order arrived.
             </p>
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(3, 70)} duration={480} className="pt-8">
@@ -125,8 +125,8 @@ export default function HomePage() {
               Built in Ghana for real farms and real buyers.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-gray-600">
-              ConcordiaOrbis is the team behind the marketplace. We verify who trades, hold product
-              funds until goods arrive, and publish how mistaken Paystack charges are refunded.
+              ConcordiaOrbis is the team behind the marketplace. We verify who trades, record when
+              a client receives an order, and publish how mistaken Paystack charges are refunded.
             </p>
             <Link
               href="/about"
@@ -138,7 +138,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="how-it-works" className="bg-white py-24">
+      <section id="how-it-works" className="bg-white py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeader
             badge="How trade works"
@@ -150,26 +150,26 @@ export default function HomePage() {
                 </span>
               </>
             }
-            subtitle="The same path fellows and clients follow on the platform — protected by escrow."
+            subtitle="The same path fellows and clients follow on the platform — with delivery confirmation."
           />
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
             {STEPS.map((item, i) => (
               <ScrollReveal key={item.step} delay={scrollStagger(i, 90)} duration={500}>
-                <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-brand-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl">
-                  <div className="relative aspect-[4/5] overflow-hidden bg-brand-50">
+                <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-brand-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl sm:rounded-3xl">
+                  <div className="relative h-36 overflow-hidden bg-brand-50 sm:h-auto sm:aspect-[4/5]">
                     <Image
                       src={item.image}
                       alt={item.title}
                       fill
-                      className="object-contain p-5 transition duration-500 group-hover:scale-[1.03]"
+                      className="object-contain p-3 sm:p-5 transition duration-500 group-hover:scale-[1.03]"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     />
                     <span className="absolute left-3 top-3 rounded-full bg-yellow-400 px-2.5 py-1 text-xs font-black text-brand-900 shadow-sm">
                       {item.step}
                     </span>
                   </div>
-                  <div className="flex flex-1 flex-col gap-2 p-5">
-                    <h3 className="font-bold text-brand-900">{item.title}</h3>
+                  <div className="flex flex-1 flex-col gap-1.5 p-4 sm:gap-2 sm:p-5">
+                    <h3 className="text-[15px] font-bold text-brand-900 sm:text-base">{item.title}</h3>
                     <p className="text-sm leading-relaxed text-gray-500">{item.desc}</p>
                   </div>
                 </article>
@@ -178,7 +178,7 @@ export default function HomePage() {
           </div>
           <ScrollReveal className="mt-8 text-center">
             <Link href="/payments" className="text-sm font-bold text-brand-700 hover:underline">
-              Full payment & escrow detail →
+              Full payment detail →
             </Link>
           </ScrollReveal>
         </div>

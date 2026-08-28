@@ -25,11 +25,11 @@ const CASES = [
   },
   {
     title: "Order cancelled before dispatch",
-    body: "Still at “order received”: we cancel, restock, and refund escrow in full.",
+    body: "Still at “order received”: we cancel, restock, and refund the payment in full.",
   },
   {
     title: "After you confirm delivery",
-    body: "The release code frees escrow. After that we only review documented quality or shortage issues — not a change of mind.",
+    body: "After you confirm delivery with the code, we only review documented quality or shortage issues — not a change of mind.",
   },
 ];
 

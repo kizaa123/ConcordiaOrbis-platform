@@ -19,7 +19,7 @@ export default function PrivacyPage() {
         <h2>Information we collect</h2>
         <p>
           Account details (name, email, phone, country, role), farm and listing data you publish,
-          order and escrow records, verification status, and messages you send on the platform.
+          order and delivery records, verification status, and messages you send on the platform.
         </p>
         <h2>Payments</h2>
         <p>
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
         </p>
         <h2>How we use data</h2>
         <ul>
-          <li>To operate the marketplace, library, and escrow</li>
+          <li>To operate the marketplace, library, and order fulfilment</li>
           <li>To verify users and prevent fraud</li>
           <li>To notify you about orders and access</li>
           <li>To handle refunds and support</li>

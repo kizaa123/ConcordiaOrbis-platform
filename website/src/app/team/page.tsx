@@ -82,9 +82,9 @@ export default function TeamPage() {
               Operations that settle the trade
             </h2>
             <p className="mt-4 text-base leading-relaxed text-gray-600">
-              Accountants and liaison officers review farm access, release escrow after delivery,
-              and look at payments that don’t match. They are why a mistaken Paystack charge can be
-              traced and refunded.
+              Accountants and liaison officers review farm access, record when a client confirms
+              delivery, and look at payments that don’t match. They are why a mistaken Paystack
+              charge can be traced and refunded.
             </p>
             <Link
               href="/contact"
