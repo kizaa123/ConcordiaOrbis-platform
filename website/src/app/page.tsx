@@ -152,25 +152,27 @@ export default function HomePage() {
             }
             subtitle="The same path fellows and clients follow on the platform — with delivery confirmation."
           />
-          <div className="grid gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
             {STEPS.map((item, i) => (
               <ScrollReveal key={item.step} delay={scrollStagger(i, 90)} duration={500}>
                 <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-brand-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl sm:rounded-3xl">
-                  <div className="relative h-36 overflow-hidden bg-brand-50 sm:h-auto sm:aspect-[4/5]">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-brand-50">
                     <Image
                       src={item.image}
                       alt={item.title}
                       fill
-                      className="object-contain p-3 sm:p-5 transition duration-500 group-hover:scale-[1.03]"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-contain p-2 sm:p-5 transition duration-500 group-hover:scale-[1.03]"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
                     />
-                    <span className="absolute left-3 top-3 rounded-full bg-yellow-400 px-2.5 py-1 text-xs font-black text-brand-900 shadow-sm">
+                    <span className="absolute left-2 top-2 rounded-full bg-yellow-400 px-2 py-0.5 text-[10px] font-black text-brand-900 shadow-sm sm:left-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-xs">
                       {item.step}
                     </span>
                   </div>
-                  <div className="flex flex-1 flex-col gap-1.5 p-4 sm:gap-2 sm:p-5">
-                    <h3 className="text-[15px] font-bold text-brand-900 sm:text-base">{item.title}</h3>
-                    <p className="text-sm leading-relaxed text-gray-500">{item.desc}</p>
+                  <div className="flex flex-1 flex-col gap-1 p-3 sm:gap-2 sm:p-5">
+                    <h3 className="text-sm font-bold leading-snug text-brand-900 sm:text-base">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs leading-relaxed text-gray-500 sm:text-sm">{item.desc}</p>
                   </div>
                 </article>
               </ScrollReveal>
