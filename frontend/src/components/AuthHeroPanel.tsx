@@ -23,10 +23,10 @@ export const AuthHeroPanel = forwardRef<HTMLDivElement, AuthHeroPanelProps>(func
 ) {
   const formWidthClass = simple
     ? formWidth === "wide"
-      ? "mx-auto w-full max-w-[32rem]"
+      ? "mx-auto w-full max-w-[25rem]"
       : "mx-auto w-full max-w-[23.5rem]"
     : formWidth === "wide"
-      ? "lg:max-w-md xl:max-w-xl"
+      ? "mx-auto w-full max-w-[25rem]"
       : "lg:max-w-sm xl:max-w-md";
 
   return (

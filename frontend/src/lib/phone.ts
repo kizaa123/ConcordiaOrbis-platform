@@ -58,7 +58,19 @@ export function isValidPhone(value: string, countryName?: string | null): boolea
 }
 
 export const PHONE_VALIDATION_MESSAGE =
-  "Enter a valid mobile number for your country (e.g. 0241234567 or +233241234567)";
+  "Enter a valid mobile number after the country code (e.g. 000 000 000)";
+
+/** Group national digits for typing, e.g. 241234567 → 241 234 567 */
+export function formatNationalInput(digits: string): string {
+  const clean = digits.replace(/\D/g, "");
+  if (!clean) return "";
+  return clean.replace(/(\d{3})(?=\d)/g, "$1 ").trim();
+}
+
+/** Placeholder matching national length, e.g. Ghana 9 → 000 000 000 */
+export function nationalPlaceholder(countryName?: string | null): string {
+  return formatNationalInput("0".repeat(getNationalLength(countryName)));
+}
 
 /** Store as E.164 (+233241234567). */
 export function normalizePhoneForStorage(

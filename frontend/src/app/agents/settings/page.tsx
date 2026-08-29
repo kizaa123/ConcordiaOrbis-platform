@@ -185,6 +185,14 @@ export default function HandlerSettingsPage() {
                 value={form.phone}
                 country={form.country}
                 onChange={(phone) => setForm({ ...form, phone })}
+                onCountryChange={(country) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    country,
+                    phone: onCountryChangePhone(prev.phone, prev.country, country),
+                  }))
+                }
+                hint="Pick your country, then enter the number without the leading 0"
               />
             </div>
             <div>

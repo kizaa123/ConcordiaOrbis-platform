@@ -1,12 +1,19 @@
 "use client";
 
-import { getDialCodeForCountryName, parsePhoneInput } from "@/lib/phone";
+import { CountrySelect } from "@/components/CountrySelect";
+import {
+  formatNationalInput,
+  getDialCodeForCountryName,
+  nationalPlaceholder,
+  parsePhoneInput,
+} from "@/lib/phone";
 
 interface PhoneInputProps {
   id?: string;
   value: string;
   country: string;
   onChange: (value: string) => void;
+  onCountryChange?: (country: string) => void;
   required?: boolean;
   placeholder?: string;
   className?: string;
@@ -20,6 +27,7 @@ export function PhoneInput({
   value,
   country,
   onChange,
+  onCountryChange,
   required,
   placeholder,
   className,
@@ -27,36 +35,49 @@ export function PhoneInput({
   hint,
   invalid,
 }: PhoneInputProps) {
-  const dialCode = getDialCodeForCountryName(country);
+  const display = formatNationalInput(value);
+  const groupedPlaceholder = placeholder ?? nationalPlaceholder(country);
 
   return (
     <div className={className}>
       <div
-        className={`flex overflow-hidden rounded-xl border bg-white shadow-sm focus-within:ring-2 ${
+        className={`flex rounded-xl border bg-white shadow-sm focus-within:ring-2 ${
           invalid
-            ? "border-red-300 focus-within:border-red-400 focus-within:ring-red-100"
+            ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-200"
             : "border-brand-200 focus-within:border-brand-500 focus-within:ring-brand-200"
         }`}
       >
-        <span className="flex shrink-0 items-center border-r border-brand-200 bg-brand-50/80 px-3 text-sm font-semibold text-brand-800">
-          {dialCode || "-"}
-        </span>
+        <div className="shrink-0 border-r border-brand-200">
+          {onCountryChange ? (
+            <CountrySelect
+              compact
+              value={country}
+              onChange={onCountryChange}
+              required={required && !country}
+              invalid={invalid}
+            />
+          ) : (
+            <span className="flex h-full items-center bg-brand-50/90 px-3 py-3 text-sm font-semibold tabular-nums text-brand-900">
+              {getDialCodeForCountryName(country) || "Code"}
+            </span>
+          )}
+        </div>
         <input
           id={id}
           required={required}
-          inputMode="tel"
+          inputMode="numeric"
           autoComplete="tel-national"
-          value={value}
+          value={display}
           onChange={(e) => onChange(parsePhoneInput(e.target.value, country))}
-          placeholder={placeholder ?? "0241234567"}
+          placeholder={groupedPlaceholder}
           aria-invalid={invalid || undefined}
           className={
             inputClassName ??
-            "min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-0"
+            "min-w-0 flex-1 border-0 bg-transparent px-3 py-3 text-sm tracking-wide focus:outline-none focus:ring-0"
           }
         />
       </div>
-      {hint ? <p className="mt-1 text-xs text-gray-500">{hint}</p> : null}
+      {hint ? <p className="auth-hint mt-1">{hint}</p> : null}
     </div>
   );
 }

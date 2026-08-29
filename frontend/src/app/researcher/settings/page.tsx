@@ -227,6 +227,14 @@ export default function ResearcherSettingsPage() {
                   value={personal.phone}
                   country={personal.country}
                   onChange={(phone) => setPersonal({ ...personal, phone })}
+                  onCountryChange={(country) =>
+                    setPersonal((prev) => ({
+                      ...prev,
+                      country,
+                      phone: onCountryChangePhone(prev.phone, prev.country, country),
+                    }))
+                  }
+                  hint="Pick your country, then enter the number without the leading 0"
                 />
               </div>
               <div>

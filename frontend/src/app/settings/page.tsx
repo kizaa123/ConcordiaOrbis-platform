@@ -15,7 +15,6 @@ import {
 } from "@/lib/phone";
 import { PhoneInput } from "@/components/PhoneInput";
 import { ProfilePhoto } from "@/components/FarmerAvatar";
-import { CountrySelect } from "@/components/CountrySelect";
 import { HandlerSelect } from "@/components/HandlerSelect";
 import { RolePrefixedName } from "@/components/RolePrefixedName";
 import { EmailText } from "@/components/EmailText";
@@ -198,20 +197,14 @@ export default function BuyerSettingsPage() {
                 value={form.phone}
                 country={form.country}
                 onChange={(phone) => setForm({ ...form, phone })}
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium">Country</label>
-              <CountrySelect
-                value={form.country}
-                onChange={(country) =>
+                onCountryChange={(country) =>
                   setForm((prev) => ({
                     ...prev,
                     country,
                     phone: onCountryChangePhone(prev.phone, prev.country, country),
                   }))
                 }
-                required
+                hint="Pick your country, then enter the number without the leading 0"
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">

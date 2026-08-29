@@ -6,13 +6,9 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
 import { api } from "@/lib/api";
 import { CommodityCategory, HandlerProfile, ROLES, farmerCategoryFilter, isFarmer, isOrganizationFarmer } from "@/lib/types";
-import {
-  getDialCodeForCountryName,
-  normalizePhoneForStorage,
-  onCountryChangePhone,
-  parsePhoneInput,
-} from "@/lib/phone";
+import { normalizePhoneForStorage, onCountryChangePhone } from "@/lib/phone";
 import { CountrySelect } from "@/components/CountrySelect";
+import { PhoneInput } from "@/components/PhoneInput";
 import { HandlerSelect } from "@/components/HandlerSelect";
 import { CommodityPicker } from "@/components/CommodityPicker";
 import { QualificationSelector } from "@/components/QualificationSelector";
@@ -280,7 +276,6 @@ function RegisterForm() {
     : SMS_PHONE_VERIFICATION_ENABLED
       ? STEP_LABELS_WITH_PHONE.slice(0, 3)
       : STEP_LABELS_NO_PHONE.slice(0, 2);
-  const phoneDialCode = getDialCodeForCountryName(form.country);
   const normalizedRegisterPhone = normalizePhoneForStorage(form.phone, form.country);
 
   const validationCtx = useMemo(
@@ -388,11 +383,6 @@ function RegisterForm() {
       country,
       phone: onCountryChangePhone(prev.phone, prev.country, country),
     }));
-  };
-
-  const handlePhoneChange = (raw: string) => {
-    const local = parsePhoneInput(raw, form.country);
-    setForm((prev) => ({ ...prev, phone: local }));
   };
 
   useEffect(() => {
@@ -677,53 +667,30 @@ function RegisterForm() {
             </div>
 
             <div className="auth-field">
-              <label htmlFor="reg-country" className="auth-label">Select Country</label>
-              <CountrySelect
-                id="reg-country"
-                value={form.country}
-                onChange={(country) => {
-                  clearBackendError("country");
-                  handleCountryChange(country);
-                }}
-                required
-                invalid={!!fieldError("country")}
-              />
-              <FieldErrorMessage message={fieldError("country")} />
-              {!fieldError("country") && (
-                <p className="auth-hint">Select the African country where you are based</p>
-              )}
-            </div>
-
-            <div className="auth-field">
               <label htmlFor="reg-phone" className="auth-label">
                 Phone
               </label>
-              <div
-                className={`flex overflow-hidden rounded-xl border bg-white shadow-sm focus-within:ring-2 ${
-                  fieldError("phone")
-                    ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-200"
-                    : "border-brand-200 focus-within:border-brand-500 focus-within:ring-brand-200"
-                }`}
-              >
-                <span className="flex shrink-0 items-center border-r border-brand-200 bg-brand-50/80 px-3 text-sm font-semibold text-brand-800">
-                  {phoneDialCode || "-"}
-                </span>
-                <input
-                  id="reg-phone"
-                  required
-                  autoComplete="tel-national"
-                  inputMode="numeric"
-                  value={form.phone}
-                  onChange={(e) => {
-                    clearBackendError("phone");
-                    handlePhoneChange(e.target.value);
-                  }}
-                  placeholder="241234567"
-                  className="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-0"
-                  aria-invalid={!!fieldError("phone")}
-                />
-              </div>
-              <FieldErrorMessage message={fieldError("phone")} />
+              <PhoneInput
+                id="reg-phone"
+                required
+                value={form.phone}
+                country={form.country}
+                onChange={(phone) => {
+                  clearBackendError("phone");
+                  setForm((prev) => ({ ...prev, phone }));
+                }}
+                onCountryChange={(country) => {
+                  clearBackendError("country");
+                  handleCountryChange(country);
+                }}
+                invalid={!!fieldError("phone") || !!fieldError("country")}
+                hint={
+                  fieldError("phone") || fieldError("country")
+                    ? undefined
+                    : "Pick your country, then enter the number without the leading 0"
+                }
+              />
+              <FieldErrorMessage message={fieldError("country") || fieldError("phone")} />
             </div>
 
             <div className="auth-field">

@@ -6,13 +6,11 @@ import { useAuth } from "@/context/AuthProvider";
 import { api } from "@/lib/api";
 import { CommodityCategory, HandlerProfile, ROLES, farmerCategoryFilter, isFarmer, isOrganizationFarmer } from "@/lib/types";
 import {
-  getDialCodeForCountryName,
   isValidPhone,
   normalizePhoneForStorage,
   onCountryChangePhone,
-  parsePhoneInput,
 } from "@/lib/phone";
-import { CountrySelect } from "@/components/CountrySelect";
+import { PhoneInput } from "@/components/PhoneInput";
 import { HandlerSelect } from "@/components/HandlerSelect";
 import { CommodityPicker } from "@/components/CommodityPicker";
 import { QualificationSelector } from "@/components/QualificationSelector";
@@ -167,7 +165,6 @@ export default function CompleteProfilePage() {
   const DETAILS_STEP = needsPhoneStep ? 2 : 1;
   const COMMODITIES_STEP = needsPhoneStep ? 3 : 2;
   const totalSteps = (isFarmerRole ? 4 : 3) - (needsPhoneStep ? 0 : 1);
-  const phoneDialCode = getDialCodeForCountryName(form.country);
 
   const handleCountryChange = (country: string) => {
     setForm((prev) => ({
@@ -175,11 +172,6 @@ export default function CompleteProfilePage() {
       country,
       phone: onCountryChangePhone(prev.phone, prev.country, country),
     }));
-  };
-
-  const handlePhoneChange = (raw: string) => {
-    const local = parsePhoneInput(raw, form.country);
-    setForm((prev) => ({ ...prev, phone: local }));
   };
 
   const hasGoogleAuth = Boolean(user?.hasGoogleAuth);
@@ -231,7 +223,7 @@ export default function CompleteProfilePage() {
 
   if (loading || !user || user.profileComplete) {
     return (
-      <AuthHeroPanel className="flex-1" formWidth="wide">
+      <AuthHeroPanel className="flex-1" formWidth="wide" simple>
         <div className="flex min-h-[40vh] items-center justify-center text-sm text-gray-500">
           Loading your profile...
         </div>
@@ -249,28 +241,21 @@ export default function CompleteProfilePage() {
   ];
 
   return (
-    <AuthHeroPanel ref={formColumnRef} className="flex-1" formWidth="wide">
+    <AuthHeroPanel ref={formColumnRef} className="flex-1" formWidth="wide" simple>
       <ScrollReveal trigger="mount" delay={120} duration={500} direction="fade-up">
-        <div className="space-y-6">
-          <header className="text-center">
-            <div className="flex items-center justify-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-200 bg-gradient-to-br from-brand-50 to-brand-100/70 text-brand-700 shadow-xs">
-                <Icon name="user" className="h-5 w-5 text-brand-700" />
-              </div>
-              <h1 className="text-2xl font-bold tracking-tight text-brand-900 sm:text-3xl">
-                Complete Account
-              </h1>
-            </div>
-            <p className="auth-subtitle mt-2 text-sm text-gray-500">
-              Step {stepNumber} of {totalSteps} - {stepLabels[displayStep]}
+        <div className="space-y-4">
+          <header>
+            <h1 className="text-lg font-bold text-brand-900">Complete account</h1>
+            <p className="mt-0.5 text-sm text-gray-500">
+              Step {stepNumber} of {totalSteps} — {stepLabels[displayStep]}
             </p>
-            <p className="auth-hint mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-gray-500">
               Signed in as {user.firstName} {user.lastName} ·{" "}
               <EmailText email={user.email} className="inline" />
             </p>
           </header>
 
-          <div className="auth-step-indicator !mb-6">
+          <div className="auth-step-indicator !mb-3">
             <div className="auth-step-track">
               {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
                 <div
@@ -352,37 +337,18 @@ export default function CompleteProfilePage() {
                 </div>
 
                 <div className="auth-field">
-                  <label htmlFor="complete-country" className="auth-label">
-                    Select Country
-                  </label>
-                  <CountrySelect
-                    id="complete-country"
-                    value={form.country}
-                    onChange={handleCountryChange}
-                    required
-                  />
-                  <p className="auth-hint">Select the African country where you are based</p>
-                </div>
-
-                <div className="auth-field">
                   <label htmlFor="complete-phone" className="auth-label">
                     Phone
                   </label>
-                  <div className="flex overflow-hidden rounded-xl border border-brand-200 bg-white shadow-sm focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-200">
-                    <span className="flex shrink-0 items-center border-r border-brand-200 bg-brand-50/80 px-3 text-sm font-semibold text-brand-800">
-                      {phoneDialCode || "-"}
-                    </span>
-                    <input
-                      id="complete-phone"
-                      required
-                      autoComplete="tel-national"
-                      inputMode="numeric"
-                      value={form.phone}
-                      onChange={(e) => handlePhoneChange(e.target.value)}
-                      placeholder="241234567"
-                      className="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-0"
-                    />
-                  </div>
+                  <PhoneInput
+                    id="complete-phone"
+                    required
+                    value={form.phone}
+                    country={form.country}
+                    onChange={(phone) => setForm((prev) => ({ ...prev, phone }))}
+                    onCountryChange={handleCountryChange}
+                    hint="Pick your country, then enter the number without the leading 0"
+                  />
                 </div>
 
                 {!hasGoogleAuth && (
