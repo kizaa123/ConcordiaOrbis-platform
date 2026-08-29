@@ -19,13 +19,15 @@ export default function TermsPage() {
         <p>Last updated: 27 August 2026</p>
         <h2>The service</h2>
         <p>
-          ConcordiaOrbis provides a digital commodity marketplace, research library, and delivery
-          confirmation. You must register with accurate information and keep your confirmation codes private.
+          ConcordiaOrbis provides a digital commodity marketplace and research library. Clients pay
+          ConcordiaOrbis directly. You must register with accurate information.
         </p>
         <h2>Payments</h2>
         <p>
-          Fees shown at checkout are due through Paystack. The client confirms delivery so the fellow
-          and accountant know the order arrived. Refunds follow our{" "}
+          Fees shown at checkout are due through Paystack to ConcordiaOrbis. Upon confirmation of
+          payment, a ConcordiaOrbis liaison officer procures the requested items from verified
+          suppliers, oversees quality and order accuracy, and arranges secure delivery to the client
+          at the agreed location. Refunds follow our{" "}
           <Link href="/refunds" className="font-semibold text-brand-700">
             refund policy
           </Link>
@@ -34,12 +36,12 @@ export default function TermsPage() {
         <h2>Acceptable use</h2>
         <ul>
           <li>No fake listings, stolen photos, or misrepresented quantities</li>
-          <li>No attempts to bypass farm access or delivery confirmation</li>
+          <li>No attempts to bypass farm access or checkout</li>
           <li>No abuse of other users or staff</li>
         </ul>
         <h2>Liability</h2>
         <p>
-          We facilitate trade. Quality disputes after delivery confirmation are reviewed case by
+          We facilitate trade. Quality disputes after delivery are reviewed case by
           case. We are not liable for delays caused by Paystack, banks, or mobile-money operators.
         </p>
         <h2>Contact</h2>

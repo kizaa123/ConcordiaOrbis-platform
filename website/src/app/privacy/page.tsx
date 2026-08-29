@@ -36,8 +36,8 @@ export default function PrivacyPage() {
         </ul>
         <h2>Sharing</h2>
         <p>
-          We share what a trade requires: a fellow sees client order details; a client sees fellow
-          production after paying access. Paystack processes payments. We do not sell personal data.
+          We share what a trade requires so a liaison officer can procure and deliver an order.
+          Paystack processes payments to ConcordiaOrbis. We do not sell personal data.
         </p>
         <h2>Contact</h2>
         <p>

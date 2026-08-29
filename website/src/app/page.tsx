@@ -10,12 +10,13 @@ import {
 } from "@/lib/company";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { SectionHeader } from "@/components/SectionHeader";
+import { AnimatedStat } from "@/components/AnimatedStat";
 import { scrollStagger } from "@/lib/scrollStagger";
 
 const STATS = [
   { value: "1,000+", label: "Verified users" },
   { value: "50+", label: "Districts covered" },
-  { value: "100%", label: "Delivery-confirmed orders" },
+  { value: "100%", label: "Secure deliveries" },
 ];
 
 const STEPS = [
@@ -33,15 +34,15 @@ const STEPS = [
   },
   {
     step: "03",
-    title: "Paystack processes the payment",
-    desc: "The client pays on Paystack. When goods arrive, they confirm so the fellow and accountant are updated.",
+    title: "Pay ConcordiaOrbis",
+    desc: "Clients pay ConcordiaOrbis directly through Paystack. The charge is complete once Paystack confirms it.",
     image: "/paystack-payment.png",
   },
   {
     step: "04",
-    title: "Confirm on arrival",
-    desc: "A 4-digit code tells the fellow and the accountant that the client received the order.",
-    image: "/order-completed.jpg",
+    title: "Liaison officer delivers",
+    desc: "A ConcordiaOrbis liaison officer procures the items, checks quality, and arranges delivery to the agreed location.",
+    image: "/order-completed.png",
   },
 ];
 
@@ -74,20 +75,20 @@ export default function HomePage() {
           <ScrollReveal trigger="mount" delay={scrollStagger(2, 70)} duration={500}>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-brand-100 sm:text-lg">
               We connect verified fellows with clients across Africa and beyond. Trade is private.
-              Clients confirm delivery so the fellow and accountant know the order arrived.
+              Clients pay ConcordiaOrbis directly; a liaison officer then procures and delivers the order.
             </p>
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(3, 70)} duration={480} className="pt-8">
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-row items-center gap-2 sm:gap-3">
               <a
                 href={PLATFORM_REGISTER_URL}
-                className="inline-flex w-fit items-center justify-center rounded-xl bg-yellow-400 px-5 py-2.5 text-sm font-bold text-brand-900 shadow-[0_10px_30px_rgba(250,204,21,0.28)] transition hover:scale-[1.02] hover:bg-yellow-300"
+                className="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-xl bg-yellow-400 px-3 py-2.5 text-xs font-bold text-brand-900 shadow-[0_10px_30px_rgba(250,204,21,0.28)] transition hover:scale-[1.02] hover:bg-yellow-300 sm:flex-none sm:px-5 sm:text-sm"
               >
                 Join {PLATFORM_NAME}
               </a>
               <a
                 href={PLATFORM_MARKETPLACE_URL}
-                className="inline-flex w-fit items-center justify-center rounded-xl border border-white/30 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:border-white/60 hover:bg-white/10"
+                className="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-xl border border-white/30 bg-white/5 px-3 py-2.5 text-xs font-semibold text-white backdrop-blur transition hover:border-white/60 hover:bg-white/10 sm:flex-none sm:px-5 sm:text-sm"
               >
                 Browse marketplace
               </a>
@@ -102,7 +103,9 @@ export default function HomePage() {
           {STATS.map((stat, i) => (
             <ScrollReveal key={stat.label} delay={scrollStagger(i, 90)} duration={450}>
               <div className="px-3 text-center">
-                <p className="text-2xl font-black tabular-nums text-yellow-400 sm:text-4xl">{stat.value}</p>
+                <p className="text-2xl font-black tabular-nums text-yellow-400 sm:text-4xl">
+                  <AnimatedStat value={stat.value} delay={scrollStagger(i, 90)} />
+                </p>
                 <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-300 sm:text-xs">
                   {stat.label}
                 </p>
@@ -125,8 +128,9 @@ export default function HomePage() {
               Built in Ghana for real farms and real buyers.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-gray-600">
-              ConcordiaOrbis is the team behind the marketplace. We verify who trades, record when
-              a client receives an order, and publish how mistaken Paystack charges are refunded.
+              ConcordiaOrbis is the team behind the marketplace. We verify who trades, procure and
+              deliver orders through liaison officers, and publish how mistaken Paystack charges are
+              refunded.
             </p>
             <Link
               href="/about"
@@ -146,17 +150,17 @@ export default function HomePage() {
               <>
                 Four steps from listing to{" "}
                 <span className="bg-gradient-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent">
-                  settled money
+                  delivery
                 </span>
               </>
             }
-            subtitle="The same path fellows and clients follow on the platform — with delivery confirmation."
+            subtitle="Clients pay ConcordiaOrbis. A liaison officer then procures, checks quality, and delivers."
           />
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
             {STEPS.map((item, i) => (
               <ScrollReveal key={item.step} delay={scrollStagger(i, 90)} duration={500}>
                 <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-brand-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl sm:rounded-3xl">
-                  <div className="flex justify-center bg-brand-50 px-3 pt-3 sm:block sm:px-0 sm:pt-0">
+                  <div className="flex justify-center bg-white px-3 pt-3 sm:block sm:bg-brand-50 sm:px-0 sm:pt-0">
                     <div className="relative aspect-[3/4] w-[7.5rem] overflow-hidden sm:w-full sm:p-0">
                       <Image
                         src={item.image}

@@ -8,20 +8,20 @@ export const metadata: Metadata = { title: "Payments" };
 
 const STEPS = [
   {
-    title: "Pay on the platform",
-    body: "Farm access, product orders, and research purchases start in the app. Paystack handles card, mobile money, and bank transfer.",
+    title: "Pay ConcordiaOrbis",
+    body: "Farm access, product orders, and research purchases start in the app. Clients pay ConcordiaOrbis directly. Paystack handles card, mobile money, and bank transfer.",
   },
   {
     title: "Pending until Paystack confirms",
     body: "Nothing is marked paid until the charge succeeds. A declined payment creates no order.",
   },
   {
-    title: "The fellow prepares delivery",
-    body: "You get a 4-digit confirmation code. The fellow ships the order. Nothing is marked received yet.",
+    title: "A liaison officer procures the order",
+    body: "Once payment is confirmed, a ConcordiaOrbis liaison officer procures the requested items from verified suppliers and oversees quality and order accuracy.",
   },
   {
-    title: "You confirm on delivery",
-    body: "Enter the code when goods arrive. That updates the fellow and the accountant that the order was received.",
+    title: "Secure delivery",
+    body: "The liaison officer arranges delivery to the client at the agreed location.",
   },
 ];
 
@@ -31,7 +31,7 @@ export default function PaymentsPage() {
       <PageHero
         eyebrow="Checkout"
         title="How payments work"
-        subtitle="Paystack takes the charge. You confirm delivery so the fellow and accountant know the order arrived."
+        subtitle="Clients pay ConcordiaOrbis through Paystack. A liaison officer then procures the items and arranges delivery."
       />
       <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:py-24">
         <ol className="space-y-4">

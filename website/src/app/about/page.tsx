@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "About" };
 const ROLES = [
   { title: "Fellows", desc: "Crop, livestock, fruit, and fish producers who list harvest-ready goods." },
   { title: "Clients", desc: "Buyers and organisations who pay for farm access, then place product orders." },
-  { title: "Liaison officers", desc: "Professionals who represent fellows or clients through a deal." },
+  { title: "Liaison officers", desc: "They procure orders from verified suppliers, check quality, and arrange delivery to the client." },
   { title: "Library users", desc: "Researchers who publish, and students who read field knowledge." },
 ];
 

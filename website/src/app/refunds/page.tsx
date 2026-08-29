@@ -28,8 +28,8 @@ const CASES = [
     body: "Still at “order received”: we cancel, restock, and refund the payment in full.",
   },
   {
-    title: "After you confirm delivery",
-    body: "After you confirm delivery with the code, we only review documented quality or shortage issues — not a change of mind.",
+    title: "After delivery",
+    body: "Once goods have been delivered, we only review documented quality or shortage issues — not a change of mind.",
   },
 ];
 
