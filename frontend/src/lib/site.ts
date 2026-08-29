@@ -9,16 +9,19 @@ export const SITE_DESCRIPTION =
 export const SUPPORT_EMAIL = "hello@concordiaorbis.com";
 export const PAYMENTS_EMAIL = "payments@concordiaorbis.com";
 
+/** Live public company site (About, Team, Refunds, Contact). */
+export const DEFAULT_COMPANY_SITE_URL = "https://concordiaorbis-website.vercel.app";
+
 /** Public company / Paystack information site (separate from the trading app). */
 export const COMPANY_SITE_URL = (
   process.env.NEXT_PUBLIC_COMPANY_SITE_URL?.trim() ||
-  (process.env.NODE_ENV !== "production" ? "http://localhost:3002" : "")
+  (process.env.NODE_ENV !== "production" ? "http://localhost:3002" : DEFAULT_COMPANY_SITE_URL)
 ).replace(/\/$/, "");
 
 export function companyUrl(path = "/"): string {
-  if (!COMPANY_SITE_URL) return "#";
-  if (!path || path === "/") return COMPANY_SITE_URL;
-  return `${COMPANY_SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+  const origin = COMPANY_SITE_URL || DEFAULT_COMPANY_SITE_URL;
+  if (!path || path === "/") return origin;
+  return `${origin}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
 /** Absolute site origin for metadata (og:image, canonical URLs). */

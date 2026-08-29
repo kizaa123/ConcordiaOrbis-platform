@@ -9,7 +9,7 @@ import { AvatarWithVerification } from "@/components/AvatarWithVerification";
 import { RolePrefixedName, getRoleNamePrefix } from "@/components/RolePrefixedName";
 import { NotificationBell } from "@/components/NotificationBell";
 import { Logo, LogoIcon } from "@/components/Logo";
-import { PLATFORM_NAME, companyUrl } from "@/lib/site";
+import { PLATFORM_NAME } from "@/lib/site";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard" },
@@ -110,14 +110,6 @@ export function Navbar() {
               </span>
             </Link>
             <div className="flex items-center gap-1.5 sm:gap-3">
-              <a
-                href={companyUrl("/")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:bg-brand-50 hover:text-brand-800 sm:inline-flex sm:px-3 sm:text-sm"
-              >
-                Company
-              </a>
               <Link
                 href="/login"
                 className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-brand-700 hover:bg-brand-100 sm:px-4 sm:py-2 sm:text-sm"
