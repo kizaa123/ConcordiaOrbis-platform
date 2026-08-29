@@ -152,7 +152,7 @@ function RegisterActionButton({
   onBlocked,
   onClick,
   children,
-  className = "btn-cta auth-nav-btn",
+  className = "btn-cta auth-nav-btn !py-2.5",
 }: {
   blocked: boolean;
   blockingItems: string[];
@@ -544,27 +544,17 @@ function RegisterForm() {
   };
 
   return (
-    <AuthHeroPanel ref={formColumnRef} className="flex-1" formWidth="wide">
+    <AuthHeroPanel ref={formColumnRef} className="flex-1" formWidth="wide" simple>
       <ScrollReveal trigger="mount" delay={120} duration={500} direction="fade-up">
-        <div className="space-y-6">
-          <header className="text-center">
-            <span className="auth-badge">
-              <span className="auth-badge-dot" />
-              Join the Network
-            </span>
-            <h1 className="text-2xl font-black tracking-tight text-brand-900 sm:text-3xl">
-              Create Your{" "}
-              <span className="bg-gradient-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent">
-                Account
-              </span>
-            </h1>
-            <div className="auth-heading-underline" aria-hidden="true" />
-            <p className="auth-subtitle mt-3 text-sm leading-relaxed text-gray-500">
+        <div className="space-y-4">
+          <header>
+            <h1 className="text-lg font-bold text-brand-900">Create account</h1>
+            <p className="mt-0.5 text-sm text-gray-500">
               Step {step} of {totalSteps} — {stepLabels[step - 1]}
             </p>
           </header>
 
-        <div className="auth-step-indicator !mb-6">
+        <div className="auth-step-indicator !mb-3">
           <div className="auth-step-track">
             {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
               <div
@@ -601,7 +591,7 @@ function RegisterForm() {
         </div>
 
         {(error || queryError) && (
-          <div className="auth-error mb-5" role="alert">
+          <div className="auth-error" role="alert">
             <Icon name="x" className="mt-0.5 h-4 w-4 shrink-0" />
             <span>{error || queryError}</span>
           </div>
@@ -614,19 +604,19 @@ function RegisterForm() {
         {step === 1 && (
           <>
             <GoogleSignInButton
-              label="Sign up with Google"
+              label="Continue with Google"
               disabled={loading}
               showDev={GOOGLE_DEV_MODE}
               onDevSignIn={handleDevGoogle}
               devLoading={devLoading}
             />
-            <AuthDivider text="or register with email" />
+            <AuthDivider text="or" />
           </>
         )}
 
         {step === 1 && (
-          <div className="auth-form">
-            <div className="grid gap-5 sm:grid-cols-2">
+          <div className="space-y-3.5">
+            <div className="grid gap-3.5 sm:grid-cols-2">
               <div className="auth-field">
                 <label htmlFor="reg-first-name" className="auth-label">
                   First Name
@@ -809,7 +799,7 @@ function RegisterForm() {
         )}
 
         {SMS_PHONE_VERIFICATION_ENABLED && step === PHONE_STEP && (
-          <div className="auth-form">
+          <div className="space-y-3.5">
             <PhoneVerificationChallenge
               key={`${normalizedRegisterPhone}-${form.country}`}
               phone={form.phone}
@@ -847,7 +837,7 @@ function RegisterForm() {
         )}
 
         {step === DETAILS_STEP && (
-          <div className="auth-form">
+          <div className="space-y-3.5">
             <div className="auth-section">
               <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
                 Selected country
@@ -1082,7 +1072,7 @@ function RegisterForm() {
         )}
 
         {step === COMMODITIES_STEP && isFarmerRole && categoryFilter && (
-          <div className="auth-form">
+          <div className="space-y-3.5">
             <div className="auth-section">
               <div className="flex items-start gap-3">
                 <Icon name="leaf" className="mt-0.5 h-5 w-5 shrink-0 text-brand-700" />
@@ -1147,19 +1137,19 @@ function RegisterForm() {
           </div>
         )}
 
-          <p className="auth-switch !mt-6">
+          <p className="pt-0.5 text-center text-sm text-gray-500">
             Have an account?{" "}
-            <Link href="/login" className="auth-switch-link">
+            <Link href="/login" className="font-semibold text-brand-700 hover:underline">
               Sign in
             </Link>
           </p>
-          <p className="mt-3 text-center">
+          <p className="text-center">
             <button
               type="button"
               onClick={cancelRegistration}
               className="text-sm font-medium text-gray-500 hover:text-brand-700"
             >
-              Cancel registration
+              Cancel
             </button>
           </p>
         </div>

@@ -22,7 +22,9 @@ export const AuthHeroPanel = forwardRef<HTMLDivElement, AuthHeroPanelProps>(func
   ref
 ) {
   const formWidthClass = simple
-    ? "mx-auto w-full max-w-[23.5rem]"
+    ? formWidth === "wide"
+      ? "mx-auto w-full max-w-[32rem]"
+      : "mx-auto w-full max-w-[23.5rem]"
     : formWidth === "wide"
       ? "lg:max-w-md xl:max-w-xl"
       : "lg:max-w-sm xl:max-w-md";
@@ -67,7 +69,7 @@ export const AuthHeroPanel = forwardRef<HTMLDivElement, AuthHeroPanelProps>(func
             ref={ref}
             className={
               simple
-                ? "w-full rounded-2xl border border-brand-100 bg-white px-5 py-6 shadow-sm sm:px-6 sm:py-7"
+                ? "auth-hero-form-card w-full overflow-y-auto rounded-2xl border border-brand-100 bg-white px-5 py-6 shadow-sm sm:px-6 sm:py-7 lg:max-h-[min(78vh,680px)]"
                 : "auth-hero-form-card w-full overflow-y-auto rounded-3xl border border-white/20 bg-white p-6 shadow-[0_4px_24px_-4px_rgba(27,67,50,0.12),0_12px_48px_-8px_rgba(27,67,50,0.18)] ring-1 ring-brand-900/5 sm:p-8 lg:max-h-[min(72vh,720px)] lg:p-7 xl:p-8"
             }
           >

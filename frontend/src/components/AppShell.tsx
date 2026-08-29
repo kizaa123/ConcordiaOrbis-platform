@@ -14,7 +14,7 @@ import { ResearcherPortalLayout } from "@/components/ResearcherSidebar";
 import { StudentPortalLayout } from "@/components/StudentSidebar";
 import { isFarmer, isHandler, isBuyer, isStaff, isResearcher, isStudent } from "@/lib/types";
 
-const PUBLIC_PATHS = ["/", "/login"];
+const PUBLIC_PATHS = ["/", "/login", "/privacy", "/terms"];
 
 const REGISTRATION_FLOW_PATHS = ["/register", "/complete-profile"];
 

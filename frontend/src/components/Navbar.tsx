@@ -98,8 +98,7 @@ export function Navbar() {
 
   const closeMobile = () => setMobileOpen(false);
 
-  if (loading || pathname === "/" || pathname === "/login" || pathname === "/register") {
-    if (pathname === "/" || pathname === "/login" || pathname === "/register") {
+  if (pathname === "/" || pathname === "/login" || pathname === "/register" || pathname === "/privacy" || pathname === "/terms") {
       return (
         <header className="sticky top-0 z-50 border-b border-brand-200 bg-white/95 shadow-sm backdrop-blur-md">
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:h-24 lg:px-8">
@@ -135,11 +134,9 @@ export function Navbar() {
           </div>
         </header>
       );
-    }
-    return null;
   }
 
-  if (!user) return null;
+  if (loading || !user) return null;
 
   const links = NAV.filter((n) => {
     if (n.href === "/marketplace" && (isFarmerHandler(user.roleId) || isBuyerHandler(user.roleId))) return false;

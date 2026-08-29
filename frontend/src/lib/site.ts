@@ -6,6 +6,9 @@ export const PLATFORM_TEAM_LABEL = `${PLATFORM_NAME} Team`;
 export const SITE_DESCRIPTION =
   "Connect fellows, clients, and liaison officers across Africa and beyond";
 
+export const SUPPORT_EMAIL = "hello@concordiaorbis.com";
+export const PAYMENTS_EMAIL = "payments@concordiaorbis.com";
+
 /** Public company / Paystack information site (separate from the trading app). */
 export const COMPANY_SITE_URL = (
   process.env.NEXT_PUBLIC_COMPANY_SITE_URL?.trim() ||

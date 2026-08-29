@@ -38,6 +38,31 @@ html {
     @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-yellow-400 px-6 py-3 text-sm font-bold text-brand-900 shadow-[0_8px_30px_rgba(250,204,21,0.28)] transition-all hover:scale-[1.01] hover:bg-yellow-300;
   }
 
+  .prose-legal h2 {
+    @apply mt-8 mb-2 text-lg font-bold text-brand-900 first:mt-0;
+  }
+
+  .prose-legal h3 {
+    @apply mt-5 mb-1.5 text-sm font-bold text-brand-800;
+  }
+
+  .prose-legal p,
+  .prose-legal li {
+    @apply text-[15px] leading-relaxed text-gray-600;
+  }
+
+  .prose-legal ul {
+    @apply my-2.5 list-disc space-y-1.5 pl-5;
+  }
+
+  .prose-legal a {
+    @apply font-semibold text-brand-700 underline-offset-2 hover:underline;
+  }
+
+  .prose-legal strong {
+    @apply font-semibold text-brand-900;
+  }
+
   .auth-page {
     @apply mx-auto flex w-full max-w-md items-start justify-center px-4 py-10 sm:py-14;
   }
