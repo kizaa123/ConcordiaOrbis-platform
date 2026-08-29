@@ -3,5 +3,15 @@
   "framework": "nextjs",
   "installCommand": "npm install",
   "buildCommand": "npm run build",
-  "devCommand": "npm run dev"
+  "devCommand": "npm run dev",
+  "rewrites": [
+    {
+      "source": "/api/auth/google",
+      "destination": "https://concordiaorbis-platform.onrender.com/api/auth/google"
+    },
+    {
+      "source": "/api/auth/google/callback",
+      "destination": "https://concordiaorbis-platform.onrender.com/api/auth/google/callback"
+    }
+  ]
 }

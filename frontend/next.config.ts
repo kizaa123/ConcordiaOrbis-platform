@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
-const backend = process.env.BACKEND_URL || "http://localhost:3001";
+const backend = (
+  process.env.BACKEND_URL?.trim() ||
+  process.env.NEXT_PUBLIC_API_URL?.trim() ||
+  (process.env.VERCEL ? "https://concordiaorbis-platform.onrender.com" : "") ||
+  "http://localhost:3001"
+).replace(/\/$/, "");
 
 function backendHostname(): string | null {
   try {
@@ -27,10 +32,24 @@ const nextConfig: NextConfig = {
     return [{ source: "/access", destination: "/marketplace", permanent: true }];
   },
   async rewrites() {
-    return [
-      { source: "/api/:path*", destination: `${backend}/api/:path*` },
-      { source: "/uploads/:path*", destination: `${backend}/uploads/:path*` },
-    ];
+    return {
+      // Run before Next would 404 /api/* in the App Router.
+      // /auth/google and /auth/google/callback are handled by route.ts (302).
+      beforeFiles: [
+        {
+          source: "/api/auth/google",
+          destination: `${backend}/api/auth/google`,
+        },
+        {
+          source: "/api/auth/google/callback",
+          destination: `${backend}/api/auth/google/callback`,
+        },
+      ],
+      afterFiles: [
+        { source: "/api/:path*", destination: `${backend}/api/:path*` },
+        { source: "/uploads/:path*", destination: `${backend}/uploads/:path*` },
+      ],
+    };
   },
 };
 

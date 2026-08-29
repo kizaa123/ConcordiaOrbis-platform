@@ -147,11 +147,11 @@ The `PaymentProvider` interface in `backend/src/services/payment.provider.ts` ab
 | Part | URL |
 |------|-----|
 | **Website (Vercel)** | https://concordiaorbis-platform-one.vercel.app |
-| **API (Render)** | https://concordiaorbis-api.onrender.com |
+| **API (Render)** | https://concordiaorbis-platform.onrender.com |
 
 Full copy-paste env lists: [`deploy/production-urls.env`](deploy/production-urls.env)
 
-### Render (`concordiaorbis-api`)
+### Render (`concordiaorbis-platform`)
 
 `FRONTEND_URL` and `GOOGLE_REDIRECT_URI` are set in **`render.yaml`** — push to GitHub, then **Blueprints → Manual Sync**.
 
@@ -165,10 +165,10 @@ After sync, verify Render shows:
 
 ```
 FRONTEND_URL=https://concordiaorbis-platform-one.vercel.app
-GOOGLE_REDIRECT_URI=https://concordiaorbis-api.onrender.com/api/auth/google/callback
+GOOGLE_REDIRECT_URI=https://concordiaorbis-platform.onrender.com/api/auth/google/callback
 ```
 
-Test: https://concordiaorbis-api.onrender.com/api/health
+Test: https://concordiaorbis-platform.onrender.com/api/health
 
 ### Vercel (`concordiaorbis-platform-one`)
 
@@ -177,9 +177,9 @@ Test: https://concordiaorbis-api.onrender.com/api/health
 **Environment variables (Production):**
 
 ```
-BACKEND_URL=https://concordiaorbis-api.onrender.com
+BACKEND_URL=https://concordiaorbis-platform.onrender.com
 NEXT_PUBLIC_SITE_URL=https://concordiaorbis-platform-one.vercel.app
-NEXT_PUBLIC_API_URL=https://concordiaorbis-api.onrender.com
+NEXT_PUBLIC_API_URL=https://concordiaorbis-platform.onrender.com
 NEXT_PUBLIC_GOOGLE_DEV_MODE=false
 ```
 
@@ -188,9 +188,10 @@ Redeploy after saving.
 ### Google OAuth
 
 - **JavaScript origin:** `https://concordiaorbis-platform-one.vercel.app`
-- **Redirect URI:** `https://concordiaorbis-api.onrender.com/api/auth/google/callback`
+- **Redirect URI:** `https://concordiaorbis-platform.onrender.com/api/auth/google/callback`
+- Also add: `http://localhost:3000/auth/google/callback`
 
-Remove the old `ani-platform-api.onrender.com` redirect URI from Google Console.
+Do not use `concordiaorbis-api.onrender.com` — that host has no service and Google returns **Not Found** after sign-in.
 
 ### Remove old Render API
 

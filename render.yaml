@@ -24,7 +24,7 @@ services:
       - key: FRONTEND_URL
         value: https://concordiaorbis-platform-one.vercel.app
       - key: GOOGLE_REDIRECT_URI
-        value: https://concordiaorbis-api.onrender.com/api/auth/google/callback
+        value: https://concordiaorbis-platform.onrender.com/api/auth/google/callback
       - key: GOOGLE_CLIENT_ID
         sync: false
       - key: GOOGLE_CLIENT_SECRET

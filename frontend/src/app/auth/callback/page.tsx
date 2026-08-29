@@ -13,11 +13,7 @@ function AuthCallbackContent() {
   useEffect(() => {
     const oauthCode = searchParams.get("code");
     if (oauthCode) {
-      const api = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "";
-      const qs = window.location.search;
-      window.location.replace(
-        api ? `${api}/api/auth/google/callback${qs}` : `/api/auth/google/callback${qs}`
-      );
+      window.location.replace(`/auth/google/callback${window.location.search}`);
       return;
     }
 
