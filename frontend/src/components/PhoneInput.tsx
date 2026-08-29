@@ -1,6 +1,5 @@
 "use client";
 
-import { CountrySelect } from "@/components/CountrySelect";
 import {
   formatNationalInput,
   getDialCodeForCountryName,
@@ -13,7 +12,6 @@ interface PhoneInputProps {
   value: string;
   country: string;
   onChange: (value: string) => void;
-  onCountryChange?: (country: string) => void;
   required?: boolean;
   placeholder?: string;
   className?: string;
@@ -27,7 +25,6 @@ export function PhoneInput({
   value,
   country,
   onChange,
-  onCountryChange,
   required,
   placeholder,
   className,
@@ -35,33 +32,26 @@ export function PhoneInput({
   hint,
   invalid,
 }: PhoneInputProps) {
+  const dialCode = getDialCodeForCountryName(country);
   const display = formatNationalInput(value);
   const groupedPlaceholder = placeholder ?? nationalPlaceholder(country);
 
   return (
     <div className={className}>
       <div
-        className={`flex rounded-xl border bg-white shadow-sm focus-within:ring-2 ${
+        className={`flex overflow-hidden rounded-xl border bg-white shadow-sm focus-within:ring-2 ${
           invalid
             ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-200"
             : "border-brand-200 focus-within:border-brand-500 focus-within:ring-brand-200"
         }`}
       >
-        <div className="shrink-0 border-r border-brand-200">
-          {onCountryChange ? (
-            <CountrySelect
-              compact
-              value={country}
-              onChange={onCountryChange}
-              required={required && !country}
-              invalid={invalid}
-            />
+        <span className="flex w-[9.5rem] shrink-0 items-center justify-center border-r border-brand-200 bg-brand-50/90 px-3 py-3 text-sm font-semibold tabular-nums sm:w-[11rem]">
+          {dialCode ? (
+            <span className="text-brand-900">{dialCode}</span>
           ) : (
-            <span className="flex h-full items-center bg-brand-50/90 px-3 py-3 text-sm font-semibold tabular-nums text-brand-900">
-              {getDialCodeForCountryName(country) || "Code"}
-            </span>
+            <span className="font-medium text-gray-400">country</span>
           )}
-        </div>
+        </span>
         <input
           id={id}
           required={required}

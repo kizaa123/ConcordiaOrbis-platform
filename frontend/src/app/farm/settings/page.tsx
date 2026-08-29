@@ -307,15 +307,8 @@ export default function FarmSettingsPage() {
               value={personal.phone}
               country={personal.country}
               onChange={(phone) => setPersonal({ ...personal, phone })}
-              onCountryChange={(country) =>
-                setPersonal((prev) => ({
-                  ...prev,
-                  country,
-                  phone: onCountryChangePhone(prev.phone, prev.country, country),
-                }))
-              }
               inputClassName="min-w-0 flex-1 border-0 bg-transparent px-3 py-2 text-sm tracking-wide focus:outline-none focus:ring-0"
-              hint="Pick your country, then enter the number without the leading 0"
+              hint="Country code is added for you. Enter the number without the leading 0"
             />
           </div>
           <div>

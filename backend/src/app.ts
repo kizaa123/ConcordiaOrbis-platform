@@ -69,6 +69,14 @@ export function createApp() {
 
   app.use('/api', routes);
 
+  app.get('/auth/google', (_req, res) => {
+    res.redirect(302, '/api/auth/google');
+  });
+  app.get('/auth/google/callback', (req, res) => {
+    const qs = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+    res.redirect(302, `/api/auth/google/callback${qs}`);
+  });
+
   app.use((_req, res) => {
     res.status(404).json({ success: false, error: 'Route not found' });
   });

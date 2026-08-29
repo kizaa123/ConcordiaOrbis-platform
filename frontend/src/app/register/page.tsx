@@ -667,6 +667,23 @@ function RegisterForm() {
             </div>
 
             <div className="auth-field">
+              <label htmlFor="reg-country" className="auth-label">
+                Select Country
+              </label>
+              <CountrySelect
+                id="reg-country"
+                value={form.country}
+                onChange={(country) => {
+                  clearBackendError("country");
+                  handleCountryChange(country);
+                }}
+                required
+                invalid={!!fieldError("country")}
+              />
+              <FieldErrorMessage message={fieldError("country")} />
+            </div>
+
+            <div className="auth-field">
               <label htmlFor="reg-phone" className="auth-label">
                 Phone
               </label>
@@ -679,18 +696,14 @@ function RegisterForm() {
                   clearBackendError("phone");
                   setForm((prev) => ({ ...prev, phone }));
                 }}
-                onCountryChange={(country) => {
-                  clearBackendError("country");
-                  handleCountryChange(country);
-                }}
-                invalid={!!fieldError("phone") || !!fieldError("country")}
+                invalid={!!fieldError("phone")}
                 hint={
-                  fieldError("phone") || fieldError("country")
+                  fieldError("phone")
                     ? undefined
-                    : "Pick your country, then enter the number without the leading 0"
+                    : "Country code is added for you. Enter the number without the leading 0"
                 }
               />
-              <FieldErrorMessage message={fieldError("country") || fieldError("phone")} />
+              <FieldErrorMessage message={fieldError("phone")} />
             </div>
 
             <div className="auth-field">

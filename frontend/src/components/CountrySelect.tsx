@@ -9,7 +9,6 @@ import {
   COUNTRY_DIAL_CODES,
   getCountryByName,
   getCountryFlagEmoji,
-  getDialCodeForCountry,
 } from "@/lib/africanCountries";
 
 
@@ -69,8 +68,6 @@ interface CountrySelectProps {
   className?: string;
   invalid?: boolean;
   id?: string;
-  /** Flag + dial code, for embedding in a phone field */
-  compact?: boolean;
 }
 
 export function CountrySelect({
@@ -80,23 +77,22 @@ export function CountrySelect({
   className = "",
   invalid = false,
   id,
-  compact = false,
 }: CountrySelectProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const rootRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const selected = getCountryByName(value);
-  const dialCode = getDialCodeForCountry(value);
 
-  const query = search.trim().toLowerCase().replace(/^\+/, "");
+  const query = search.trim().toLowerCase();
   const filtered = query
     ? COUNTRIES.filter((c) => {
         const dial = COUNTRY_DIAL_CODES[c.code].replace("+", "");
+        const q = query.replace(/^\+/, "");
         return (
           c.name.toLowerCase().includes(query) ||
           c.code.toLowerCase().includes(query) ||
-          dial.includes(query)
+          dial.includes(q)
         );
       })
     : COUNTRIES;
@@ -128,7 +124,7 @@ export function CountrySelect({
   };
 
   return (
-    <div ref={rootRef} className={`relative ${compact ? "shrink-0" : ""} ${className}`}>
+    <div ref={rootRef} className={`relative ${className}`}>
       {required && (
         <input
           tabIndex={-1}
@@ -144,39 +140,18 @@ export function CountrySelect({
         type="button"
         aria-expanded={open}
         aria-haspopup="listbox"
-        aria-label={compact ? "Select country calling code" : "Select country"}
+        aria-label="Select country"
         onClick={() => (open ? closeDropdown() : openDropdown())}
-        className={
-          compact
-            ? "flex h-full items-center gap-1.5 bg-brand-50/90 px-2.5 py-3 text-left hover:bg-brand-100/80 focus:outline-none"
-            : `flex w-full items-center gap-3 rounded-xl border bg-white px-4 py-3 text-left shadow-sm focus:outline-none focus:ring-2 ${
-                invalid
-                  ? "border-red-500 focus:border-red-500 focus:ring-red-200"
-                  : "border-brand-200 focus:border-brand-500 focus:ring-brand-200"
-              }`
-        }
+        className={`flex w-full items-center gap-3 rounded-xl border bg-white px-4 py-3 text-left shadow-sm focus:outline-none focus:ring-2 ${
+          invalid
+            ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+            : "border-brand-200 focus:border-brand-500 focus:ring-brand-200"
+        }`}
       >
-        {compact ? (
-          <>
-            {selected ? (
-              <CountryFlag code={selected.code} countryName={selected.name} size={22} />
-            ) : (
-              <span className="text-base leading-none" aria-hidden>
-                🌍
-              </span>
-            )}
-            <span className="text-sm font-semibold tabular-nums text-brand-900">
-              {dialCode || "Code"}
-            </span>
-            <svg className="h-3.5 w-3.5 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </>
-        ) : selected ? (
+        {selected ? (
           <>
             <CountryFlag code={selected.code} countryName={selected.name} size={28} />
             <span className="flex-1 font-medium text-brand-900">{selected.name}</span>
-            {dialCode ? <span className="text-sm text-gray-500">{dialCode}</span> : null}
           </>
         ) : (
           <span className="text-gray-500">Select country</span>
@@ -184,18 +159,14 @@ export function CountrySelect({
       </button>
 
       {open && (
-        <div
-          className={`absolute z-50 mt-1 overflow-hidden rounded-xl border border-brand-100 bg-white shadow-lg ${
-            compact ? "left-0 w-[min(calc(100vw-2rem),20rem)]" : "w-full"
-          }`}
-        >
+        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-brand-100 bg-white shadow-lg">
           <div className="border-b border-brand-100 p-2">
             <input
               ref={searchInputRef}
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search country or code…"
+              placeholder="Search countries…"
               aria-label="Search countries"
               className="w-full rounded-lg border border-brand-200 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
               onClick={(e) => e.stopPropagation()}
@@ -217,10 +188,7 @@ export function CountrySelect({
                     }`}
                   >
                     <CountryFlag code={c.code} countryName={c.name} size={24} />
-                    <span className="min-w-0 flex-1 truncate">{c.name}</span>
-                    <span className="shrink-0 text-xs font-medium tabular-nums text-gray-500">
-                      {COUNTRY_DIAL_CODES[c.code]}
-                    </span>
+                    {c.name}
                   </button>
                 </li>
               ))

@@ -15,6 +15,7 @@ import {
 } from "@/lib/phone";
 import { PhoneInput } from "@/components/PhoneInput";
 import { ProfilePhoto } from "@/components/FarmerAvatar";
+import { CountrySelect } from "@/components/CountrySelect";
 import { HandlerSelect } from "@/components/HandlerSelect";
 import { RolePrefixedName } from "@/components/RolePrefixedName";
 import { EmailText } from "@/components/EmailText";
@@ -192,19 +193,26 @@ export default function BuyerSettingsPage() {
           <h2 className="mb-4 text-lg font-bold text-brand-900">Contact & location</h2>
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium">Phone number</label>
-              <PhoneInput
-                value={form.phone}
-                country={form.country}
-                onChange={(phone) => setForm({ ...form, phone })}
-                onCountryChange={(country) =>
+              <label className="mb-1 block text-sm font-medium">Country</label>
+              <CountrySelect
+                value={form.country}
+                onChange={(country) =>
                   setForm((prev) => ({
                     ...prev,
                     country,
                     phone: onCountryChangePhone(prev.phone, prev.country, country),
                   }))
                 }
-                hint="Pick your country, then enter the number without the leading 0"
+                required
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium">Phone number</label>
+              <PhoneInput
+                value={form.phone}
+                country={form.country}
+                onChange={(phone) => setForm({ ...form, phone })}
+                hint="Country code is added for you. Enter the number without the leading 0"
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">

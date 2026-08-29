@@ -1,3 +1,5 @@
+import { googleOAuthStartUrl } from "@/lib/googleAuthUrl";
+
 export function GoogleIcon({ className = "h-5 w-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
@@ -39,7 +41,7 @@ export function GoogleSignInButton({
   return (
     <div className="space-y-3">
       <a
-        href="/api/auth/google"
+        href={googleOAuthStartUrl()}
         className={`auth-google-btn ${disabled ? "pointer-events-none opacity-50" : ""}`}
         aria-disabled={disabled}
       >

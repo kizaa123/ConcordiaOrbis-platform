@@ -155,22 +155,6 @@ export default function StudentSettingsPage() {
           <section className="space-y-4 rounded-2xl border border-brand-100 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-bold text-brand-900">Contact & location</h2>
             <div>
-              <label className="auth-label">Phone</label>
-              <PhoneInput
-                value={form.phone}
-                country={form.country}
-                onChange={(phone) => setForm({ ...form, phone })}
-                onCountryChange={(country) =>
-                  setForm((prev) => ({
-                    ...prev,
-                    country,
-                    phone: onCountryChangePhone(prev.phone, prev.country, country),
-                  }))
-                }
-                hint="Pick your country, then enter the number without the leading 0"
-              />
-            </div>
-            <div>
               <label className="auth-label">Country</label>
               <CountrySelect
                 value={form.country}
@@ -181,6 +165,15 @@ export default function StudentSettingsPage() {
                     phone: onCountryChangePhone(prev.phone, prev.country, country),
                   }))
                 }
+              />
+            </div>
+            <div>
+              <label className="auth-label">Phone</label>
+              <PhoneInput
+                value={form.phone}
+                country={form.country}
+                onChange={(phone) => setForm({ ...form, phone })}
+                hint="Country code is added for you. Enter the number without the leading 0"
               />
             </div>
             <div>
