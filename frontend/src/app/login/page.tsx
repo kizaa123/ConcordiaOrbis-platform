@@ -11,7 +11,6 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { AuthHeroPanel } from "@/components/AuthHeroPanel";
 import { AuthDivider, GoogleSignInButton } from "@/components/GoogleSignInButton";
 import { api } from "@/lib/api";
-import { PLATFORM_NAME } from "@/lib/site";
 
 const GOOGLE_DEV_MODE = process.env.NEXT_PUBLIC_GOOGLE_DEV_MODE === "true";
 
@@ -78,24 +77,12 @@ function LoginForm() {
   };
 
   return (
-    <AuthHeroPanel className="flex-1">
-      <ScrollReveal trigger="mount" delay={120} duration={500} direction="fade-up">
-        <div className="space-y-6">
-          <header className="text-center">
-            <span className="auth-badge">
-              <span className="auth-badge-dot" />
-              Welcome Back
-            </span>
-            <h1 className="text-2xl font-black tracking-tight text-brand-900 sm:text-3xl">
-              Sign In to{" "}
-              <span className="bg-gradient-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent">
-                {PLATFORM_NAME}
-              </span>
-            </h1>
-            <div className="auth-heading-underline" aria-hidden="true" />
-            <p className="auth-subtitle mt-3 text-sm leading-relaxed text-gray-500">
-              Sign in to your account to keep trading with confidence
-            </p>
+    <AuthHeroPanel className="flex-1" simple>
+      <ScrollReveal trigger="mount" delay={80} duration={400} direction="fade-up">
+        <div className="space-y-4">
+          <header>
+            <h1 className="text-lg font-bold text-brand-900">Sign in</h1>
+            <p className="mt-0.5 text-sm text-gray-500">Email or Google to continue.</p>
           </header>
 
           {(error || queryError) && (
@@ -106,16 +93,16 @@ function LoginForm() {
           )}
 
           <GoogleSignInButton
-            label="Sign in with Google"
+            label="Continue with Google"
             disabled={loading || devLoading}
             showDev={GOOGLE_DEV_MODE}
             onDevSignIn={handleDevGoogle}
             devLoading={devLoading}
           />
-          <AuthDivider text="or sign in with email" />
+          <AuthDivider text="or" />
 
-          <form onSubmit={handleSubmit} className="auth-form">
-            <div className="auth-field">
+          <form onSubmit={handleSubmit} className="space-y-3.5">
+            <div className="space-y-1">
               <label htmlFor="login-email" className="auth-label">
                 Email
               </label>
@@ -127,11 +114,11 @@ function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="auth-input"
+                className="auth-input !py-2.5"
               />
             </div>
 
-            <div className="auth-field">
+            <div className="space-y-1">
               <label htmlFor="login-password" className="auth-label">
                 Password
               </label>
@@ -141,23 +128,23 @@ function LoginForm() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder="Password"
+                className="auth-input !py-2.5"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="btn-cta auth-nav-btn w-full disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+              className="btn-cta w-full !py-2.5 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
             >
-              {loading ? "Signing in..." : "Sign In"}
-              {!loading && <Icon name="chevron-right" className="h-4 w-4" />}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
-          <p className="auth-switch !mt-6">
+          <p className="pt-0.5 text-center text-sm text-gray-500">
             No account?{" "}
-            <Link href="/register" className="auth-switch-link">
+            <Link href="/register" className="font-semibold text-brand-700 hover:underline">
               Create one
             </Link>
           </p>

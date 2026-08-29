@@ -11,28 +11,28 @@ const LINKS = [
 
 export function AppFooter() {
   return (
-    <footer className="mt-auto border-t border-brand-200 bg-brand-900 px-3 py-3 text-center text-brand-100 sm:px-4 sm:py-4">
-      <p className="text-[11px] leading-snug sm:text-sm sm:leading-normal">
-        The Premier Commodity Exchange Platform
-        <span className="hidden sm:inline"> - </span>
-        <span className="block sm:inline">Connecting verified Fellows with Markets.</span>
-      </p>
-      <nav className="mx-auto mt-1.5 flex max-w-xl flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] font-semibold text-brand-200 sm:text-xs">
-        {LINKS.map((link) => (
-          <a
-            key={link.href}
-            href={companyUrl(link.href)}
-            className="hover:text-yellow-300"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {link.label}
-          </a>
-        ))}
-      </nav>
-      <p className="mt-1.5 text-[10px] leading-snug text-brand-300 sm:text-xs">
-        © {new Date().getFullYear()} {PLATFORM_NAME}. All rights reserved.
-      </p>
+    <footer className="mt-auto border-t border-brand-200 bg-brand-900 px-3 py-2 text-brand-100 sm:px-4">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-1 sm:flex-row sm:justify-between sm:gap-4">
+        <p className="text-[10px] leading-tight text-brand-200 sm:text-[11px]">
+          The Premier Commodity Exchange Platform
+        </p>
+        <nav className="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 text-[10px] font-semibold text-brand-200 sm:text-[11px]">
+          {LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={companyUrl(link.href)}
+              className="hover:text-yellow-300"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+        <p className="text-[10px] leading-tight text-brand-300 sm:text-[11px]">
+          © {new Date().getFullYear()} {PLATFORM_NAME}
+        </p>
+      </div>
     </footer>
   );
 }

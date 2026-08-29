@@ -12,19 +12,24 @@ type AuthHeroPanelProps = {
   children?: ReactNode;
   /** Wider form card for multi-step registration */
   formWidth?: "default" | "wide";
+  /** Flatter card for login — less chrome than register. */
+  simple?: boolean;
 };
 
 /** Full-viewport hero for login/register — branding matches the homepage stack. */
 export const AuthHeroPanel = forwardRef<HTMLDivElement, AuthHeroPanelProps>(function AuthHeroPanel(
-  { className = "", children, formWidth = "default" },
+  { className = "", children, formWidth = "default", simple = false },
   ref
 ) {
-  const formWidthClass =
-    formWidth === "wide" ? "lg:max-w-md xl:max-w-xl" : "lg:max-w-sm xl:max-w-md";
+  const formWidthClass = simple
+    ? "mx-auto w-full max-w-[23.5rem]"
+    : formWidth === "wide"
+      ? "lg:max-w-md xl:max-w-xl"
+      : "lg:max-w-sm xl:max-w-md";
 
   return (
     <div
-      className={`relative flex min-h-[calc(100dvh-11rem)] w-full flex-1 flex-col overflow-hidden bg-brand-50 lg:min-h-[calc(100dvh-9rem)] lg:bg-brand-900 ${className}`}
+      className={`relative flex min-h-[calc(100dvh-8.5rem)] w-full flex-1 flex-col overflow-hidden bg-brand-50 lg:min-h-[calc(100dvh-8rem)] lg:bg-brand-900 ${className}`}
     >
       <div
         className="pointer-events-none absolute inset-0 z-0 hidden lg:block"
@@ -40,13 +45,17 @@ export const AuthHeroPanel = forwardRef<HTMLDivElement, AuthHeroPanelProps>(func
         aria-hidden="true"
       />
 
-      <div className="relative z-20 flex min-h-0 flex-1 flex-col justify-center gap-8 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-around lg:gap-8 lg:p-10 xl:gap-12 xl:p-12">
+      <div
+        className={`relative z-20 flex min-h-0 flex-1 flex-col justify-center gap-6 p-4 sm:p-8 lg:flex-row lg:items-center lg:justify-around lg:gap-8 lg:p-10 xl:gap-12 xl:p-12 ${
+          simple ? "sm:p-6" : ""
+        }`}
+      >
         <div className="hidden min-w-0 max-w-xl flex-col lg:flex xl:max-w-2xl">
           <BrandHeroCopy size="panel" />
         </div>
 
         <div className={`w-full shrink-0 ${formWidthClass}`}>
-          <div className="mb-5 text-center lg:hidden">
+          <div className={`text-center lg:hidden ${simple ? "mb-4" : "mb-5"}`}>
             <PlatformBrandTitle
               theme="dark"
               size="compact"
@@ -56,12 +65,18 @@ export const AuthHeroPanel = forwardRef<HTMLDivElement, AuthHeroPanelProps>(func
 
           <div
             ref={ref}
-            className="auth-hero-form-card w-full overflow-y-auto rounded-3xl border border-white/20 bg-white p-6 shadow-[0_4px_24px_-4px_rgba(27,67,50,0.12),0_12px_48px_-8px_rgba(27,67,50,0.18)] ring-1 ring-brand-900/5 sm:p-8 lg:max-h-[min(72vh,720px)] lg:p-7 xl:p-8"
+            className={
+              simple
+                ? "w-full rounded-2xl border border-brand-100 bg-white px-5 py-6 shadow-sm sm:px-6 sm:py-7"
+                : "auth-hero-form-card w-full overflow-y-auto rounded-3xl border border-white/20 bg-white p-6 shadow-[0_4px_24px_-4px_rgba(27,67,50,0.12),0_12px_48px_-8px_rgba(27,67,50,0.18)] ring-1 ring-brand-900/5 sm:p-8 lg:max-h-[min(72vh,720px)] lg:p-7 xl:p-8"
+            }
           >
-            <div
-              className="mx-auto mb-5 h-1 w-16 rounded-full bg-gradient-to-r from-yellow-400/0 via-yellow-400 to-yellow-400/0"
-              aria-hidden="true"
-            />
+            {simple ? null : (
+              <div
+                className="mx-auto mb-5 h-1 w-16 rounded-full bg-gradient-to-r from-yellow-400/0 via-yellow-400 to-yellow-400/0"
+                aria-hidden="true"
+              />
+            )}
             {children}
           </div>
         </div>
