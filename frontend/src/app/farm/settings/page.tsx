@@ -23,7 +23,6 @@ import {
 } from "@/lib/phone";
 import { PhoneInput } from "@/components/PhoneInput";
 import { ProfilePhoto } from "@/components/FarmerAvatar";
-import { CountrySelect } from "@/components/CountrySelect";
 import { HandlerSelect } from "@/components/HandlerSelect";
 import { CommodityPicker } from "@/components/CommodityPicker";
 import { CustomProductInput } from "@/components/CustomProductInput";
@@ -307,26 +306,20 @@ export default function FarmSettingsPage() {
               value={personal.phone}
               country={personal.country}
               onChange={(phone) => setPersonal({ ...personal, phone })}
-              inputClassName="min-w-0 flex-1 border-0 bg-transparent px-3 py-2 text-sm tracking-wide focus:outline-none focus:ring-0"
-              hint="Country code is added for you. Enter the number without the leading 0"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Email</label>
-            <input value={user.email} disabled className="w-full rounded-lg border bg-gray-50 px-4 py-2 text-gray-500" />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Country</label>
-            <CountrySelect
-              value={personal.country}
-              onChange={(country) =>
+              onCountryChange={(country) =>
                 setPersonal((prev) => ({
                   ...prev,
                   country,
                   phone: onCountryChangePhone(prev.phone, prev.country, country),
                 }))
               }
+              inputClassName="min-w-0 flex-1 border-0 bg-transparent py-2 pr-3 pl-2 text-sm tracking-wide focus:outline-none focus:ring-0"
+              hint="Choose your country, then enter the 9 digits after the code"
             />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">Email</label>
+            <input value={user.email} disabled className="w-full rounded-lg border bg-gray-50 px-4 py-2 text-gray-500" />
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">Region</label>

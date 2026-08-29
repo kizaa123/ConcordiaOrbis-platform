@@ -1,5 +1,6 @@
 "use client";
 
+import { CountrySelect } from "@/components/CountrySelect";
 import {
   formatNationalInput,
   getDialCodeForCountryName,
@@ -12,6 +13,7 @@ interface PhoneInputProps {
   value: string;
   country: string;
   onChange: (value: string) => void;
+  onCountryChange?: (country: string) => void;
   required?: boolean;
   placeholder?: string;
   className?: string;
@@ -25,6 +27,7 @@ export function PhoneInput({
   value,
   country,
   onChange,
+  onCountryChange,
   required,
   placeholder,
   className,
@@ -39,33 +42,46 @@ export function PhoneInput({
   return (
     <div className={className}>
       <div
-        className={`flex overflow-hidden rounded-xl border bg-white shadow-sm focus-within:ring-2 ${
+        className={`grid grid-cols-[minmax(6.5rem,2fr)_minmax(0,3fr)] rounded-xl border bg-white shadow-sm focus-within:ring-2 ${
           invalid
             ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-200"
             : "border-brand-200 focus-within:border-brand-500 focus-within:ring-brand-200"
         }`}
       >
-        <span className="flex w-[9.5rem] shrink-0 items-center justify-center border-r border-brand-200 bg-brand-50/90 px-3 py-3 text-sm font-semibold tabular-nums sm:w-[11rem]">
-          {dialCode ? (
-            <span className="text-brand-900">{dialCode}</span>
+        <div className="min-w-0 border-r border-brand-200">
+          {onCountryChange ? (
+            <CountrySelect
+              compact
+              value={country}
+              onChange={onCountryChange}
+              required={required && !country}
+              invalid={invalid}
+            />
           ) : (
-            <span className="font-medium text-gray-400">country</span>
+            <span className="flex h-full items-center truncate px-3 py-3 text-sm font-medium text-brand-900">
+              {country || "Country"}
+            </span>
           )}
-        </span>
-        <input
-          id={id}
-          required={required}
-          inputMode="numeric"
-          autoComplete="tel-national"
-          value={display}
-          onChange={(e) => onChange(parsePhoneInput(e.target.value, country))}
-          placeholder={groupedPlaceholder}
-          aria-invalid={invalid || undefined}
-          className={
-            inputClassName ??
-            "min-w-0 flex-1 border-0 bg-transparent px-3 py-3 text-sm tracking-wide focus:outline-none focus:ring-0"
-          }
-        />
+        </div>
+        <div className="flex min-w-0 items-center">
+          <span className="shrink-0 pl-2.5 text-sm font-semibold tabular-nums text-brand-800">
+            {dialCode || ""}
+          </span>
+          <input
+            id={id}
+            required={required}
+            inputMode="numeric"
+            autoComplete="tel-national"
+            value={display}
+            onChange={(e) => onChange(parsePhoneInput(e.target.value, country))}
+            placeholder={groupedPlaceholder}
+            aria-invalid={invalid || undefined}
+            className={
+              inputClassName ??
+              "min-w-0 flex-1 border-0 bg-transparent py-3 pr-3 pl-2 text-sm tracking-wide focus:outline-none focus:ring-0"
+            }
+          />
+        </div>
       </div>
       {hint ? <p className="auth-hint mt-1">{hint}</p> : null}
     </div>

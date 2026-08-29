@@ -11,7 +11,6 @@ import {
   onCountryChangePhone,
 } from "@/lib/phone";
 import { PhoneInput } from "@/components/PhoneInput";
-import { CountrySelect } from "@/components/CountrySelect";
 import { HandlerSelect } from "@/components/HandlerSelect";
 import { CommodityPicker } from "@/components/CommodityPicker";
 import { QualificationSelector } from "@/components/QualificationSelector";
@@ -338,18 +337,6 @@ export default function CompleteProfilePage() {
                 </div>
 
                 <div className="auth-field">
-                  <label htmlFor="complete-country" className="auth-label">
-                    Select Country
-                  </label>
-                  <CountrySelect
-                    id="complete-country"
-                    value={form.country}
-                    onChange={handleCountryChange}
-                    required
-                  />
-                </div>
-
-                <div className="auth-field">
                   <label htmlFor="complete-phone" className="auth-label">
                     Phone
                   </label>
@@ -359,7 +346,8 @@ export default function CompleteProfilePage() {
                     value={form.phone}
                     country={form.country}
                     onChange={(phone) => setForm((prev) => ({ ...prev, phone }))}
-                    hint="Country code is added for you. Enter the number without the leading 0"
+                    onCountryChange={handleCountryChange}
+                    hint="Choose your country, then enter the 9 digits after the code"
                   />
                 </div>
 

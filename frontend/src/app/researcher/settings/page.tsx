@@ -14,7 +14,6 @@ import {
 } from "@/lib/phone";
 import { PhoneInput } from "@/components/PhoneInput";
 import { ProfilePhoto } from "@/components/FarmerAvatar";
-import { CountrySelect } from "@/components/CountrySelect";
 import { HandlerSelect } from "@/components/HandlerSelect";
 import { SpinnerLabel, PageContentSkeleton } from "@/components/LoadingPrimitives";
 import {
@@ -227,7 +226,14 @@ export default function ResearcherSettingsPage() {
                   value={personal.phone}
                   country={personal.country}
                   onChange={(phone) => setPersonal({ ...personal, phone })}
-                  hint="Country code is added for you. Enter the number without the leading 0"
+                  onCountryChange={(country) =>
+                    setPersonal((prev) => ({
+                      ...prev,
+                      country,
+                      phone: onCountryChangePhone(prev.phone, prev.country, country),
+                    }))
+                  }
+                  hint="Choose your country, then enter the 9 digits after the code"
                 />
               </div>
               <div>
@@ -236,19 +242,6 @@ export default function ResearcherSettingsPage() {
                   value={user.email}
                   disabled
                   className="auth-input bg-gray-50 text-gray-500"
-                />
-              </div>
-              <div>
-                <label className="auth-label">Country</label>
-                <CountrySelect
-                  value={personal.country}
-                  onChange={(country) =>
-                    setPersonal((prev) => ({
-                      ...prev,
-                      country,
-                      phone: onCountryChangePhone(prev.phone, prev.country, country),
-                    }))
-                  }
                 />
               </div>
               <div>

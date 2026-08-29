@@ -68,6 +68,8 @@ interface CountrySelectProps {
   className?: string;
   invalid?: boolean;
   id?: string;
+  /** Name-only trigger for embedding in the phone row */
+  compact?: boolean;
 }
 
 export function CountrySelect({
@@ -77,6 +79,7 @@ export function CountrySelect({
   className = "",
   invalid = false,
   id,
+  compact = false,
 }: CountrySelectProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -124,7 +127,7 @@ export function CountrySelect({
   };
 
   return (
-    <div ref={rootRef} className={`relative ${className}`}>
+    <div ref={rootRef} className={`relative ${compact ? "h-full min-w-0" : ""} ${className}`}>
       {required && (
         <input
           tabIndex={-1}
@@ -142,24 +145,43 @@ export function CountrySelect({
         aria-haspopup="listbox"
         aria-label="Select country"
         onClick={() => (open ? closeDropdown() : openDropdown())}
-        className={`flex w-full items-center gap-3 rounded-xl border bg-white px-4 py-3 text-left shadow-sm focus:outline-none focus:ring-2 ${
-          invalid
-            ? "border-red-500 focus:border-red-500 focus:ring-red-200"
-            : "border-brand-200 focus:border-brand-500 focus:ring-brand-200"
-        }`}
+        className={
+          compact
+            ? "flex h-full w-full min-w-0 items-center gap-1 bg-transparent px-2.5 py-3 text-left hover:bg-brand-50/80 focus:outline-none sm:px-3"
+            : `flex w-full items-center gap-3 rounded-xl border bg-white px-4 py-3 text-left shadow-sm focus:outline-none focus:ring-2 ${
+                invalid
+                  ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                  : "border-brand-200 focus:border-brand-500 focus:ring-brand-200"
+              }`
+        }
       >
         {selected ? (
-          <>
-            <CountryFlag code={selected.code} countryName={selected.name} size={28} />
-            <span className="flex-1 font-medium text-brand-900">{selected.name}</span>
-          </>
+          compact ? (
+            <>
+              <span className="min-w-0 flex-1 truncate text-sm font-medium text-brand-900">{selected.name}</span>
+              <svg className="h-3.5 w-3.5 shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </>
+          ) : (
+            <>
+              <CountryFlag code={selected.code} countryName={selected.name} size={28} />
+              <span className="flex-1 font-medium text-brand-900">{selected.name}</span>
+            </>
+          )
         ) : (
-          <span className="text-gray-500">Select country</span>
+          <span className={`truncate ${compact ? "text-sm text-gray-400" : "text-gray-500"}`}>
+            {compact ? "Country" : "Select country"}
+          </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-brand-100 bg-white shadow-lg">
+        <div
+          className={`absolute z-50 mt-1 overflow-hidden rounded-xl border border-brand-100 bg-white shadow-lg ${
+            compact ? "left-0 w-[min(calc(100vw-2rem),18rem)]" : "w-full"
+          }`}
+        >
           <div className="border-b border-brand-100 p-2">
             <input
               ref={searchInputRef}
