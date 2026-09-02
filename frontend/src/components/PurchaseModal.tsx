@@ -258,7 +258,12 @@ function PurchaseModalContent({
   };
 
   return (
-    <div data-payment-overlay className="fixed inset-0 z-50 flex flex-col bg-white">
+    <div
+      data-payment-overlay
+      className={`fixed inset-0 z-50 flex flex-col bg-white ${
+        submitting && !result ? "invisible pointer-events-none" : ""
+      }`}
+    >
       <FarmViewHeader
         farmerName={farmerName}
         farmerPhoto={farmerPhoto}

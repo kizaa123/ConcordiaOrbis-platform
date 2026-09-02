@@ -89,7 +89,8 @@ function loadPaystackScript(): Promise<void> {
 type PopupOutcome = "paid" | "pending" | "dismissed";
 
 const CHECKOUT_OPEN_CLASS = "paystack-checkout-open";
-const PAYSTACK_LAYER_Z = "2147483646";
+const PAYSTACK_POPUP_Z = "2147483646";
+const PAYSTACK_BACKDROP_Z = "2147483000";
 
 function overlayRootFor(el: HTMLElement): HTMLElement {
   let node: HTMLElement | null = el;
@@ -102,23 +103,43 @@ function overlayRootFor(el: HTMLElement): HTMLElement {
   return overlay;
 }
 
+function isDimBackdrop(el: HTMLElement): boolean {
+  const style = window.getComputedStyle(el);
+  if (style.position !== "fixed" && style.position !== "absolute") return false;
+  const box = el.getBoundingClientRect();
+  if (box.width < window.innerWidth * 0.85 || box.height < window.innerHeight * 0.85) return false;
+  const bg = style.backgroundColor;
+  const alpha =
+    bg.match(/rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*([\d.]+)\s*\)/)?.[1] ??
+    bg.match(/\/\s*([\d.]+)\s*\)/)?.[1];
+  const value = alpha ? Number(alpha) : 1;
+  return value > 0 && value < 1;
+}
+
 function liftPaystackLayers() {
-  document
-    .querySelectorAll<HTMLElement>(
-      [
-        'iframe[src*="paystack"]',
-        'iframe[src*="checkout.paystack"]',
-        'iframe[name*="paystack" i]',
-        '[id*="paystack" i]',
-        '[class*="paystack" i]',
-      ].join(",")
-    )
-    .forEach((el) => {
-      const root = overlayRootFor(el);
-      root.style.setProperty("z-index", PAYSTACK_LAYER_Z, "important");
-      root.style.setProperty("pointer-events", "auto", "important");
-      if (el !== root) el.style.setProperty("pointer-events", "auto", "important");
-    });
+  const iframes = document.querySelectorAll<HTMLIFrameElement>(
+    'iframe[src*="paystack"], iframe[src*="checkout.paystack"], iframe[name*="paystack" i]'
+  );
+
+  iframes.forEach((iframe) => {
+    const host = overlayRootFor(iframe);
+    if (host.closest("[data-payment-overlay]")) {
+      document.body.appendChild(host);
+    }
+    host.style.setProperty("z-index", PAYSTACK_POPUP_Z, "important");
+    host.style.setProperty("pointer-events", "auto", "important");
+    iframe.style.setProperty("z-index", PAYSTACK_POPUP_Z, "important");
+    iframe.style.setProperty("pointer-events", "auto", "important");
+    iframe.style.setProperty("position", "relative", "important");
+  });
+
+  Array.from(document.body.children).forEach((node) => {
+    if (!(node instanceof HTMLElement)) return;
+    if (node.hasAttribute("data-payment-overlay")) return;
+    if (iframes.length && Array.from(iframes).some((frame) => node.contains(frame))) return;
+    if (!isDimBackdrop(node)) return;
+    node.style.setProperty("z-index", PAYSTACK_BACKDROP_Z, "important");
+  });
 }
 
 function setPaystackCheckoutOpen(open: boolean) {
@@ -218,6 +239,7 @@ export async function completePaystackOnApp(
 
   if (start.accessCode) {
     hooks?.onAwaitingPayment?.();
+    setPaystackCheckoutOpen(true);
     await loadPaystackScript();
     let outcome: PopupOutcome;
     try {

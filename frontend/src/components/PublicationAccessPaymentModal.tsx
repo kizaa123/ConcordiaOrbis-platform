@@ -77,11 +77,14 @@ export function PublicationAccessPaymentModal({
 
   const isPending = result?.variant === "pending";
   const checkoutBusy = submitting || isPending;
+  const hideForPaystack = submitting && !result;
 
   return (
     <div
       data-payment-overlay
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
+      className={`fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4 ${
+        hideForPaystack ? "invisible pointer-events-none bg-transparent" : "bg-black/50"
+      }`}
       onClick={() => {
         if (checkoutBusy) return;
         onClose();
