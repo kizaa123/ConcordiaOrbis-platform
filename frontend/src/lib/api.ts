@@ -758,10 +758,10 @@ class ApiClient {
   };
 
   ai = {
-    assistant: (question: string) =>
+    assistant: (question: string, history: { role: "user" | "assistant"; text: string }[] = []) =>
       this.request<{ answer: string; provider: "guide" | "gemini" | "groq" | "openai" }>(
         "/ai/assistant",
-        { method: "POST", body: JSON.stringify({ question }) }
+        { method: "POST", body: JSON.stringify({ question, history }) }
       ),
   };
 }

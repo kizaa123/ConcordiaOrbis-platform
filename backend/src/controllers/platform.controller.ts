@@ -590,7 +590,12 @@ export class AiController {
     try {
       ApiResponse.success(
         res,
-        await assistantService.ask(req.user!.userId, req.user!.roleId, req.body?.question)
+        await assistantService.ask(
+          req.user!.userId,
+          req.user!.roleId,
+          req.body?.question,
+          req.body?.history
+        )
       );
     } catch (e) {
       ApiResponse.error(res, e);

@@ -38,10 +38,15 @@ export function AiAssistantFab() {
     const trimmed = question.trim();
     if (!trimmed || busy) return;
     setInput("");
-    setMessages((prev) => [...prev, { id: `u-${Date.now()}`, role: "user", text: trimmed }]);
+    const nextMessages = [...messages, { id: `u-${Date.now()}`, role: "user" as const, text: trimmed }];
+    setMessages(nextMessages);
     setBusy(true);
     try {
-      const res = await api.ai.assistant(trimmed);
+      const history = nextMessages
+        .filter((m) => m.id !== "welcome")
+        .slice(0, -1)
+        .map((m) => ({ role: m.role, text: m.text }));
+      const res = await api.ai.assistant(trimmed, history);
       setMessages((prev) => [
         ...prev,
         { id: `a-${Date.now()}`, role: "assistant", text: res.answer },
@@ -137,18 +142,24 @@ export function AiAssistantFab() {
               void send(input);
             }}
           >
-            <input
+            <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about the platform…"
-              className="min-w-0 flex-1 rounded-xl border border-brand-200 px-3 py-2 text-sm outline-none focus:border-brand-500"
-              maxLength={1000}
-              disabled={busy}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  void send(input);
+                }
+              }}
+              placeholder="Type your question…"
+              className="min-h-[2.75rem] min-w-0 flex-1 resize-none rounded-xl border border-brand-200 px-3 py-2 text-sm outline-none focus:border-brand-500"
+              maxLength={2000}
+              rows={2}
             />
             <button
               type="submit"
-              disabled={busy || input.trim().length < 2}
-              className="rounded-xl bg-brand-800 px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
+              disabled={busy || input.trim().length < 1}
+              className="self-end rounded-xl bg-brand-800 px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
             >
               Send
             </button>

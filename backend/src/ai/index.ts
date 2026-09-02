@@ -6,8 +6,8 @@
 import prisma from '../database/prisma';
 import { ROLE_NAMES } from '../constants/roles';
 import { AppError } from '../utils/errors';
-import { DEFAULT_ASSISTANT_ANSWER, matchPlatformKnowledge } from './platformKnowledge';
-import { askFreeLlm } from './llm';
+import { composeGuideAnswer } from './platformKnowledge';
+import { askFreeLlm, type AssistantTurn } from './llm';
 
 export interface MatchCandidate {
   farmerId: string;
@@ -26,15 +26,29 @@ export class AssistantService {
   async ask(
     userId: string,
     roleId: number,
-    rawQuestion: unknown
+    rawQuestion: unknown,
+    rawHistory?: unknown
   ): Promise<{ answer: string; provider: 'guide' | 'gemini' | 'groq' | 'openai' }> {
     const question = typeof rawQuestion === 'string' ? rawQuestion.trim() : '';
-    if (question.length < 2) {
+    if (question.length < 1) {
       throw new AppError(400, 'Please type a question.');
     }
-    if (question.length > 1000) {
-      throw new AppError(400, 'Please keep the question under 1,000 characters.');
+    if (question.length > 2000) {
+      throw new AppError(400, 'Please keep the question under 2,000 characters.');
     }
+
+    const history: AssistantTurn[] = Array.isArray(rawHistory)
+      ? rawHistory
+          .filter((turn): turn is AssistantTurn => {
+            if (!turn || typeof turn !== 'object') return false;
+            const role = (turn as AssistantTurn).role;
+            const text = (turn as AssistantTurn).text;
+            return (role === 'user' || role === 'assistant') && typeof text === 'string';
+          })
+          .map((turn) => ({ role: turn.role, text: String(turn.text).trim().slice(0, 1000) }))
+          .filter((turn) => turn.text.length > 0)
+          .slice(-10)
+      : [];
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -43,17 +57,12 @@ export class AssistantService {
     const firstName = user?.firstName?.trim() || '';
     const roleName = user?.role?.roleName || ROLE_NAMES[roleId] || 'member';
 
-    const llm = await askFreeLlm({ question, roleName, firstName });
+    const llm = await askFreeLlm({ question, roleName, firstName, history });
     if (llm) {
       return { answer: llm.answer, provider: llm.provider as 'gemini' | 'groq' | 'openai' };
     }
 
-    const matched = matchPlatformKnowledge(question);
-    const greeting = firstName ? `${firstName}, ` : '';
-    if (matched) {
-      return { answer: `${greeting}${matched.answer}`, provider: 'guide' };
-    }
-    return { answer: `${greeting}${DEFAULT_ASSISTANT_ANSWER}`, provider: 'guide' };
+    return { answer: composeGuideAnswer(question, firstName), provider: 'guide' };
   }
 }
 
