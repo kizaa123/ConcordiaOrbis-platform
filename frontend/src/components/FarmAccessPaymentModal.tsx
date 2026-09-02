@@ -12,7 +12,7 @@ import { Icon } from "@/components/icons";
 import { api } from "@/lib/api";
 import { FARM_ACCESS_PRICE_GHC } from "@/lib/pricing";
 import { useMoneyFormat } from "@/hooks/useMoneyFormat";
-import { redirectToPaystack } from "@/lib/paystackCheckout";
+import { completePaystackOnApp } from "@/lib/paystackCheckout";
 
 interface FarmAccessPaymentModalProps {
   farmer: FarmerBrowseCard;
@@ -21,6 +21,7 @@ interface FarmAccessPaymentModalProps {
 }
 
 type PaymentResult =
+  | { variant: "pending"; title?: string; message: string }
   | { variant: "success" }
   | { variant: "error"; message: string };
 
@@ -43,7 +44,23 @@ export function FarmAccessPaymentModal({
     setResult(null);
     try {
       const paid = await api.payments.purchaseFarmAccess(farmer.farmerId, paymentMethod);
-      if (redirectToPaystack(paid)) return;
+      const settled = await completePaystackOnApp(paid, {
+        onAwaitingPayment: () =>
+          setResult({
+            variant: "pending",
+            title: "Waiting for payment",
+            message: "Finish paying in the Paystack window. This screen will update when the charge is confirmed.",
+          }),
+        onConfirming: () =>
+          setResult({
+            variant: "pending",
+            title: "Confirming payment",
+            message: "Paystack received your payment. Unlocking farm access now.",
+          }),
+      });
+      if (settled && settled.status !== "COMPLETED") {
+        throw new Error(settled.message || "Payment is not confirmed yet.");
+      }
       setResult({ variant: "success" });
       void showLiveNotifications();
       onSuccess();
@@ -58,11 +75,15 @@ export function FarmAccessPaymentModal({
   };
 
   const isSuccess = result?.variant === "success";
+  const isPending = result?.variant === "pending";
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center"
-      onClick={onClose}
+      onClick={() => {
+        if (isPending) return;
+        onClose();
+      }}
     >
       <div
         className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl"
@@ -152,6 +173,15 @@ export function FarmAccessPaymentModal({
                 submitting={submitting}
               />
             </div>
+
+            {result?.variant === "pending" && (
+              <PaymentResultOverlay
+                variant="pending"
+                compact
+                title={result.title}
+                message={result.message}
+              />
+            )}
 
             {result?.variant === "error" && (
               <PaymentResultOverlay

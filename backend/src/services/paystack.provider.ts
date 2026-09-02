@@ -71,6 +71,7 @@ export class PaystackPaymentProvider implements PaymentProvider {
       transactionId: data.reference,
       status: 'PENDING',
       authorizationUrl: data.authorization_url,
+      accessCode: data.access_code,
       providerReference: data.access_code,
       metadata: request.metadata,
     };

@@ -18,10 +18,11 @@ export async function startCheckout(request: PaymentInitRequest): Promise<Paymen
 }
 
 export function checkoutRedirect(result: PaymentResult) {
-  if (isLivePaystackCheckout(result) && result.authorizationUrl) {
+  if (isLivePaystackCheckout(result)) {
     return {
       pending: true as const,
       checkoutUrl: result.authorizationUrl,
+      accessCode: result.accessCode,
       reference: result.transactionId,
     };
   }

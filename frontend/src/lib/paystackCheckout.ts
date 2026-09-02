@@ -1,14 +1,140 @@
 "use client";
 
-export type PaystackCheckoutResult = {
+import { api } from "@/lib/api";
+
+const PAYSTACK_SCRIPT = "https://js.paystack.co/v2/inline.js";
+const VERIFY_ATTEMPTS = 8;
+const VERIFY_GAP_MS = 1500;
+
+export type PaystackCheckoutStart = {
   checkoutUrl?: string | null;
+  accessCode?: string | null;
   pending?: boolean;
   reference?: string;
 };
 
-/** Redirects to Paystack hosted checkout when the API returned an authorization URL. */
-export function redirectToPaystack(result: PaystackCheckoutResult): boolean {
-  if (!result.checkoutUrl) return false;
-  window.location.assign(result.checkoutUrl);
-  return true;
+export type SettledPaystackPayment = {
+  status: "COMPLETED" | "PENDING" | "FAILED";
+  kind?: string;
+  returnTo: string;
+  message: string;
+  reference: string;
+  orderId?: string;
+  releaseOtp?: string | null;
+  farmerId?: string;
+  publicationId?: string;
+};
+
+export type PaystackCheckoutHooks = {
+  onAwaitingPayment?: () => void;
+  onConfirming?: () => void;
+};
+
+type PaystackPop = {
+  resumeTransaction: (
+    accessCode: string,
+    callbacks?: {
+      onSuccess?: (transaction: { reference?: string }) => void;
+      onCancel?: () => void;
+      onError?: (error: { message?: string }) => void;
+      onBankTransferConfirmationPending?: () => void;
+    }
+  ) => void;
+};
+
+declare global {
+  interface Window {
+    PaystackPop?: new () => PaystackPop;
+  }
+}
+
+function isInlineCheckout(result: PaystackCheckoutStart): boolean {
+  return Boolean(result.pending && (result.accessCode || result.checkoutUrl) && result.reference);
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function loadPaystackScript(): Promise<void> {
+  if (typeof window === "undefined") {
+    return Promise.reject(new Error("Paystack is only available in the browser."));
+  }
+  if (window.PaystackPop) return Promise.resolve();
+
+  const existing = document.querySelector<HTMLScriptElement>(`script[src="${PAYSTACK_SCRIPT}"]`);
+  if (existing) {
+    return new Promise((resolve, reject) => {
+      if (window.PaystackPop) return resolve();
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("Could not load Paystack.")), { once: true });
+    });
+  }
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = PAYSTACK_SCRIPT;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Could not load Paystack."));
+    document.head.appendChild(script);
+  });
+}
+
+function openPaystackPopup(accessCode: string): Promise<{ reference?: string }> {
+  return new Promise((resolve, reject) => {
+    if (!window.PaystackPop) {
+      reject(new Error("Paystack is not available."));
+      return;
+    }
+    const popup = new window.PaystackPop();
+    popup.resumeTransaction(accessCode, {
+      onSuccess: (transaction) => resolve(transaction ?? {}),
+      onCancel: () => reject(new Error("Payment was cancelled.")),
+      onError: (error) => reject(new Error(error?.message || "Paystack could not complete this payment.")),
+      onBankTransferConfirmationPending: () => resolve({}),
+    });
+  });
+}
+
+async function verifyUntilCompleted(reference: string): Promise<SettledPaystackPayment> {
+  let last: SettledPaystackPayment | null = null;
+  for (let attempt = 0; attempt < VERIFY_ATTEMPTS; attempt++) {
+    if (attempt > 0) await sleep(VERIFY_GAP_MS);
+    last = await api.payments.verifyPaystack(reference);
+    if (last.status === "COMPLETED") return last;
+    if (last.status === "FAILED") {
+      throw new Error(last.message || "Payment did not go through.");
+    }
+  }
+  throw new Error(last?.message || "Payment is still pending. Check My Orders in a moment.");
+}
+
+/**
+ * Live Paystack charges stay in the app: open the Paystack sheet, then confirm
+ * with the API. Returns null when checkout was already completed (local mock).
+ */
+export async function completePaystackOnApp(
+  start: PaystackCheckoutStart,
+  hooks?: PaystackCheckoutHooks
+): Promise<SettledPaystackPayment | null> {
+  if (start.pending && start.reference && !start.accessCode && !start.checkoutUrl) {
+    throw new Error("Paystack checkout did not start. Please try again.");
+  }
+  if (!isInlineCheckout(start) || !start.reference) return null;
+
+  if (start.accessCode) {
+    hooks?.onAwaitingPayment?.();
+    await loadPaystackScript();
+    await openPaystackPopup(start.accessCode);
+    hooks?.onConfirming?.();
+    return verifyUntilCompleted(start.reference);
+  }
+
+  if (start.checkoutUrl) {
+    window.location.assign(start.checkoutUrl);
+    return new Promise(() => undefined);
+  }
+
+  return null;
 }

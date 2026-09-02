@@ -15,7 +15,7 @@ import { PaymentResultOverlay } from "@/components/PaymentResultOverlay";
 import { HarvestCalendarTrigger } from "@/components/HarvestCalendarTrigger";
 import { Icon } from "@/components/icons";
 import type { UserVerificationTag } from "@/lib/types";
-import { redirectToPaystack } from "@/lib/paystackCheckout";
+import { completePaystackOnApp } from "@/lib/paystackCheckout";
 
 const EMPTY_MEDIA: never[] = [];
 
@@ -186,6 +186,7 @@ function PurchaseModalContent({
   const [submitting, setSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [result, setResult] = useState<
+    | { variant: "pending"; title?: string; message: string }
     | { variant: "success"; message: string; releaseOtp: string | null }
     | { variant: "error"; message: string }
     | null
@@ -230,10 +231,27 @@ function PurchaseModalContent({
     setResult(null);
     try {
       const purchaseResult = await api.marketplace.purchase(listing.id, { quantity, paymentMethod });
-      if (redirectToPaystack(purchaseResult)) return;
+      const settled = await completePaystackOnApp(purchaseResult, {
+        onAwaitingPayment: () =>
+          setResult({
+            variant: "pending",
+            title: "Waiting for payment",
+            message: "Finish paying in the Paystack window. This screen will update when the charge is confirmed.",
+          }),
+        onConfirming: () =>
+          setResult({
+            variant: "pending",
+            title: "Confirming payment",
+            message: "Paystack received your payment. Placing your order now.",
+          }),
+      });
       const message = `${quantity} ${unitLabel} - ${format(total)} held in escrow until you confirm delivery.`;
       setOrderPlaced(true);
-      setResult({ variant: "success", message, releaseOtp: purchaseResult.releaseOtp });
+      setResult({
+        variant: "success",
+        message,
+        releaseOtp: settled?.releaseOtp ?? purchaseResult.releaseOtp ?? null,
+      });
       void showLiveNotifications();
     } catch (e) {
       setResult({
@@ -254,7 +272,7 @@ function PurchaseModalContent({
         farmerVerificationTags={farmerVerificationTags}
         country={country}
         region={region}
-        onClose={onClose}
+        onClose={result?.variant === "pending" ? () => undefined : onClose}
       />
 
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
@@ -396,6 +414,14 @@ function PurchaseModalContent({
           )}
         </div>
       </div>
+
+      {result?.variant === "pending" && (
+        <PaymentResultOverlay
+          variant="pending"
+          title={result.title}
+          message={result.message}
+        />
+      )}
 
       {result?.variant === "success" && (
         <PaymentResultOverlay

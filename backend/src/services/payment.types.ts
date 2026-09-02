@@ -15,6 +15,7 @@ export interface PaymentResult {
   transactionId: string;
   status: 'COMPLETED' | 'PENDING' | 'FAILED';
   authorizationUrl?: string;
+  accessCode?: string;
   providerReference?: string;
   amountPesewas?: number;
   channel?: string;
@@ -28,5 +29,5 @@ export interface PaymentProvider {
 }
 
 export function isLivePaystackCheckout(result: PaymentResult): boolean {
-  return Boolean(result.authorizationUrl) && result.status === 'PENDING';
+  return result.status === 'PENDING' && Boolean(result.authorizationUrl || result.accessCode);
 }

@@ -140,7 +140,7 @@ ANI PLATFORM/
 
 ## Payments (Paystack)
 
-Farm access, product orders, and research purchases go through Paystack (card, mobile money, bank). The API initializes a charge, the user pays on Paystack, then `/api/payments/paystack/verify` and the webhook mark the order paid.
+Farm access, product orders, and research purchases go through Paystack (card, mobile money, bank). The API initializes a charge, Paystack’s in-app checkout sheet collects payment without leaving the app, then `/api/payments/paystack/verify` and the webhook mark the order paid. Hosted checkout at `/payments/callback` remains a fallback.
 
 Set on Render: `PAYSTACK_SECRET_KEY`, `PAYSTACK_PUBLIC_KEY`. Webhook URL: `https://concordiaorbis-platform.onrender.com/api/payments/paystack/webhook`.
 

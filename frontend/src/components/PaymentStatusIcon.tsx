@@ -1,6 +1,6 @@
 "use client";
 
-export type PaymentStatusVariant = "success" | "error";
+export type PaymentStatusVariant = "pending" | "success" | "error";
 
 interface PaymentStatusIconProps {
   variant: PaymentStatusVariant;
@@ -19,6 +19,35 @@ export function PaymentStatusIcon({
   size = "default",
 }: PaymentStatusIconProps) {
   const iconSizeClass = ICON_SIZE_CLASS[size];
+
+  if (variant === "pending") {
+    return (
+      <div className={`payment-status-icon payment-status-icon--pending ${className}`} aria-hidden>
+        <svg viewBox="0 0 120 120" className={iconSizeClass}>
+          <circle cx="60" cy="60" r="46" fill="#ecfdf5" />
+          <circle
+            cx="60"
+            cy="60"
+            r="46"
+            fill="none"
+            stroke="#a7f3d0"
+            strokeWidth="8"
+          />
+          <circle
+            cx="60"
+            cy="60"
+            r="46"
+            fill="none"
+            stroke="#059669"
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeDasharray="72 220"
+            className="payment-pending-arc"
+          />
+        </svg>
+      </div>
+    );
+  }
 
   if (variant === "success") {
     return (

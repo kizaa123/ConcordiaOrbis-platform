@@ -340,6 +340,7 @@ class ApiClient {
         totalPaid: number;
         message?: string;
         checkoutUrl?: string;
+        accessCode?: string;
         pending?: boolean;
         reference?: string;
       }>(`/marketplace/${id}/purchase`, {
@@ -390,13 +391,14 @@ class ApiClient {
     packages: () => this.request<import("./types").AccessPackage[]>("/payments/packages"),
     access: () => this.request<{ hasAccess: boolean; access: unknown }>("/payments/access"),
     purchase: (packageId: string, paymentMethod: string) =>
-      this.request<{ checkoutUrl?: string; pending?: boolean; reference?: string }>("/payments/purchase", {
+      this.request<{ checkoutUrl?: string; accessCode?: string; pending?: boolean; reference?: string }>("/payments/purchase", {
         method: "POST",
         body: JSON.stringify({ packageId, paymentMethod }),
       }),
     purchaseFarmAccess: (farmerId: string, paymentMethod: string) =>
       this.request<{
         checkoutUrl?: string;
+        accessCode?: string;
         pending?: boolean;
         reference?: string;
         accessGranted?: boolean;
@@ -413,6 +415,7 @@ class ApiClient {
         message: string;
         reference: string;
         orderId?: string;
+        releaseOtp?: string | null;
         farmerId?: string;
         publicationId?: string;
       }>(`/payments/paystack/verify?reference=${encodeURIComponent(reference)}`),
@@ -493,6 +496,7 @@ class ApiClient {
     purchase: (id: string, paymentMethod: string) =>
       this.request<{
         checkoutUrl?: string;
+        accessCode?: string;
         pending?: boolean;
         reference?: string;
         message?: string;

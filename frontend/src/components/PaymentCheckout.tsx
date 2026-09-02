@@ -43,7 +43,8 @@ export function PaymentCheckout({
           <PaystackMark className="mt-1 h-4 w-[4.5rem] shrink-0" />
         </div>
         <p className="mt-3 border-t border-brand-50 pt-3 text-sm text-gray-600">
-          Pay ConcordiaOrbis with <span className="font-semibold text-brand-900">card, mobile money, or bank transfer</span>.
+          Pay ConcordiaOrbis in this window with{" "}
+          <span className="font-semibold text-brand-900">card, mobile money, or bank transfer</span>.
           Nothing is marked paid until Paystack confirms the charge.
         </p>
       </div>

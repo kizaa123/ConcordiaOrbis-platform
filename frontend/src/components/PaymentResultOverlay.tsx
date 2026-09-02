@@ -21,6 +21,7 @@ export interface PaymentResultOverlayProps {
 }
 
 const DEFAULT_TITLES: Record<PaymentStatusVariant, string> = {
+  pending: "Confirming payment",
   success: "Payment Successful",
   error: "Payment Failed",
 };
@@ -40,6 +41,7 @@ export function PaymentResultOverlay({
 }: PaymentResultOverlayProps) {
   const resolvedTitle = title ?? DEFAULT_TITLES[variant];
   const isSuccess = variant === "success";
+  const isPending = variant === "pending";
 
   useEffect(() => {
     if (!isSuccess || !autoDismissMs || !onDismiss) return;
@@ -62,7 +64,7 @@ export function PaymentResultOverlay({
   return (
     <div
       className={overlayClass}
-      role={isSuccess ? "status" : "alertdialog"}
+      role={isPending || isSuccess ? "status" : "alertdialog"}
       aria-live="assertive"
       aria-labelledby="payment-result-title"
       aria-describedby="payment-result-message"
@@ -81,22 +83,24 @@ export function PaymentResultOverlay({
           </p>
           {hint && <p className="payment-result-hint">{hint}</p>}
         </div>
-        <div className="payment-result-actions">
-          {handlePrimary && (
-            <button
-              type="button"
-              onClick={handlePrimary}
-              className={isSuccess ? "btn-primary payment-result-btn" : "payment-result-btn payment-result-btn-error"}
-            >
-              {primaryLabel}
-            </button>
-          )}
-          {onDismiss && onAction && (
-            <button type="button" onClick={onDismiss} className="payment-result-btn-secondary">
-              {secondaryLabel}
-            </button>
-          )}
-        </div>
+        {!isPending && (
+          <div className="payment-result-actions">
+            {handlePrimary && (
+              <button
+                type="button"
+                onClick={handlePrimary}
+                className={isSuccess ? "btn-primary payment-result-btn" : "payment-result-btn payment-result-btn-error"}
+              >
+                {primaryLabel}
+              </button>
+            )}
+            {onDismiss && onAction && (
+              <button type="button" onClick={onDismiss} className="payment-result-btn-secondary">
+                {secondaryLabel}
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

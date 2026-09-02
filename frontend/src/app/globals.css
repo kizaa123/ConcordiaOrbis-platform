@@ -531,6 +531,12 @@ body {
   .payment-error-x-2 {
     animation: payment-stroke-draw 0.22s ease-out 0.42s forwards;
   }
+
+  .payment-pending-arc {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: payment-pending-spin 0.9s linear infinite;
+  }
 }
 
 @keyframes payment-overlay-in {
@@ -596,6 +602,12 @@ body {
   }
 }
 
+@keyframes payment-pending-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .payment-result-overlay,
   .payment-result-card,
@@ -607,6 +619,10 @@ body {
   .payment-success-check,
   .payment-error-circle,
   .payment-error-x {
+    animation: none !important;
+  }
+
+  .payment-pending-arc {
     animation: none !important;
   }
 

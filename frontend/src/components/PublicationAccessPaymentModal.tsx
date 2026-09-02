@@ -9,7 +9,7 @@ import { PaymentResultOverlay } from "@/components/PaymentResultOverlay";
 import { Icon } from "@/components/icons";
 import { api } from "@/lib/api";
 import { useMoneyFormat } from "@/hooks/useMoneyFormat";
-import { redirectToPaystack } from "@/lib/paystackCheckout";
+import { completePaystackOnApp } from "@/lib/paystackCheckout";
 
 interface PublicationAccessPaymentModalProps {
   publication: ResearchPublication;
@@ -20,6 +20,7 @@ interface PublicationAccessPaymentModalProps {
 }
 
 type PaymentResult =
+  | { variant: "pending"; title?: string; message: string }
   | { variant: "success"; publication: ResearchPublication }
   | { variant: "error"; message: string };
 
@@ -43,7 +44,23 @@ export function PublicationAccessPaymentModal({
     setResult(null);
     try {
       const paid = await api.research.purchase(publication.id, paymentMethod);
-      if (redirectToPaystack(paid)) return;
+      const settled = await completePaystackOnApp(paid, {
+        onAwaitingPayment: () =>
+          setResult({
+            variant: "pending",
+            title: "Waiting for payment",
+            message: "Finish paying in the Paystack window. This screen will update when the charge is confirmed.",
+          }),
+        onConfirming: () =>
+          setResult({
+            variant: "pending",
+            title: "Confirming payment",
+            message: "Paystack received your payment. Unlocking this publication now.",
+          }),
+      });
+      if (settled && settled.status !== "COMPLETED") {
+        throw new Error(settled.message || "Payment is not confirmed yet.");
+      }
       const updated = await api.research.get(publication.id);
       setResult({ variant: "success", publication: updated });
       void showLiveNotifications();
@@ -64,10 +81,15 @@ export function PublicationAccessPaymentModal({
     onReadNow(pub);
   };
 
+  const isPending = result?.variant === "pending";
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center"
-      onClick={onClose}
+      onClick={() => {
+        if (isPending) return;
+        onClose();
+      }}
     >
       <div
         className={`relative w-full max-w-md rounded-2xl bg-white shadow-xl ${
@@ -92,7 +114,8 @@ export function PublicationAccessPaymentModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-gray-400 hover:bg-white hover:text-brand-700"
+            disabled={isPending}
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-white hover:text-brand-700 disabled:opacity-40"
             aria-label="Close"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -122,6 +145,15 @@ export function PublicationAccessPaymentModal({
             </p>
           )}
         </div>
+
+        {result?.variant === "pending" && (
+          <PaymentResultOverlay
+            variant="pending"
+            compact
+            title={result.title}
+            message={result.message}
+          />
+        )}
 
         {result?.variant === "success" && (
           <PaymentResultOverlay

@@ -12,6 +12,7 @@ export type SettledPayment = {
   message: string;
   reference: string;
   orderId?: string;
+  releaseOtp?: string | null;
   farmerId?: string;
   publicationId?: string;
 };
@@ -85,6 +86,7 @@ export async function settlePaystackReference(reference: string): Promise<Settle
         message: data.message,
         reference,
         orderId: data.orderId,
+        releaseOtp: data.releaseOtp,
       };
     }
 
