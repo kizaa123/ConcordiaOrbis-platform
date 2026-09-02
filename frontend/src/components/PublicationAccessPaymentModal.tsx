@@ -49,13 +49,13 @@ export function PublicationAccessPaymentModal({
           setResult({
             variant: "pending",
             title: "Waiting for payment",
-            message: "Finish paying in the Paystack window. This screen will update when the charge is confirmed.",
+            message: "Complete payment in the Paystack sheet.",
           }),
         onConfirming: () =>
           setResult({
             variant: "pending",
             title: "Confirming payment",
-            message: "Paystack received your payment. Unlocking this publication now.",
+            message: "Unlocking this publication…",
           }),
       });
       if (settled && settled.status !== "COMPLETED") {
@@ -85,30 +85,32 @@ export function PublicationAccessPaymentModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
       onClick={() => {
         if (isPending) return;
         onClose();
       }}
     >
       <div
-        className={`relative w-full max-w-md rounded-2xl bg-white shadow-xl ${
-          result?.variant === "success" ? "min-h-[22rem] overflow-visible" : "overflow-hidden"
+        className={`relative w-full max-w-md max-h-[88dvh] rounded-t-2xl bg-white shadow-xl sm:max-h-none sm:rounded-2xl ${
+          result?.variant === "success" ? "min-h-[18rem] overflow-visible sm:min-h-[22rem]" : "overflow-hidden"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start justify-between gap-3 border-b border-brand-100 bg-brand-50/60 p-5">
+        <div className="flex items-start justify-between gap-3 border-b border-brand-100 bg-brand-50/60 p-3 sm:p-5">
           <div className="flex items-center gap-3">
             <AvatarWithVerification
               src={publication.researcher.profilePicture}
               name={publication.researcher.name}
-              size="md"
+              size="sm"
               verificationStatus={publication.researcher.verificationStatus}
               verificationTags={publication.researcher.verificationTags}
             />
             <div className="min-w-0">
-              <h2 className="line-clamp-2 text-lg font-bold text-brand-900">{publication.title}</h2>
-              <p className="text-sm text-brand-700">by {publication.researcher.name}</p>
+              <h2 className="line-clamp-1 text-base font-bold text-brand-900 sm:line-clamp-2 sm:text-lg">
+                {publication.title}
+              </h2>
+              <p className="text-xs text-brand-700 sm:text-sm">by {publication.researcher.name}</p>
             </div>
           </div>
           <button
@@ -122,13 +124,13 @@ export function PublicationAccessPaymentModal({
           </button>
         </div>
 
-        <div className="p-5">
+        <div className="p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5">
           {isResearcher(userRoleId) ? (
             <p className="text-sm text-gray-600">Researchers cannot purchase publications.</p>
           ) : canPurchasePublication(userRoleId) ? (
             <>
-              <p className="mb-4 text-sm text-gray-600">
-                One-time fee to read this publication in the platform reader.
+              <p className="mb-2 text-xs text-gray-600 sm:mb-4 sm:text-sm">
+                One-time fee to read this publication.
               </p>
               <PaymentCheckout
                 totalLabel="Publication"

@@ -236,13 +236,13 @@ function PurchaseModalContent({
           setResult({
             variant: "pending",
             title: "Waiting for payment",
-            message: "Finish paying in the Paystack window. This screen will update when the charge is confirmed.",
+            message: "Complete payment in the Paystack sheet.",
           }),
         onConfirming: () =>
           setResult({
             variant: "pending",
             title: "Confirming payment",
-            message: "Paystack received your payment. Placing your order now.",
+            message: "Placing your order…",
           }),
       });
       const message = `${quantity} ${unitLabel} - ${format(total)} held in escrow until you confirm delivery.`;

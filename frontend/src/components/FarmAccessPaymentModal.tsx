@@ -49,13 +49,13 @@ export function FarmAccessPaymentModal({
           setResult({
             variant: "pending",
             title: "Waiting for payment",
-            message: "Finish paying in the Paystack window. This screen will update when the charge is confirmed.",
+            message: "Complete payment in the Paystack sheet.",
           }),
         onConfirming: () =>
           setResult({
             variant: "pending",
             title: "Confirming payment",
-            message: "Paystack received your payment. Unlocking farm access now.",
+            message: "Unlocking farm access…",
           }),
       });
       if (settled && settled.status !== "COMPLETED") {
@@ -79,19 +79,19 @@ export function FarmAccessPaymentModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
       onClick={() => {
         if (isPending) return;
         onClose();
       }}
     >
       <div
-        className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl"
+        className="relative w-full max-w-md max-h-[88dvh] overflow-hidden rounded-t-2xl bg-white shadow-xl sm:max-h-none sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {isSuccess ? (
           <div className="flex flex-col">
-            <div className="flex justify-end border-b border-brand-100 bg-brand-50/40 px-4 py-3">
+            <div className="flex justify-end border-b border-brand-100 bg-brand-50/40 px-3 py-2 sm:px-4 sm:py-3">
               <button
                 type="button"
                 onClick={onClose}
@@ -102,7 +102,7 @@ export function FarmAccessPaymentModal({
               </button>
             </div>
 
-            <div className="flex flex-col items-center px-6 py-8 text-center sm:px-8 sm:py-10">
+            <div className="flex flex-col items-center px-5 py-6 text-center sm:px-8 sm:py-10">
               <PaymentResultOverlay
                 variant="success"
                 embedded
@@ -116,12 +116,12 @@ export function FarmAccessPaymentModal({
           </div>
         ) : (
           <>
-            <div className="flex items-start justify-between gap-3 border-b border-brand-100 bg-brand-50/60 p-5">
+            <div className="flex items-start justify-between gap-3 border-b border-brand-100 bg-brand-50/60 p-3 sm:p-5">
               <div className="flex items-center gap-3">
                 <AvatarWithVerification
                   src={farmer.profilePicture}
                   name={farmer.farmerName}
-                  size="md"
+                  size="sm"
                   verificationStatus={farmer.verificationStatus}
                   verificationTags={farmer.verificationTags}
                   tagPlacement="none"
@@ -135,11 +135,13 @@ export function FarmAccessPaymentModal({
                       verificationStatus: farmer.verificationStatus,
                     }}
                     verificationTags={farmer.verificationTags}
-                    nameClassName="text-lg font-bold text-brand-900"
-                    prefixClassName="text-lg font-bold text-brand-900"
+                    nameClassName="text-base font-bold text-brand-900 sm:text-lg"
+                    prefixClassName="text-base font-bold text-brand-900 sm:text-lg"
                   />
-                  <p className="text-sm text-brand-700">{farmer.farmName}</p>
-                  <CountryBadge country={farmer.country} region={farmer.region} />
+                  <p className="text-xs text-brand-700 sm:text-sm">{farmer.farmName}</p>
+                  <div className="hidden sm:block">
+                    <CountryBadge country={farmer.country} region={farmer.region} />
+                  </div>
                 </div>
               </div>
               <button
@@ -152,16 +154,14 @@ export function FarmAccessPaymentModal({
               </button>
             </div>
 
-            <div className="p-5">
+            <div className="p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5">
               {farmer.farmAccessExpired ? (
-                <p className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-                  Your previous access has expired because the harvest period ended or this fellow
-                  listed a new product. Pay again to view products and place orders.
+                <p className="mb-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 sm:mb-3 sm:text-sm">
+                  Previous access expired. Pay again to view products and place orders.
                 </p>
               ) : (
-                <p className="text-sm text-gray-600">
-                  One-time fee to view products, prices, and purchase from this farm for the current
-                  harvest period.
+                <p className="mb-2 text-xs text-gray-600 sm:mb-0 sm:text-sm">
+                  One-time fee to view products and order from this farm.
                 </p>
               )}
 
