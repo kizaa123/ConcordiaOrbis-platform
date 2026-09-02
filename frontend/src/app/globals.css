@@ -807,8 +807,21 @@ body {
   animation: notification-bell-pulse 2s ease-in-out infinite;
 }
 
+/* Keep our dim payment backdrops from blocking Paystack checkout. */
+html.paystack-checkout-open [data-payment-overlay],
+html.paystack-checkout-open [data-payment-overlay] * {
+  pointer-events: none !important;
+}
+
+html.paystack-checkout-open [data-payment-overlay] {
+  z-index: 1 !important;
+}
+
 iframe[src*="paystack"],
 iframe[src*="checkout.paystack"],
-iframe[name*="paystack" i] {
-  z-index: 2147483000 !important;
+iframe[name*="paystack" i],
+[id*="paystack" i],
+[class*="paystack" i] {
+  pointer-events: auto !important;
+  z-index: 2147483646 !important;
 }

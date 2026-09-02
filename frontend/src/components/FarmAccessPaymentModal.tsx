@@ -70,12 +70,14 @@ export function FarmAccessPaymentModal({
 
   const isSuccess = result?.variant === "success";
   const isPending = result?.variant === "pending";
+  const checkoutBusy = submitting || isPending;
 
   return (
     <div
+      data-payment-overlay
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
       onClick={() => {
-        if (isPending) return;
+        if (checkoutBusy) return;
         onClose();
       }}
     >
@@ -141,7 +143,8 @@ export function FarmAccessPaymentModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg p-1.5 text-gray-400 hover:bg-white hover:text-brand-700"
+                disabled={checkoutBusy}
+                className="rounded-lg p-1.5 text-gray-400 hover:bg-white hover:text-brand-700 disabled:opacity-40"
                 aria-label="Close"
               >
                 <Icon name="x" className="h-5 w-5" />

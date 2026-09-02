@@ -258,7 +258,7 @@ function PurchaseModalContent({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-white">
+    <div data-payment-overlay className="fixed inset-0 z-50 flex flex-col bg-white">
       <FarmViewHeader
         farmerName={farmerName}
         farmerPhoto={farmerPhoto}
@@ -266,7 +266,7 @@ function PurchaseModalContent({
         farmerVerificationTags={farmerVerificationTags}
         country={country}
         region={region}
-        onClose={result?.variant === "pending" ? () => undefined : onClose}
+        onClose={submitting || result?.variant === "pending" ? () => undefined : onClose}
       />
 
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">

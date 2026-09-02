@@ -88,6 +88,52 @@ function loadPaystackScript(): Promise<void> {
 
 type PopupOutcome = "paid" | "pending" | "dismissed";
 
+const CHECKOUT_OPEN_CLASS = "paystack-checkout-open";
+const PAYSTACK_LAYER_Z = "2147483646";
+
+function overlayRootFor(el: HTMLElement): HTMLElement {
+  let node: HTMLElement | null = el;
+  let overlay = el;
+  while (node && node !== document.body && node !== document.documentElement) {
+    const position = window.getComputedStyle(node).position;
+    if (position === "fixed" || position === "absolute") overlay = node;
+    node = node.parentElement;
+  }
+  return overlay;
+}
+
+function liftPaystackLayers() {
+  document
+    .querySelectorAll<HTMLElement>(
+      [
+        'iframe[src*="paystack"]',
+        'iframe[src*="checkout.paystack"]',
+        'iframe[name*="paystack" i]',
+        '[id*="paystack" i]',
+        '[class*="paystack" i]',
+      ].join(",")
+    )
+    .forEach((el) => {
+      const root = overlayRootFor(el);
+      root.style.setProperty("z-index", PAYSTACK_LAYER_Z, "important");
+      root.style.setProperty("pointer-events", "auto", "important");
+      if (el !== root) el.style.setProperty("pointer-events", "auto", "important");
+    });
+}
+
+function setPaystackCheckoutOpen(open: boolean) {
+  document.documentElement.classList.toggle(CHECKOUT_OPEN_CLASS, open);
+  document.body.classList.toggle(CHECKOUT_OPEN_CLASS, open);
+  if (open) liftPaystackLayers();
+}
+
+function watchPaystackLayers(): () => void {
+  liftPaystackLayers();
+  const observer = new MutationObserver(() => liftPaystackLayers());
+  observer.observe(document.body, { childList: true, subtree: true });
+  return () => observer.disconnect();
+}
+
 function openPaystackPopup(accessCode: string): Promise<PopupOutcome> {
   return new Promise((resolve, reject) => {
     if (!window.PaystackPop) {
@@ -96,9 +142,14 @@ function openPaystackPopup(accessCode: string): Promise<PopupOutcome> {
     }
 
     let settled = false;
+    const stopWatch = watchPaystackLayers();
+    setPaystackCheckoutOpen(true);
+
     const finish = (outcome: PopupOutcome) => {
       if (settled) return;
       settled = true;
+      stopWatch();
+      setPaystackCheckoutOpen(false);
       resolve(outcome);
     };
 
@@ -112,20 +163,30 @@ function openPaystackPopup(accessCode: string): Promise<PopupOutcome> {
       onError: (error) => {
         if (settled) return;
         settled = true;
+        stopWatch();
+        setPaystackCheckoutOpen(false);
         reject(new Error(error?.message || "Paystack could not complete this payment."));
       },
     };
 
-    const popup = new window.PaystackPop();
     try {
-      if (typeof popup.checkout === "function") {
-        popup.checkout({ accessCode, ...callbacks });
-        return;
+      const popup = new window.PaystackPop();
+      try {
+        if (typeof popup.checkout === "function") {
+          popup.checkout({ accessCode, ...callbacks });
+          return;
+        }
+      } catch {
+        /* resumeTransaction below */
       }
-    } catch {
-      /* resumeTransaction below */
+      popup.resumeTransaction(accessCode, callbacks);
+    } catch (error) {
+      stopWatch();
+      setPaystackCheckoutOpen(false);
+      reject(
+        error instanceof Error ? error : new Error("Paystack could not open checkout.")
+      );
     }
-    popup.resumeTransaction(accessCode, callbacks);
   });
 }
 
@@ -158,7 +219,12 @@ export async function completePaystackOnApp(
   if (start.accessCode) {
     hooks?.onAwaitingPayment?.();
     await loadPaystackScript();
-    const outcome = await openPaystackPopup(start.accessCode);
+    let outcome: PopupOutcome;
+    try {
+      outcome = await openPaystackPopup(start.accessCode);
+    } finally {
+      setPaystackCheckoutOpen(false);
+    }
     hooks?.onConfirming?.();
 
     if (outcome === "dismissed") {
