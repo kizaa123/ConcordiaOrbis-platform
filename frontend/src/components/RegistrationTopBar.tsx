@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { LogoIcon } from "@/components/Logo";
-import { PLATFORM_NAME } from "@/lib/site";
+import { PLATFORM_NAME, SUPPORT_WHATSAPP_URL } from "@/lib/site";
 
 export function useCancelRegistration() {
   const router = useRouter();
@@ -21,13 +21,21 @@ export function useCancelRegistration() {
 export function RegistrationTopBar() {
   return (
     <header className="sticky top-0 z-50 border-b border-brand-200 bg-white/95 shadow-sm backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:h-20 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2 sm:gap-3 transition-opacity hover:opacity-85">
           <LogoIcon className="h-8 w-auto shrink-0 sm:h-11 lg:h-14" theme="dark" />
           <span className="text-sm font-extrabold leading-tight tracking-tight text-gray-900 sm:text-base lg:text-lg">
             {PLATFORM_NAME}
           </span>
         </Link>
+        <a
+          href={SUPPORT_WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-lg px-3 py-1.5 text-xs font-medium text-brand-700 hover:bg-brand-100 sm:text-sm"
+        >
+          Support
+        </a>
       </div>
     </header>
   );

@@ -57,8 +57,8 @@ export function SiteFooter() {
             © {new Date().getFullYear()} {PLATFORM_NAME}. All rights reserved. Accra, Ghana.
           </p>
           <div className="flex flex-wrap gap-4">
-            <a href={`mailto:${CONTACT.hello}`} className="hover:text-white">
-              {CONTACT.hello}
+            <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+              WhatsApp Support
             </a>
             <a href={PLATFORM_URL} target="_blank" rel="noopener noreferrer" className="hover:text-white">
               Trading platform

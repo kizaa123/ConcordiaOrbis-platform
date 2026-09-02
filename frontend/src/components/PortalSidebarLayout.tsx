@@ -13,6 +13,7 @@ import { Icon, type IconName } from "@/components/icons";
 import { MobileBottomNav, MOBILE_BOTTOM_NAV_PADDING } from "@/components/MobileBottomNav";
 import { Logo } from "@/components/Logo";
 import { AdSlot } from "@/components/AdSlot";
+import { SupportWhatsAppLink, WhatsAppSupportFab } from "@/components/SupportWhatsAppLink";
 
 export type PortalNavLink = {
   href: string;
@@ -117,7 +118,8 @@ function SidebarContent({
         })}
       </nav>
 
-      <div className="border-t border-brand-100 p-3">
+      <div className="border-t border-brand-100 p-3 space-y-2">
+        <SupportWhatsAppLink className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-white hover:brightness-110" />
         <button
           type="button"
           onClick={async () => {
@@ -291,6 +293,7 @@ export function PortalSidebarLayout({
       </main>
 
       <MobileBottomNav />
+      <WhatsAppSupportFab />
     </div>
   );
 }

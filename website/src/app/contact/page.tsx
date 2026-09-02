@@ -41,7 +41,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="mt-1 text-sm font-semibold text-brand-700"
             >
-              WhatsApp →
+              WhatsApp Support & Assistant →
             </a>
           </div>
           <SocialLinks />

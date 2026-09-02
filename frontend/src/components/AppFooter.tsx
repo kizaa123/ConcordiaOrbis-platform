@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { companyUrl, PLATFORM_NAME } from "@/lib/site";
+import { SupportWhatsAppLink } from "@/components/SupportWhatsAppLink";
 
 const COMPANY_LINKS = [
   { href: "/", label: "Company" },
@@ -37,6 +38,10 @@ export function AppFooter() {
               {link.label}
             </Link>
           ))}
+          <SupportWhatsAppLink
+            className="inline-flex items-center gap-1 hover:text-yellow-300"
+            iconClassName="h-3.5 w-3.5"
+          />
         </nav>
         <p className="text-[10px] leading-tight text-brand-300 sm:text-[11px]">
           © {new Date().getFullYear()} {PLATFORM_NAME}

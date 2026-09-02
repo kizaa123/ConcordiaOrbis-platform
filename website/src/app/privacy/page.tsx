@@ -42,6 +42,10 @@ export default function PrivacyPage() {
         <h2>Contact</h2>
         <p>
           Privacy questions:{" "}
+          <a className="font-semibold text-brand-700" href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer">
+            WhatsApp Support & Assistant
+          </a>{" "}
+          or{" "}
           <a className="font-semibold text-brand-700" href={`mailto:${CONTACT.hello}`}>
             {CONTACT.hello}
           </a>

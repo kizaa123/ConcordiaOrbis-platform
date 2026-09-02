@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, LegalUpdated } from "@/components/LegalPage";
-import { PAYMENTS_EMAIL, PLATFORM_NAME, SUPPORT_EMAIL } from "@/lib/site";
+import { PAYMENTS_EMAIL, PLATFORM_NAME, SUPPORT_EMAIL, SUPPORT_WHATSAPP_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: `Privacy · ${PLATFORM_NAME}`,
@@ -20,8 +20,11 @@ export default function PrivacyPage() {
       <p>
         {PLATFORM_NAME} (“we”) operates this trading platform from Accra, Ghana. This policy
         explains what we collect when you use the marketplace, farm access, escrow orders, liaison
-        tools, and research library. For privacy questions, email{" "}
-        <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+        tools, and research library.         For privacy questions, use{" "}
+        <a href={SUPPORT_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+          WhatsApp Support & Assistant
+        </a>{" "}
+        or email <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
       </p>
 
       <h2>2. Information we collect</h2>

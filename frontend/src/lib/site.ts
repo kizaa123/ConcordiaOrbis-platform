@@ -9,6 +9,7 @@ export const SITE_DESCRIPTION =
 export const PLATFORM_EMAIL = "concordiaorbisadmin@gmail.com";
 export const SUPPORT_EMAIL = PLATFORM_EMAIL;
 export const PAYMENTS_EMAIL = PLATFORM_EMAIL;
+export const SUPPORT_WHATSAPP_URL = "https://wa.me/message/GW3AIF7DAWTYN1";
 
 /** Live public company site (About, Team, Refunds, Contact). */
 export const DEFAULT_COMPANY_SITE_URL = "https://concordiaorbis-website.vercel.app";

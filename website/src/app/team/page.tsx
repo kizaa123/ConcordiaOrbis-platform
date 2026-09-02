@@ -102,6 +102,10 @@ export default function TeamPage() {
           <h2 className="text-3xl font-black tracking-tight sm:text-4xl">Want to talk to us?</h2>
           <p className="mt-3 text-brand-100">
             Partnerships, Paystack reviews, and refund requests go through{" "}
+            <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer" className="font-semibold text-yellow-300">
+              WhatsApp Support & Assistant
+            </a>{" "}
+            or{" "}
             <a href={`mailto:${CONTACT.hello}`} className="font-semibold text-yellow-300">
               {CONTACT.hello}
             </a>
