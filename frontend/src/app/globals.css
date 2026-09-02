@@ -419,9 +419,9 @@ body {
     overflow-wrap: anywhere;
   }
 
-  .payment-result-overlay--pending .payment-result-message {
-    @apply px-1 text-xs sm:text-sm;
-    overflow-wrap: anywhere;
+  .payment-result-overlay--pending .payment-result-card,
+  .payment-result-overlay--pending .payment-result-copy {
+    animation: none;
   }
 
   .payment-result-embedded {
@@ -559,10 +559,9 @@ body {
     animation: payment-stroke-draw 0.22s ease-out 0.42s forwards;
   }
 
-  .payment-pending-arc {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: payment-pending-spin 0.9s linear infinite;
+  .payment-pending-dot {
+    opacity: 0.18;
+    animation: payment-pending-dot-fade 0.96s ease-in-out infinite;
   }
 }
 
@@ -629,9 +628,14 @@ body {
   }
 }
 
-@keyframes payment-pending-spin {
-  to {
-    transform: rotate(360deg);
+@keyframes payment-pending-dot-fade {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  45%,
+  55% {
+    opacity: 1;
   }
 }
 
@@ -649,8 +653,9 @@ body {
     animation: none !important;
   }
 
-  .payment-pending-arc {
+  .payment-pending-dot {
     animation: none !important;
+    opacity: 0.55;
   }
 
   .payment-success-circle-stroke,

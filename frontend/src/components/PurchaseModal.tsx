@@ -57,7 +57,7 @@ function FarmViewHeader({
 
   return (
     <header className="shrink-0 border-b border-brand-100 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+      <div className="mx-auto flex max-w-lg items-center justify-between gap-4 px-4 py-3 lg:max-w-3xl">
         <button
           type="button"
           onClick={onClose}
@@ -270,9 +270,9 @@ function PurchaseModalContent({
       />
 
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-lg px-4 py-6 sm:max-w-6xl sm:py-8">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-10 lg:items-start">
-            <div className="flex flex-col gap-3">
+        <div className="mx-auto max-w-lg px-4 py-6 lg:max-w-3xl lg:py-8">
+          <div className="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start lg:gap-8">
+            <div className="w-full lg:w-[17rem]">
               <ProductMediaGallery
                 listingId={listing.id}
                 productTitle={listing.title}

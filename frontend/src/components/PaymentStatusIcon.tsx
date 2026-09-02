@@ -21,29 +21,29 @@ export function PaymentStatusIcon({
   const iconSizeClass = ICON_SIZE_CLASS[size];
 
   if (variant === "pending") {
+    const dots = Array.from({ length: 8 }, (_, i) => {
+      const angle = ((i * 45 - 90) * Math.PI) / 180;
+      return {
+        cx: 60 + Math.cos(angle) * 34,
+        cy: 60 + Math.sin(angle) * 34,
+        delay: `${i * 0.12}s`,
+      };
+    });
+
     return (
       <div className={`payment-status-icon payment-status-icon--pending ${className}`} aria-hidden>
         <svg viewBox="0 0 120 120" className={iconSizeClass}>
-          <circle cx="60" cy="60" r="46" fill="#ecfdf5" />
-          <circle
-            cx="60"
-            cy="60"
-            r="46"
-            fill="none"
-            stroke="#a7f3d0"
-            strokeWidth="8"
-          />
-          <circle
-            cx="60"
-            cy="60"
-            r="46"
-            fill="none"
-            stroke="#059669"
-            strokeWidth="8"
-            strokeLinecap="round"
-            strokeDasharray="72 220"
-            className="payment-pending-arc"
-          />
+          {dots.map((dot, i) => (
+            <circle
+              key={i}
+              cx={dot.cx}
+              cy={dot.cy}
+              r="7"
+              fill="#059669"
+              className="payment-pending-dot"
+              style={{ animationDelay: dot.delay }}
+            />
+          ))}
         </svg>
       </div>
     );
