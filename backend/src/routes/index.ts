@@ -36,7 +36,7 @@ import { farmerMediaController } from '../controllers/farmerMedia.controller';
 import { productMediaController } from '../controllers/productMedia.controller';
 import { researcherController } from '../controllers/researcher.controller';
 import { profileUpload, listingImagesUpload, adImagesUpload, publicationFileUpload, farmMediaUpload, productMediaUpload, MAX_IMAGE_FILE_SIZE, MAX_DOCUMENT_FILE_SIZE, MAX_FARM_MEDIA_FILE_SIZE } from '../middleware/upload.middleware';
-import { authRateLimiter } from '../middleware/rate-limit.middleware';
+import { authRateLimiter, assistantRateLimiter } from '../middleware/rate-limit.middleware';
 import { PERMISSIONS, ROLES } from '../constants/roles';
 
 const router = Router();
@@ -423,7 +423,7 @@ router.get('/accountant/orders/:orderId/distribution/lines/:lineId/message-pdf',
 
 // AI (future-ready)
 router.get('/ai/matches', authenticate, aiController.matches);
-router.post('/ai/assistant', authenticate, aiController.assistant);
+router.post('/ai/assistant', authenticate, assistantRateLimiter, aiController.assistant);
 router.post('/ai/disease-detection', authenticate, aiController.diseaseDetection);
 router.post('/ai/price-prediction', authenticate, aiController.pricePrediction);
 

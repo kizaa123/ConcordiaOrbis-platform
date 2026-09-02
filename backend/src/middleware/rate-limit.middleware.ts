@@ -34,3 +34,13 @@ export const authRateLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, error: 'Too many login attempts. Please try again later.' },
 });
+
+/** Keep free-tier LLM quotas from being drained. */
+export const assistantRateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: isDev ? 60 : 20,
+  skip: () => isDev && !rateLimitEnabled,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: 'Please wait a moment before asking another question.' },
+});

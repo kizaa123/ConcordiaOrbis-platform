@@ -756,6 +756,14 @@ class ApiClient {
         `/accountant/orders/${orderId}/distribution/lines/${lineId}/message-pdf`
       ),
   };
+
+  ai = {
+    assistant: (question: string) =>
+      this.request<{ answer: string; provider: "guide" | "gemini" | "groq" | "openai" }>(
+        "/ai/assistant",
+        { method: "POST", body: JSON.stringify({ question }) }
+      ),
+  };
 }
 
 export const api = new ApiClient();

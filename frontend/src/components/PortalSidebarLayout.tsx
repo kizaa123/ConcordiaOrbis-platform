@@ -14,6 +14,7 @@ import { MobileBottomNav, MOBILE_BOTTOM_NAV_PADDING } from "@/components/MobileB
 import { Logo } from "@/components/Logo";
 import { AdSlot } from "@/components/AdSlot";
 import { WhatsAppSupportFab } from "@/components/SupportWhatsAppLink";
+import { AiAssistantFab } from "@/components/AiAssistantFab";
 
 export type PortalNavLink = {
   href: string;
@@ -292,6 +293,7 @@ export function PortalSidebarLayout({
       </main>
 
       <MobileBottomNav />
+      <AiAssistantFab />
       <WhatsAppSupportFab />
     </div>
   );

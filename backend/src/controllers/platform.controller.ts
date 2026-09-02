@@ -588,7 +588,10 @@ export class AiController {
 
   assistant = async (req: AuthRequest, res: Response) => {
     try {
-      ApiResponse.success(res, await assistantService.ask(req.user!.userId, req.body.question));
+      ApiResponse.success(
+        res,
+        await assistantService.ask(req.user!.userId, req.user!.roleId, req.body?.question)
+      );
     } catch (e) {
       ApiResponse.error(res, e);
     }

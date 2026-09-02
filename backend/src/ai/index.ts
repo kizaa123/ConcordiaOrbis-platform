@@ -1,7 +1,13 @@
 /**
- * AI Service Layer - architecture-ready stubs for future integration.
- * Each service is isolated so vector DB, LLM, or ML models can be plugged in later.
+ * AI assistants. Matching / disease / price stay stubs.
+ * The chat assistant uses a free on-platform guide, plus Gemini or Groq if a free key is set.
  */
+
+import prisma from '../database/prisma';
+import { ROLE_NAMES } from '../constants/roles';
+import { AppError } from '../utils/errors';
+import { DEFAULT_ASSISTANT_ANSWER, matchPlatformKnowledge } from './platformKnowledge';
+import { askFreeLlm } from './llm';
 
 export interface MatchCandidate {
   farmerId: string;
@@ -17,9 +23,37 @@ export class MatchingService {
 }
 
 export class AssistantService {
-  /** Future: LLM agricultural assistant chatbot */
-  async ask(_userId: string, _question: string): Promise<{ answer: string }> {
-    return { answer: 'AI assistant coming soon. Configure OPENAI_API_KEY to enable.' };
+  async ask(
+    userId: string,
+    roleId: number,
+    rawQuestion: unknown
+  ): Promise<{ answer: string; provider: 'guide' | 'gemini' | 'groq' | 'openai' }> {
+    const question = typeof rawQuestion === 'string' ? rawQuestion.trim() : '';
+    if (question.length < 2) {
+      throw new AppError(400, 'Please type a question.');
+    }
+    if (question.length > 1000) {
+      throw new AppError(400, 'Please keep the question under 1,000 characters.');
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { firstName: true, role: { select: { roleName: true } } },
+    });
+    const firstName = user?.firstName?.trim() || '';
+    const roleName = user?.role?.roleName || ROLE_NAMES[roleId] || 'member';
+
+    const llm = await askFreeLlm({ question, roleName, firstName });
+    if (llm) {
+      return { answer: llm.answer, provider: llm.provider as 'gemini' | 'groq' | 'openai' };
+    }
+
+    const matched = matchPlatformKnowledge(question);
+    const greeting = firstName ? `${firstName}, ` : '';
+    if (matched) {
+      return { answer: `${greeting}${matched.answer}`, provider: 'guide' };
+    }
+    return { answer: `${greeting}${DEFAULT_ASSISTANT_ANSWER}`, provider: 'guide' };
   }
 }
 
