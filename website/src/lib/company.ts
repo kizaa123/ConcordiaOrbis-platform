@@ -2,10 +2,28 @@ export const PLATFORM_NAME = "ConcordiaOrbis";
 export const MOTTO = "The Premier Commodity Exchange Platform";
 export const TAGLINE = "Where Fellows Meet Markets";
 
+const DEFAULT_WEBSITE_URL = "https://concordiaorbis.com";
+
+/** Public company site origin (sitemap, robots, metadata). */
+export function getWebsiteUrl(): URL {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (configured) {
+    return new URL(configured.endsWith("/") ? configured : `${configured}/`);
+  }
+  if (process.env.VERCEL_ENV === "production") {
+    return new URL(`${DEFAULT_WEBSITE_URL}/`);
+  }
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim() || process.env.VERCEL_URL?.trim();
+  if (vercel) {
+    return new URL(`https://${vercel.replace(/^https?:\/\//, "").replace(/\/$/, "")}/`);
+  }
+  return new URL("http://localhost:3002/");
+}
+
 /** Live trading platform (app). */
 export const PLATFORM_URL =
   process.env.NEXT_PUBLIC_PLATFORM_URL?.replace(/\/$/, "") ||
-  "https://concordiaorbis-platform-one.vercel.app";
+  "https://app.concordiaorbis.com";
 
 export const PLATFORM_REGISTER_URL = `${PLATFORM_URL}/register`;
 export const PLATFORM_LOGIN_URL = `${PLATFORM_URL}/login`;

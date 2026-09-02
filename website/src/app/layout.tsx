@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
-import { MOTTO, PLATFORM_NAME, TAGLINE } from "@/lib/company";
+import { getWebsiteUrl, MOTTO, PLATFORM_NAME, TAGLINE } from "@/lib/company";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PageLoader } from "@/components/PageLoader";
 import { WhatsAppSupportHost } from "@/components/WhatsAppSupport";
 import "./globals.css";
 
+const siteUrl = getWebsiteUrl();
+
 export const metadata: Metadata = {
+  metadataBase: siteUrl,
   title: {
     default: `${PLATFORM_NAME} — ${MOTTO}`,
     template: `%s · ${PLATFORM_NAME}`,

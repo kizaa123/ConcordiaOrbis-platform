@@ -40,7 +40,7 @@ export function openWhatsAppSupportPicker() {
 }
 
 /** Live public company site (About, Team, Refunds, Contact). */
-export const DEFAULT_COMPANY_SITE_URL = "https://concordiaorbis-website.vercel.app";
+export const DEFAULT_COMPANY_SITE_URL = "https://concordiaorbis.com";
 
 /** Public company / Paystack information site (separate from the trading app). */
 export const COMPANY_SITE_URL = (
