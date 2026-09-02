@@ -185,6 +185,7 @@ function PurchaseModalContent({
   const [quantity, setQuantity] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [paystackOpen, setPaystackOpen] = useState(false);
   const [result, setResult] = useState<
     | { variant: "pending"; title?: string; message: string }
     | { variant: "success"; message: string; releaseOtp: string | null }
@@ -229,16 +230,20 @@ function PurchaseModalContent({
     }
     setSubmitting(true);
     setResult(null);
+    setPaystackOpen(true);
     try {
       const purchaseResult = await api.marketplace.purchase(listing.id, { quantity, paymentMethod });
       const settled = await completePaystackOnApp(purchaseResult, {
-        onConfirming: () =>
+        onConfirming: () => {
+          setPaystackOpen(false);
           setResult({
             variant: "pending",
             title: "Confirming payment",
             message: "Placing your order…",
-          }),
+          });
+        },
       });
+      setPaystackOpen(false);
       const message = `${quantity} ${unitLabel} - ${format(total)} held in escrow until you confirm delivery.`;
       setOrderPlaced(true);
       setResult({
@@ -248,6 +253,7 @@ function PurchaseModalContent({
       });
       void showLiveNotifications();
     } catch (e) {
+      setPaystackOpen(false);
       setResult({
         variant: "error",
         message: e instanceof Error ? e.message : "Purchase failed. Please try again.",
@@ -257,13 +263,10 @@ function PurchaseModalContent({
     }
   };
 
+  if (paystackOpen) return null;
+
   return (
-    <div
-      data-payment-overlay
-      className={`fixed inset-0 z-50 flex flex-col bg-white ${
-        submitting && !result ? "invisible pointer-events-none" : ""
-      }`}
-    >
+    <div className="fixed inset-0 z-50 flex flex-col bg-white">
       <FarmViewHeader
         farmerName={farmerName}
         farmerPhoto={farmerPhoto}

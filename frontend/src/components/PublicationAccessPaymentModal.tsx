@@ -35,6 +35,7 @@ export function PublicationAccessPaymentModal({
   const { showLiveNotifications } = useNotifications();
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<PaymentResult | null>(null);
+  const [paystackOpen, setPaystackOpen] = useState(false);
 
   const price = publication.price ?? 0;
   const priceLabel = publication.isFree ? "Free" : format(price);
@@ -42,16 +43,20 @@ export function PublicationAccessPaymentModal({
   const handlePay = async (paymentMethod: string) => {
     setSubmitting(true);
     setResult(null);
+    setPaystackOpen(true);
     try {
       const paid = await api.research.purchase(publication.id, paymentMethod);
       const settled = await completePaystackOnApp(paid, {
-        onConfirming: () =>
+        onConfirming: () => {
+          setPaystackOpen(false);
           setResult({
             variant: "pending",
             title: "Confirming payment",
             message: "Unlocking this publication…",
-          }),
+          });
+        },
       });
+      setPaystackOpen(false);
       if (settled && settled.status !== "COMPLETED") {
         throw new Error(settled.message || "Payment is not confirmed yet.");
       }
@@ -60,6 +65,7 @@ export function PublicationAccessPaymentModal({
       void showLiveNotifications();
       onSuccess(updated);
     } catch (e) {
+      setPaystackOpen(false);
       setResult({
         variant: "error",
         message: e instanceof Error ? e.message : "Payment failed. Please try again.",
@@ -77,14 +83,12 @@ export function PublicationAccessPaymentModal({
 
   const isPending = result?.variant === "pending";
   const checkoutBusy = submitting || isPending;
-  const hideForPaystack = submitting && !result;
+
+  if (paystackOpen) return null;
 
   return (
     <div
-      data-payment-overlay
-      className={`fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4 ${
-        hideForPaystack ? "invisible pointer-events-none bg-transparent" : "bg-black/50"
-      }`}
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
       onClick={() => {
         if (checkoutBusy) return;
         onClose();

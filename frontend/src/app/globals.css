@@ -806,18 +806,3 @@ body {
 .notification-bell-active {
   animation: notification-bell-pulse 2s ease-in-out infinite;
 }
-
-/* Hide our payment dimmer so it cannot sit on top of the Paystack sheet. */
-html.paystack-checkout-open [data-payment-overlay] {
-  visibility: hidden !important;
-  pointer-events: none !important;
-  background: transparent !important;
-}
-
-iframe[src*="paystack"],
-iframe[src*="checkout.paystack"],
-iframe[name*="paystack" i] {
-  pointer-events: auto !important;
-  position: relative;
-  z-index: 2147483646 !important;
-}

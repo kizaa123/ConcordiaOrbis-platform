@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 const PAYSTACK_SCRIPT = "https://js.paystack.co/v2/inline.js";
 const VERIFY_ATTEMPTS = 8;
 const VERIFY_GAP_MS = 1500;
+const CHECKOUT_OPEN_CLASS = "paystack-checkout-open";
 
 export type PaystackCheckoutStart = {
   checkoutUrl?: string | null;
@@ -40,7 +41,6 @@ type PaystackCallbacks = {
 
 type PaystackPop = {
   resumeTransaction: (accessCode: string, callbacks?: PaystackCallbacks) => unknown;
-  checkout?: (options: { accessCode: string } & PaystackCallbacks) => unknown;
 };
 
 declare global {
@@ -55,6 +55,12 @@ function isInlineCheckout(result: PaystackCheckoutStart): boolean {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+export function setPaystackCheckoutOpen(open: boolean) {
+  if (typeof document === "undefined") return;
+  document.documentElement.classList.toggle(CHECKOUT_OPEN_CLASS, open);
+  document.body.classList.toggle(CHECKOUT_OPEN_CLASS, open);
 }
 
 export function preloadPaystackScript(): void {
@@ -88,73 +94,6 @@ function loadPaystackScript(): Promise<void> {
 
 type PopupOutcome = "paid" | "pending" | "dismissed";
 
-const CHECKOUT_OPEN_CLASS = "paystack-checkout-open";
-const PAYSTACK_POPUP_Z = "2147483646";
-const PAYSTACK_BACKDROP_Z = "2147483000";
-
-function overlayRootFor(el: HTMLElement): HTMLElement {
-  let node: HTMLElement | null = el;
-  let overlay = el;
-  while (node && node !== document.body && node !== document.documentElement) {
-    const position = window.getComputedStyle(node).position;
-    if (position === "fixed" || position === "absolute") overlay = node;
-    node = node.parentElement;
-  }
-  return overlay;
-}
-
-function isDimBackdrop(el: HTMLElement): boolean {
-  const style = window.getComputedStyle(el);
-  if (style.position !== "fixed" && style.position !== "absolute") return false;
-  const box = el.getBoundingClientRect();
-  if (box.width < window.innerWidth * 0.85 || box.height < window.innerHeight * 0.85) return false;
-  const bg = style.backgroundColor;
-  const alpha =
-    bg.match(/rgba\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*([\d.]+)\s*\)/)?.[1] ??
-    bg.match(/\/\s*([\d.]+)\s*\)/)?.[1];
-  const value = alpha ? Number(alpha) : 1;
-  return value > 0 && value < 1;
-}
-
-function liftPaystackLayers() {
-  const iframes = document.querySelectorAll<HTMLIFrameElement>(
-    'iframe[src*="paystack"], iframe[src*="checkout.paystack"], iframe[name*="paystack" i]'
-  );
-
-  iframes.forEach((iframe) => {
-    const host = overlayRootFor(iframe);
-    if (host.closest("[data-payment-overlay]")) {
-      document.body.appendChild(host);
-    }
-    host.style.setProperty("z-index", PAYSTACK_POPUP_Z, "important");
-    host.style.setProperty("pointer-events", "auto", "important");
-    iframe.style.setProperty("z-index", PAYSTACK_POPUP_Z, "important");
-    iframe.style.setProperty("pointer-events", "auto", "important");
-    iframe.style.setProperty("position", "relative", "important");
-  });
-
-  Array.from(document.body.children).forEach((node) => {
-    if (!(node instanceof HTMLElement)) return;
-    if (node.hasAttribute("data-payment-overlay")) return;
-    if (iframes.length && Array.from(iframes).some((frame) => node.contains(frame))) return;
-    if (!isDimBackdrop(node)) return;
-    node.style.setProperty("z-index", PAYSTACK_BACKDROP_Z, "important");
-  });
-}
-
-function setPaystackCheckoutOpen(open: boolean) {
-  document.documentElement.classList.toggle(CHECKOUT_OPEN_CLASS, open);
-  document.body.classList.toggle(CHECKOUT_OPEN_CLASS, open);
-  if (open) liftPaystackLayers();
-}
-
-function watchPaystackLayers(): () => void {
-  liftPaystackLayers();
-  const observer = new MutationObserver(() => liftPaystackLayers());
-  observer.observe(document.body, { childList: true, subtree: true });
-  return () => observer.disconnect();
-}
-
 function openPaystackPopup(accessCode: string): Promise<PopupOutcome> {
   return new Promise((resolve, reject) => {
     if (!window.PaystackPop) {
@@ -163,50 +102,28 @@ function openPaystackPopup(accessCode: string): Promise<PopupOutcome> {
     }
 
     let settled = false;
-    const stopWatch = watchPaystackLayers();
-    setPaystackCheckoutOpen(true);
-
     const finish = (outcome: PopupOutcome) => {
       if (settled) return;
       settled = true;
-      stopWatch();
-      setPaystackCheckoutOpen(false);
       resolve(outcome);
     };
 
     const callbacks: PaystackCallbacks = {
       onSuccess: () => finish("paid"),
       onBankTransferConfirmationPending: () => finish("pending"),
-      // USSD / 3DS / MoMo auth opens a second window and can fire onCancel.
-      // Do not treat that as a failed payment — verify the charge next.
       onCancel: () => finish("dismissed"),
       onClose: () => finish("dismissed"),
       onError: (error) => {
         if (settled) return;
         settled = true;
-        stopWatch();
-        setPaystackCheckoutOpen(false);
         reject(new Error(error?.message || "Paystack could not complete this payment."));
       },
     };
 
     try {
-      const popup = new window.PaystackPop();
-      try {
-        if (typeof popup.checkout === "function") {
-          popup.checkout({ accessCode, ...callbacks });
-          return;
-        }
-      } catch {
-        /* resumeTransaction below */
-      }
-      popup.resumeTransaction(accessCode, callbacks);
+      new window.PaystackPop().resumeTransaction(accessCode, callbacks);
     } catch (error) {
-      stopWatch();
-      setPaystackCheckoutOpen(false);
-      reject(
-        error instanceof Error ? error : new Error("Paystack could not open checkout.")
-      );
+      reject(error instanceof Error ? error : new Error("Paystack could not open checkout."));
     }
   });
 }
@@ -240,25 +157,23 @@ export async function completePaystackOnApp(
   if (start.accessCode) {
     hooks?.onAwaitingPayment?.();
     setPaystackCheckoutOpen(true);
-    await loadPaystackScript();
-    let outcome: PopupOutcome;
     try {
-      outcome = await openPaystackPopup(start.accessCode);
+      await loadPaystackScript();
+      const outcome = await openPaystackPopup(start.accessCode);
+      hooks?.onConfirming?.();
+
+      if (outcome === "dismissed") {
+        const snapshot = await api.payments.verifyPaystack(start.reference);
+        if (snapshot.status === "COMPLETED") return snapshot;
+        if (snapshot.status === "FAILED") {
+          throw new Error(snapshot.message || "Payment did not go through.");
+        }
+      }
+
+      return verifyUntilCompleted(start.reference);
     } finally {
       setPaystackCheckoutOpen(false);
     }
-    hooks?.onConfirming?.();
-
-    if (outcome === "dismissed") {
-      const snapshot = await api.payments.verifyPaystack(start.reference);
-      if (snapshot.status === "COMPLETED") return snapshot;
-      if (snapshot.status === "FAILED") {
-        throw new Error(snapshot.message || "Payment did not go through.");
-      }
-      // PENDING: USSD or phone authorization may still be in progress.
-    }
-
-    return verifyUntilCompleted(start.reference);
   }
 
   if (start.checkoutUrl) {
