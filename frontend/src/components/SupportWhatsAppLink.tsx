@@ -39,20 +39,6 @@ export function SupportWhatsAppLink({
   );
 }
 
-export function WhatsAppSupportFab() {
-  return (
-    <button
-      type="button"
-      onClick={openWhatsAppSupportPicker}
-      aria-label="WhatsApp Support and Assistant"
-      title="WhatsApp Support & Assistant"
-      className="fixed z-[70] flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 hover:brightness-110 bottom-[calc(5.25rem+env(safe-area-inset-bottom,0px))] right-4 lg:bottom-6 lg:right-6"
-    >
-      <WhatsAppFillIcon className="h-7 w-7" />
-    </button>
-  );
-}
-
 export function WhatsAppSupportHost() {
   const [open, setOpen] = useState(false);
 

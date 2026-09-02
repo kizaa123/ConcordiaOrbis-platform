@@ -2,9 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
-import { PLATFORM_NAME, openWhatsAppSupportPicker } from "@/lib/site";
+import { PLATFORM_NAME, SUPPORT_TOPICS } from "@/lib/site";
 
-const SUGGESTIONS = ["What is this platform?", "Farm access", "Paystack payments", "How do orders work?"];
+const WELCOME = [
+  `Welcome to ${PLATFORM_NAME}. How can we assist you?`,
+  ...SUPPORT_TOPICS.map((topic, index) => `${index + 1}. ${topic.label}`),
+].join("\n");
 
 type ChatMessage = { id: string; role: "user" | "assistant"; text: string };
 
@@ -13,11 +16,7 @@ export function AiAssistantFab() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      text: `Hi — I am the ${PLATFORM_NAME} assistant. Ask about farm access, payments, orders, listings, or your role. For a person, use WhatsApp Support.`,
-    },
+    { id: "welcome", role: "assistant", text: WELCOME },
   ]);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +52,10 @@ export function AiAssistantFab() {
         {
           id: `e-${Date.now()}`,
           role: "assistant",
-          text: e instanceof Error ? e.message : "I could not answer just now. Try again or use WhatsApp Support.",
+          text:
+            e instanceof Error
+              ? e.message
+              : "I could not answer just now. Try again, or tap Help in the footer to reach a person.",
         },
       ]);
     } finally {
@@ -68,7 +70,7 @@ export function AiAssistantFab() {
         onClick={() => setOpen((v) => !v)}
         aria-label="ConcordiaOrbis assistant"
         title={`${PLATFORM_NAME} assistant`}
-        className="fixed z-[70] flex h-12 w-12 items-center justify-center rounded-full bg-brand-800 text-white shadow-lg transition hover:scale-105 hover:bg-brand-900 bottom-[calc(8.75rem+env(safe-area-inset-bottom,0px))] right-4 lg:bottom-[5.25rem] lg:right-6"
+        className="fixed z-[70] flex h-12 w-12 items-center justify-center rounded-full bg-brand-800 text-white shadow-lg transition hover:scale-105 hover:bg-brand-900 bottom-[calc(5.25rem+env(safe-area-inset-bottom,0px))] right-4 lg:bottom-6 lg:right-6"
       >
         <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden>
           <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M7 16h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3Zm0 0-3 4h.01" />
@@ -77,7 +79,7 @@ export function AiAssistantFab() {
 
       {open ? (
         <div
-          className="fixed z-[80] flex w-[min(100vw-2rem,22rem)] flex-col overflow-hidden rounded-2xl border border-brand-100 bg-white shadow-xl bottom-[calc(12.25rem+env(safe-area-inset-bottom,0px))] right-4 lg:bottom-[9rem] lg:right-6"
+          className="fixed z-[80] flex w-[min(100vw-2rem,22rem)] flex-col overflow-hidden rounded-2xl border border-brand-100 bg-white shadow-xl bottom-[calc(8.75rem+env(safe-area-inset-bottom,0px))] right-4 lg:bottom-[5.25rem] lg:right-6"
           role="dialog"
           aria-labelledby="ai-assistant-title"
         >
@@ -86,7 +88,7 @@ export function AiAssistantFab() {
               <h2 id="ai-assistant-title" className="text-sm font-bold">
                 {PLATFORM_NAME} assistant
               </h2>
-              <p className="text-[11px] text-white/80">Free in-app guide</p>
+              <p className="text-[11px] text-white/80">How can we assist you?</p>
             </div>
             <button
               type="button"
@@ -102,7 +104,7 @@ export function AiAssistantFab() {
             {messages.map((m) => (
               <div
                 key={m.id}
-                className={`max-w-[90%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
+                className={`max-w-[90%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                   m.role === "user"
                     ? "ml-auto bg-brand-700 text-white"
                     : "bg-brand-50 text-brand-950"
@@ -111,21 +113,19 @@ export function AiAssistantFab() {
                 {m.text}
               </div>
             ))}
-            {busy ? (
-              <p className="text-xs text-brand-600">Thinking…</p>
-            ) : null}
+            {busy ? <p className="text-xs text-brand-600">Thinking…</p> : null}
           </div>
 
           <div className="flex flex-wrap gap-1.5 border-t border-brand-100 px-3 py-2">
-            {SUGGESTIONS.map((label) => (
+            {SUPPORT_TOPICS.map((topic, index) => (
               <button
-                key={label}
+                key={topic.id}
                 type="button"
                 disabled={busy}
-                onClick={() => send(label)}
+                onClick={() => send(topic.label)}
                 className="rounded-full border border-brand-200 px-2.5 py-1 text-[11px] font-medium text-brand-800 hover:bg-brand-50 disabled:opacity-50"
               >
-                {label}
+                {index + 1}. {topic.label}
               </button>
             ))}
           </div>
@@ -153,13 +153,6 @@ export function AiAssistantFab() {
               Send
             </button>
           </form>
-          <button
-            type="button"
-            onClick={openWhatsAppSupportPicker}
-            className="border-t border-brand-100 px-3 py-2 text-center text-[11px] font-medium text-brand-700 hover:bg-brand-50"
-          >
-            Talk to a person on WhatsApp
-          </button>
         </div>
       ) : null}
     </>

@@ -13,8 +13,8 @@ import { Icon, type IconName } from "@/components/icons";
 import { MobileBottomNav, MOBILE_BOTTOM_NAV_PADDING } from "@/components/MobileBottomNav";
 import { Logo } from "@/components/Logo";
 import { AdSlot } from "@/components/AdSlot";
-import { WhatsAppSupportFab } from "@/components/SupportWhatsAppLink";
 import { AiAssistantFab } from "@/components/AiAssistantFab";
+import { openWhatsAppSupportPicker } from "@/lib/site";
 
 export type PortalNavLink = {
   href: string;
@@ -120,6 +120,16 @@ function SidebarContent({
       </nav>
 
       <div className="border-t border-brand-100 p-3">
+        <button
+          type="button"
+          onClick={() => {
+            onNavigate?.();
+            openWhatsAppSupportPicker();
+          }}
+          className="mb-2 w-full rounded-xl px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-50"
+        >
+          Help
+        </button>
         <button
           type="button"
           onClick={async () => {
@@ -290,11 +300,19 @@ export function PortalSidebarLayout({
           <AdSlot placement="global" variant="strip" />
         </div>
         {children}
+        <footer className="mx-auto flex max-w-6xl items-center justify-center border-t border-brand-100 px-4 py-3 lg:px-6">
+          <button
+            type="button"
+            onClick={openWhatsAppSupportPicker}
+            className="text-xs font-semibold text-brand-700 hover:text-brand-900 hover:underline"
+          >
+            Help
+          </button>
+        </footer>
       </main>
 
       <MobileBottomNav />
       <AiAssistantFab />
-      <WhatsAppSupportFab />
     </div>
   );
 }

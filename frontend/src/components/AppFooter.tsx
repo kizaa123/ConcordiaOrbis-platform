@@ -39,8 +39,9 @@ export function AppFooter() {
             </Link>
           ))}
           <SupportWhatsAppLink
-            className="inline-flex items-center gap-1 hover:text-yellow-300"
-            iconClassName="h-3.5 w-3.5"
+            showIcon={false}
+            label="Help"
+            className="hover:text-yellow-300"
           />
         </nav>
         <p className="text-[10px] leading-tight text-brand-300 sm:text-[11px]">
