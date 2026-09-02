@@ -15,6 +15,7 @@ import { PaymentResultOverlay } from "@/components/PaymentResultOverlay";
 import { HarvestCalendarTrigger } from "@/components/HarvestCalendarTrigger";
 import { Icon } from "@/components/icons";
 import type { UserVerificationTag } from "@/lib/types";
+import { redirectToPaystack } from "@/lib/paystackCheckout";
 
 const EMPTY_MEDIA: never[] = [];
 
@@ -229,6 +230,7 @@ function PurchaseModalContent({
     setResult(null);
     try {
       const purchaseResult = await api.marketplace.purchase(listing.id, { quantity, paymentMethod });
+      if (redirectToPaystack(purchaseResult)) return;
       const message = `${quantity} ${unitLabel} - ${format(total)} held in escrow until you confirm delivery.`;
       setOrderPlaced(true);
       setResult({ variant: "success", message, releaseOtp: purchaseResult.releaseOtp });

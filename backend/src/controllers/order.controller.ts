@@ -18,11 +18,13 @@ export class OrderController {
         req.params.id as string,
         req.body
       );
-      await createAuditLog(req, 'PRODUCT_PURCHASED', 'product_order', {
-        listingId: req.params.id as string,
-        amount: result.totalPaid,
-        orderId: result.orderId,
-      });
+      if (result.orderId) {
+        await createAuditLog(req, 'PRODUCT_PURCHASED', 'product_order', {
+          listingId: req.params.id as string,
+          amount: result.totalPaid,
+          orderId: result.orderId,
+        });
+      }
       ApiResponse.success(res, result);
     } catch (e) {
       ApiResponse.error(res, e);

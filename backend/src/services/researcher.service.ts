@@ -9,7 +9,7 @@ import {
   getFullName,
 } from '../constants/roles';
 import { listPortalDirectoryClients } from './farm.service';
-import { getPaymentProvider } from './payment.provider';
+import { checkoutRedirect, loadPayer, startCheckout } from './payment.checkout';
 import { normalizePublicAssetUrl } from '../middleware/upload.middleware';
 import { formatVerificationTags, verificationTagSelect } from '../utils/verificationTags';
 import {
@@ -39,7 +39,7 @@ export const publicationSchema = z.object({
 export const updatePublicationSchema = publicationSchema.partial();
 
 export const purchasePublicationSchema = z.object({
-  paymentMethod: z.string().min(2),
+  paymentMethod: z.string().min(2).optional().default('paystack'),
 });
 
 export const commentSchema = z.object({
@@ -730,47 +730,119 @@ export class ResearcherService {
       throw new AppError(400, 'Invalid publication price');
     }
 
-    const provider = getPaymentProvider();
-    const result = await provider.initiatePayment({
+    const paymentMethod = data.paymentMethod || 'paystack';
+    const payer = await loadPayer(studentId);
+    const result = await startCheckout({
       userId: studentId,
+      email: payer.email,
       amount,
-      paymentMethod: data.paymentMethod,
+      paymentMethod,
       referenceId: publicationId,
       type: 'RESEARCH_PURCHASE',
+      metadata: {
+        kind: 'RESEARCH_PURCHASE',
+        userId: studentId,
+        publicationId,
+        amount: String(amount),
+        paymentMethod,
+        returnTo: `/library/publisher/${researcherUserId}`,
+      },
     });
 
-    if (result.status === 'FAILED') {
-      throw new AppError(402, 'Payment failed');
+    const redirect = checkoutRedirect(result);
+    if (redirect) return { ...redirect, totalPaid: amount };
+
+    return this.fulfillResearchPurchase({
+      studentId,
+      publicationId,
+      transactionId: result.transactionId,
+      paymentMethod,
+    });
+  }
+
+  async fulfillResearchPurchase(input: {
+    studentId: string;
+    publicationId: string;
+    transactionId: string;
+    paymentMethod: string;
+  }) {
+    const already = await prisma.researchPurchase.findFirst({
+      where: { transactionId: input.transactionId, status: 'COMPLETED' },
+    });
+    if (already) {
+      return {
+        purchase: already,
+        message: 'Access to this publication is already active',
+        totalPaid: already.amount,
+      };
+    }
+
+    const pub = assertFound(
+      await prisma.researchPublication.findFirst({
+        where: { id: input.publicationId, status: 'ACTIVE' },
+        include: {
+          researcher: { include: { user: { select: { id: true, firstName: true, lastName: true } } } },
+        },
+      }),
+      'Publication not found'
+    );
+
+    if (pub.isFree) {
+      throw new AppError(400, 'This publication is free - no payment required');
+    }
+
+    const researcherUserId = pub.researcher.user.id;
+    if (input.studentId === researcherUserId) {
+      throw new AppError(400, 'You already own this publication');
+    }
+
+    const existing = await prisma.researchPurchase.findUnique({
+      where: { studentId_publicationId: { studentId: input.studentId, publicationId: input.publicationId } },
+    });
+    if (existing?.status === 'COMPLETED') {
+      if (existing.transactionId && existing.transactionId !== input.transactionId) {
+        throw new AppError(409, 'You already purchased this publication');
+      }
+      return {
+        purchase: existing,
+        message: `Access granted to "${pub.title}"`,
+        totalPaid: existing.amount,
+      };
+    }
+
+    const amount = pub.price ?? 0;
+    if (amount <= 0) {
+      throw new AppError(400, 'Invalid publication price');
     }
 
     const purchase = await prisma.researchPurchase.upsert({
-      where: { studentId_publicationId: { studentId, publicationId } },
+      where: { studentId_publicationId: { studentId: input.studentId, publicationId: input.publicationId } },
       create: {
-        publicationId,
-        studentId,
+        publicationId: input.publicationId,
+        studentId: input.studentId,
         researcherId: researcherUserId,
         amount,
-        paymentMethod: data.paymentMethod,
-        transactionId: result.transactionId,
-        status: result.status === 'COMPLETED' ? 'COMPLETED' : 'PENDING',
+        paymentMethod: input.paymentMethod,
+        transactionId: input.transactionId,
+        status: 'COMPLETED',
       },
       update: {
         amount,
-        paymentMethod: data.paymentMethod,
-        transactionId: result.transactionId,
-        status: result.status === 'COMPLETED' ? 'COMPLETED' : 'PENDING',
+        paymentMethod: input.paymentMethod,
+        transactionId: input.transactionId,
+        status: 'COMPLETED',
       },
     });
 
     const student = await prisma.user.findUnique({
-      where: { id: studentId },
+      where: { id: input.studentId },
       select: { firstName: true, lastName: true },
     });
     const studentName = student ? `${student.firstName} ${student.lastName}` : 'A student';
 
     await notifyResearchPurchase(
       researcherUserId,
-      studentId,
+      input.studentId,
       studentName,
       pub.title,
       amount,

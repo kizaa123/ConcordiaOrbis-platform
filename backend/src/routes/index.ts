@@ -304,6 +304,8 @@ router.get('/payments/packages', paymentController.getPackages);
 router.get('/payments/access', authenticate, paymentController.accessStatus);
 router.post('/payments/purchase', authenticate, requirePermission(PERMISSIONS.PURCHASE_ACCESS), validateBody(purchaseSchema), paymentController.purchase);
 router.post('/payments/farm-access', authenticate, requireCanPurchaseFromMarketplace(), validateBody(purchaseFarmAccessSchema), paymentController.purchaseFarmAccess);
+router.get('/payments/paystack/verify', authenticate, paymentController.verifyPaystack);
+router.post('/payments/paystack/webhook', paymentController.paystackWebhook);
 router.get('/payments/history', authenticate, paymentController.history);
 router.get('/payments/admin', authenticate, requirePermission(PERMISSIONS.MANAGE_PAYMENTS), paymentController.allPayments);
 router.post('/payments/packages', authenticate, requirePermission(PERMISSIONS.MANAGE_PACKAGES), validateBody(packageSchema), paymentController.createPackage);

@@ -12,6 +12,7 @@ import { Icon } from "@/components/icons";
 import { api } from "@/lib/api";
 import { FARM_ACCESS_PRICE_GHC } from "@/lib/pricing";
 import { useMoneyFormat } from "@/hooks/useMoneyFormat";
+import { redirectToPaystack } from "@/lib/paystackCheckout";
 
 interface FarmAccessPaymentModalProps {
   farmer: FarmerBrowseCard;
@@ -41,7 +42,8 @@ export function FarmAccessPaymentModal({
     setSubmitting(true);
     setResult(null);
     try {
-      await api.payments.purchaseFarmAccess(farmer.farmerId, paymentMethod);
+      const paid = await api.payments.purchaseFarmAccess(farmer.farmerId, paymentMethod);
+      if (redirectToPaystack(paid)) return;
       setResult({ variant: "success" });
       void showLiveNotifications();
       onSuccess();

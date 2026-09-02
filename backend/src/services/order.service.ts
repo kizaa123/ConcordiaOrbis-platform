@@ -1,17 +1,17 @@
 import { z } from 'zod';
 import prisma from '../database/prisma';
 import { AppError, assertFound, assertAuthorized } from '../utils/errors';
-import { ROLES, canPurchaseFromMarketplace } from '../constants/roles';
+import { canPurchaseFromMarketplace } from '../constants/roles';
 import { buyerHasApprovedFarmAccess } from '../middleware/access.middleware';
 import { isListingOrderable } from './farmAccess.service';
-import { getPaymentProvider } from './payment.provider';
+import { checkoutRedirect, loadPayer, startCheckout } from './payment.checkout';
 import { notifyNewOrder, notifyProductPurchase } from './notification.service';
 import { generateReleaseOtp } from '../utils/orderOtp';
 import { normalizeImages, normalizePublicAssetUrl } from '../middleware/upload.middleware';
 
 export const purchaseProductSchema = z.object({
   quantity: z.number().positive(),
-  paymentMethod: z.string().min(2),
+  paymentMethod: z.string().min(2).optional().default('paystack'),
 });
 
 export const releaseOrderSchema = z.object({
@@ -74,38 +74,122 @@ export class OrderService {
     }
 
     const totalAmount = Math.round(data.quantity * listing.price * 100) / 100;
-
-    const provider = getPaymentProvider();
-    const result = await provider.initiatePayment({
+    const paymentMethod = data.paymentMethod || 'paystack';
+    const payer = await loadPayer(buyerId);
+    const result = await startCheckout({
       userId: buyerId,
+      email: payer.email,
       amount: totalAmount,
-      paymentMethod: data.paymentMethod,
+      paymentMethod,
       referenceId: listingId,
       type: 'PRODUCT_ORDER',
+      metadata: {
+        kind: 'PRODUCT_ORDER',
+        userId: buyerId,
+        listingId,
+        quantity: String(data.quantity),
+        amount: String(totalAmount),
+        paymentMethod,
+        returnTo: '/orders',
+      },
     });
 
-    if (result.status === 'FAILED') {
-      throw new AppError(402, 'Payment failed');
+    const redirect = checkoutRedirect(result);
+    if (redirect) return { ...redirect, totalPaid: totalAmount, orderId: undefined as string | undefined, releaseOtp: null };
+
+    return this.fulfillProductOrder({
+      buyerId,
+      listingId,
+      quantity: data.quantity,
+      transactionId: result.transactionId,
+      paymentMethod,
+    });
+  }
+
+  async fulfillProductOrder(input: {
+    buyerId: string;
+    listingId: string;
+    quantity: number;
+    transactionId: string;
+    paymentMethod: string;
+  }) {
+    const already = await prisma.productOrder.findUnique({
+      where: { transactionId: input.transactionId },
+      include: {
+        listing: { include: { commodity: true } },
+        buyer: { select: { firstName: true, lastName: true, email: true, country: true } },
+      },
+    });
+    if (already) {
+      return {
+        order: already,
+        message: `Purchased ${already.quantity} ${already.unit} of ${already.listing.title}`,
+        totalPaid: already.totalAmount,
+        releaseOtp: already.releaseOtp,
+        orderId: already.id,
+      };
     }
+
+    const listing = assertFound(
+      await prisma.commodityListing.findUnique({
+        where: { id: input.listingId },
+        include: {
+          commodity: { include: { category: true } },
+          farmer: {
+            include: {
+              user: {
+                select: { id: true, firstName: true, lastName: true, country: true },
+              },
+            },
+          },
+          media: { where: { type: 'IMAGE' }, orderBy: { orderIndex: 'asc' }, take: 1 },
+        },
+      }),
+      'Product not found'
+    );
+
+    if (listing.status !== 'ACTIVE') {
+      throw new AppError(400, 'This product is no longer available');
+    }
+    if (listing.quantity <= 0 || input.quantity > listing.quantity) {
+      throw new AppError(400, `Only ${listing.quantity} ${listing.unit} available`);
+    }
+    if (!isListingOrderable(listing)) {
+      throw new AppError(400, 'This product is no longer available — the harvest period has ended');
+    }
+
+    const farmerUserId = listing.farmer.userId;
+    if (farmerUserId === input.buyerId) {
+      throw new AppError(400, 'You cannot purchase from your own farm');
+    }
+    if (!(await buyerHasApprovedFarmAccess(input.buyerId, farmerUserId))) {
+      throw new AppError(
+        403,
+        'Farm access required — pay the access fee to unlock this farm and place orders',
+        'FARM_ACCESS_REQUIRED'
+      );
+    }
+
+    const totalAmount = Math.round(input.quantity * listing.price * 100) / 100;
 
     const txResult = await prisma.$transaction(async (tx) => {
       const releaseOtp = generateReleaseOtp();
 
       const order = await tx.productOrder.create({
         data: {
-          buyerId,
+          buyerId: input.buyerId,
           farmerId: farmerUserId,
-          listingId,
-          quantity: data.quantity,
+          listingId: input.listingId,
+          quantity: input.quantity,
           unitPrice: listing.price,
           totalAmount,
           unit: listing.unit,
-          paymentMethod: data.paymentMethod,
-          transactionId: result.transactionId,
-          status: result.status === 'COMPLETED' ? 'PAID' : 'PENDING',
+          paymentMethod: input.paymentMethod,
+          transactionId: input.transactionId,
+          status: 'PAID',
           trackStage: 'ORDER_RECEIVED',
-          trackUpdatedAt: result.status === 'COMPLETED' ? new Date() : null,
-          releaseOtp: result.status === 'COMPLETED' ? releaseOtp : null,
+          trackUpdatedAt: new Date(),
+          releaseOtp,
           escrowStatus: 'HELD',
         },
         include: {
@@ -114,9 +198,9 @@ export class OrderService {
         },
       });
 
-      const remaining = listing.quantity - data.quantity;
+      const remaining = listing.quantity - input.quantity;
       await tx.commodityListing.update({
-        where: { id: listingId },
+        where: { id: input.listingId },
         data: {
           quantity: remaining,
           status: remaining <= 0 ? 'SOLD' : 'ACTIVE',
@@ -125,9 +209,9 @@ export class OrderService {
 
       return {
         order,
-        message: `Purchased ${data.quantity} ${listing.unit} of ${listing.title}`,
+        message: `Purchased ${input.quantity} ${listing.unit} of ${listing.title}`,
         totalPaid: totalAmount,
-        releaseOtp: result.status === 'COMPLETED' ? releaseOtp : null,
+        releaseOtp,
         orderId: order.id,
       };
     });
@@ -143,8 +227,8 @@ export class OrderService {
         : null;
     const buyerCountry = txResult.order.buyer.country ?? 'Ghana';
     const farmerCountry = listing.farmer.user.country ?? 'Ghana';
-    await notifyNewOrder(farmerUserId, buyerId, buyerName, listing.title, totalAmount, {
-      quantity: data.quantity,
+    await notifyNewOrder(farmerUserId, input.buyerId, buyerName, listing.title, totalAmount, {
+      quantity: input.quantity,
       unit: listing.unit,
       imageUrl,
       listingId: listing.id,
@@ -153,7 +237,7 @@ export class OrderService {
       orderId: txResult.order.id,
     });
     await notifyProductPurchase(
-      buyerId,
+      input.buyerId,
       farmerUserId,
       farmerName,
       listing.title,

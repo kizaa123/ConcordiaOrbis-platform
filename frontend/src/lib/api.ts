@@ -335,10 +335,13 @@ class ApiClient {
       this.request(`/marketplace/${id}`, { method: "DELETE" }),
     purchase: (id: string, body: { quantity: number; paymentMethod: string }) =>
       this.request<{
-        orderId: string;
+        orderId?: string;
         releaseOtp: string | null;
         totalPaid: number;
-        message: string;
+        message?: string;
+        checkoutUrl?: string;
+        pending?: boolean;
+        reference?: string;
       }>(`/marketplace/${id}/purchase`, {
         method: "POST",
         body: JSON.stringify(body),
@@ -387,15 +390,32 @@ class ApiClient {
     packages: () => this.request<import("./types").AccessPackage[]>("/payments/packages"),
     access: () => this.request<{ hasAccess: boolean; access: unknown }>("/payments/access"),
     purchase: (packageId: string, paymentMethod: string) =>
-      this.request("/payments/purchase", {
+      this.request<{ checkoutUrl?: string; pending?: boolean; reference?: string }>("/payments/purchase", {
         method: "POST",
         body: JSON.stringify({ packageId, paymentMethod }),
       }),
     purchaseFarmAccess: (farmerId: string, paymentMethod: string) =>
-      this.request("/payments/farm-access", {
+      this.request<{
+        checkoutUrl?: string;
+        pending?: boolean;
+        reference?: string;
+        accessGranted?: boolean;
+        message?: string;
+      }>("/payments/farm-access", {
         method: "POST",
         body: JSON.stringify({ farmerId, paymentMethod }),
       }),
+    verifyPaystack: (reference: string) =>
+      this.request<{
+        status: "COMPLETED" | "PENDING" | "FAILED";
+        kind?: string;
+        returnTo: string;
+        message: string;
+        reference: string;
+        orderId?: string;
+        farmerId?: string;
+        publicationId?: string;
+      }>(`/payments/paystack/verify?reference=${encodeURIComponent(reference)}`),
     history: () => this.request("/payments/history"),
   };
 
@@ -471,7 +491,13 @@ class ApiClient {
     recordView: (id: string) =>
       this.request<{ viewCount: number }>(`/research/${id}/view`, { method: "POST" }),
     purchase: (id: string, paymentMethod: string) =>
-      this.request(`/research/${id}/purchase`, {
+      this.request<{
+        checkoutUrl?: string;
+        pending?: boolean;
+        reference?: string;
+        message?: string;
+        totalPaid?: number;
+      }>(`/research/${id}/purchase`, {
         method: "POST",
         body: JSON.stringify({ paymentMethod }),
       }),

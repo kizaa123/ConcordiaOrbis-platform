@@ -9,6 +9,7 @@ import { PaymentResultOverlay } from "@/components/PaymentResultOverlay";
 import { Icon } from "@/components/icons";
 import { api } from "@/lib/api";
 import { useMoneyFormat } from "@/hooks/useMoneyFormat";
+import { redirectToPaystack } from "@/lib/paystackCheckout";
 
 interface PublicationAccessPaymentModalProps {
   publication: ResearchPublication;
@@ -41,7 +42,8 @@ export function PublicationAccessPaymentModal({
     setSubmitting(true);
     setResult(null);
     try {
-      await api.research.purchase(publication.id, paymentMethod);
+      const paid = await api.research.purchase(publication.id, paymentMethod);
+      if (redirectToPaystack(paid)) return;
       const updated = await api.research.get(publication.id);
       setResult({ variant: "success", publication: updated });
       void showLiveNotifications();

@@ -19,7 +19,11 @@ const PUBLIC_PATHS = ["/", "/login", "/privacy", "/terms"];
 const REGISTRATION_FLOW_PATHS = ["/register", "/complete-profile"];
 
 function isRegistrationFlow(pathname: string) {
-  return REGISTRATION_FLOW_PATHS.includes(pathname) || pathname.startsWith("/auth/");
+  return (
+    REGISTRATION_FLOW_PATHS.includes(pathname) ||
+    pathname.startsWith("/auth/") ||
+    pathname.startsWith("/payments/")
+  );
 }
 
 function PortalWrap({ children }: { children: React.ReactNode }) {

@@ -47,7 +47,12 @@ export function createApp() {
       credentials: true,
     })
   );
-  app.use(express.json({ limit: '25mb' }));
+  app.use((req, res, next) => {
+    if (req.originalUrl.split('?')[0] === '/api/payments/paystack/webhook') {
+      return express.raw({ type: '*/*' })(req, res, next);
+    }
+    return express.json({ limit: '25mb' })(req, res, next);
+  });
 
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 

@@ -10,7 +10,8 @@ function skipPublicOAuth(req: Request) {
     path === '/api/auth/google' ||
     path === '/api/auth/google/callback' ||
     path === '/auth/google' ||
-    path === '/auth/google/callback'
+    path === '/auth/google/callback' ||
+    path === '/api/payments/paystack/webhook'
   );
 }
 

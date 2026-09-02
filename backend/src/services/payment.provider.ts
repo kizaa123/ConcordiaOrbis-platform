@@ -1,50 +1,52 @@
-export interface PaymentInitRequest {
-  userId: string;
-  amount: number;
-  paymentMethod: string;
-  packageId?: string;
-  referenceId?: string;
-  type?: 'ACCESS_PACKAGE' | 'PRODUCT_ORDER' | 'RESEARCH_PURCHASE';
-  metadata?: Record<string, string>;
+import { randomBytes } from 'crypto';
+import { AppError } from '../utils/errors';
+import { getPaystackConfig } from '../config/paystack.config';
+import { PaystackPaymentProvider } from './paystack.provider';
+import type { PaymentInitRequest, PaymentProvider, PaymentResult } from './payment.types';
+
+export type { PaymentInitRequest, PaymentKind, PaymentProvider, PaymentResult } from './payment.types';
+export { isLivePaystackCheckout } from './payment.types';
+
+function mockReference(userId: string) {
+  return `MOCK-${Date.now()}-${userId.slice(0, 6).toUpperCase()}-${randomBytes(2).toString('hex')}`;
 }
 
-export interface PaymentResult {
-  transactionId: string;
-  status: 'COMPLETED' | 'PENDING' | 'FAILED';
-  providerReference?: string;
-}
-
-/** Abstraction layer - swap providers (Paystack, Stripe, MTN MoMo) without changing business logic */
-export interface PaymentProvider {
-  readonly name: string;
-  initiatePayment(request: PaymentInitRequest): Promise<PaymentResult>;
-  verifyPayment(transactionId: string): Promise<PaymentResult>;
-}
-
-/** Mock provider for development; replace in production */
+/** Local/dev provider: marks the charge complete immediately (no Paystack keys). */
 export class MockPaymentProvider implements PaymentProvider {
   readonly name = 'mock';
 
   async initiatePayment(request: PaymentInitRequest): Promise<PaymentResult> {
-    const transactionId = `MOCK-${Date.now()}-${request.userId.slice(0, 6).toUpperCase()}`;
+    const transactionId = mockReference(request.userId);
     return {
       transactionId,
       status: 'COMPLETED',
       providerReference: transactionId,
+      metadata: request.metadata,
+      channel: request.paymentMethod,
     };
   }
 
   async verifyPayment(transactionId: string): Promise<PaymentResult> {
-    return { transactionId, status: 'COMPLETED' };
+    return { transactionId, status: 'COMPLETED', providerReference: transactionId };
   }
 }
 
-let activeProvider: PaymentProvider = new MockPaymentProvider();
-
-export function setPaymentProvider(provider: PaymentProvider): void {
-  activeProvider = provider;
-}
+const mockProvider = new MockPaymentProvider();
+const paystackProvider = new PaystackPaymentProvider();
 
 export function getPaymentProvider(): PaymentProvider {
-  return activeProvider;
+  const config = getPaystackConfig();
+  if (config.enabled) return paystackProvider;
+  if (process.env.NODE_ENV === 'production') {
+    throw new AppError(
+      503,
+      'Paystack is not configured. Set PAYSTACK_SECRET_KEY on the API.',
+      'PAYSTACK_NOT_CONFIGURED'
+    );
+  }
+  return mockProvider;
+}
+
+export function getPaystackProvider(): PaystackPaymentProvider {
+  return paystackProvider;
 }

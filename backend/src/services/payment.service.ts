@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import prisma from '../database/prisma';
 import { AppError, assertFound, assertAuthorized } from '../utils/errors';
-import { ROLES, isFarmerRole, isMarketplaceBuyerRole, canPurchaseFromMarketplace } from '../constants/roles';
-import { getPaymentProvider } from './payment.provider';
+import { isFarmerRole, isMarketplaceBuyerRole, canPurchaseFromMarketplace } from '../constants/roles';
+import { checkoutRedirect, loadPayer, startCheckout } from './payment.checkout';
 import { notifyFarmAccessPaid } from './notification.service';
 import { FARM_ACCESS_PRICE_GHC } from '../constants/pricing';
 import {
@@ -14,7 +14,7 @@ import {
 
 export const purchaseSchema = z.object({
   packageId: z.string().uuid(),
-  paymentMethod: z.string().min(2),
+  paymentMethod: z.string().min(2).optional().default('paystack'),
 });
 
 export const packageSchema = z.object({
@@ -25,7 +25,7 @@ export const packageSchema = z.object({
 
 export const purchaseFarmAccessSchema = z.object({
   farmerId: z.string().uuid(),
-  paymentMethod: z.string().min(2),
+  paymentMethod: z.string().min(2).optional().default('paystack'),
 });
 
 export class PaymentService {
@@ -50,18 +50,58 @@ export class PaymentService {
       'Access package not found'
     );
 
-    const provider = getPaymentProvider();
-    const result = await provider.initiatePayment({
+    const paymentMethod = data.paymentMethod || 'paystack';
+    const payer = await loadPayer(buyerId);
+    const result = await startCheckout({
       userId: buyerId,
+      email: payer.email,
       amount: pkg.price,
       packageId: pkg.id,
-      paymentMethod: data.paymentMethod,
+      paymentMethod,
       type: 'ACCESS_PACKAGE',
+      metadata: {
+        kind: 'ACCESS_PACKAGE',
+        userId: buyerId,
+        packageId: pkg.id,
+        amount: String(pkg.price),
+        paymentMethod,
+        returnTo: '/dashboard',
+      },
     });
 
-    if (result.status === 'FAILED') {
-      throw new AppError(402, 'Payment failed');
+    const redirect = checkoutRedirect(result);
+    if (redirect) return redirect;
+
+    return this.fulfillAccessPackage({
+      buyerId,
+      packageId: pkg.id,
+      transactionId: result.transactionId,
+      paymentMethod,
+    });
+  }
+
+  async fulfillAccessPackage(input: {
+    buyerId: string;
+    packageId: string;
+    transactionId: string;
+    paymentMethod: string;
+  }) {
+    const existing = await prisma.payment.findUnique({
+      where: { transactionId: input.transactionId },
+    });
+    if (existing?.status === 'COMPLETED') {
+      const access = await prisma.buyerAccess.findFirst({
+        where: { buyerId: input.buyerId, packageId: input.packageId },
+        include: { package: true },
+        orderBy: { endDate: 'desc' },
+      });
+      return { payment: existing, access, message: 'Access already activated' };
     }
+
+    const pkg = assertFound(
+      await prisma.accessPackage.findUnique({ where: { id: input.packageId } }),
+      'Access package not found'
+    );
 
     const startDate = new Date();
     const endDate = new Date();
@@ -70,18 +110,18 @@ export class PaymentService {
     return prisma.$transaction(async (tx) => {
       const payment = await tx.payment.create({
         data: {
-          userId: buyerId,
+          userId: input.buyerId,
           amount: pkg.price,
-          paymentMethod: data.paymentMethod,
-          transactionId: result.transactionId,
-          status: result.status === 'COMPLETED' ? 'COMPLETED' : 'PENDING',
+          paymentMethod: input.paymentMethod,
+          transactionId: input.transactionId,
+          status: 'COMPLETED',
           packageId: pkg.id,
         },
       });
 
       const access = await tx.buyerAccess.create({
         data: {
-          buyerId,
+          buyerId: input.buyerId,
           packageId: pkg.id,
           startDate,
           endDate,
@@ -171,43 +211,112 @@ export class PaymentService {
     }
 
     const farmAccessPrice = FARM_ACCESS_PRICE_GHC;
-    const accessExpiresAt = computeFarmAccessExpiry(orderableListings);
-    const accessCycleId = farmerAccessCycleId;
-
-    const provider = getPaymentProvider();
-    const result = await provider.initiatePayment({
+    const paymentMethod = data.paymentMethod || 'paystack';
+    const payer = await loadPayer(buyerId);
+    const result = await startCheckout({
       userId: buyerId,
+      email: payer.email,
       amount: farmAccessPrice,
-      paymentMethod: data.paymentMethod,
+      paymentMethod,
       referenceId: data.farmerId,
-      type: 'PRODUCT_ORDER',
+      type: 'FARM_ACCESS',
+      metadata: {
+        kind: 'FARM_ACCESS',
+        userId: buyerId,
+        farmerId: data.farmerId,
+        amount: String(farmAccessPrice),
+        paymentMethod,
+        returnTo: '/marketplace',
+      },
     });
 
-    if (result.status === 'FAILED') {
-      throw new AppError(402, 'Payment failed');
+    const redirect = checkoutRedirect(result);
+    if (redirect) return redirect;
+
+    return this.fulfillFarmAccess({
+      buyerId,
+      farmerId: data.farmerId,
+      transactionId: result.transactionId,
+      paymentMethod,
+    });
+  }
+
+  async fulfillFarmAccess(input: {
+    buyerId: string;
+    farmerId: string;
+    transactionId: string;
+    paymentMethod: string;
+  }) {
+    const existingPaid = await prisma.buyerFarmerAccess.findFirst({
+      where: { transactionId: input.transactionId, status: 'COMPLETED' },
+    });
+    if (existingPaid) {
+      return {
+        farmAccess: existingPaid,
+        message: 'Farm access is already active',
+        amountPaid: existingPaid.amount,
+        farmerName: '',
+        pendingApproval: false,
+        accessGranted: true,
+      };
     }
 
-    const paymentCompleted = result.status === 'COMPLETED';
-    const connectionStatus = paymentCompleted ? 'ACCEPTED' : 'PENDING';
+    if (input.farmerId === input.buyerId) {
+      throw new AppError(400, 'You cannot purchase access to your own farm');
+    }
+
+    const farmer = assertFound(
+      await prisma.user.findUnique({
+        where: { id: input.farmerId },
+        include: { farmerProfile: true },
+      }),
+      'Farmer not found'
+    );
+    assertAuthorized(isFarmerRole(farmer.roleId), 'Target user is not a farmer');
+    assertAuthorized(!!farmer.farmerProfile, 'Farmer profile not found');
+
+    const orderableListings = await getFarmerOrderableListings(input.farmerId);
+    if (orderableListings.length === 0) {
+      throw new AppError(
+        400,
+        'This farm has no products available right now. Access can only be purchased during an active harvest period.'
+      );
+    }
+
+    const farmerProfile = farmer.farmerProfile!;
+    const accessCycleId = resolveFarmAccessCycleId(farmerProfile.farmAccessCycleId, farmerProfile.id);
+    const farmAccessPrice = FARM_ACCESS_PRICE_GHC;
+    const accessExpiresAt = computeFarmAccessExpiry(orderableListings);
+
+    const current = await prisma.buyerFarmerAccess.findUnique({
+      where: { buyerId_farmerId: { buyerId: input.buyerId, farmerId: input.farmerId } },
+    });
+    if (
+      current?.status === 'COMPLETED' &&
+      current.transactionId !== input.transactionId &&
+      isFarmAccessRecordValid(current, accessCycleId, accessExpiresAt)
+    ) {
+      throw new AppError(409, 'You already have access to this farm');
+    }
 
     const txResult = await prisma.$transaction(async (tx) => {
       const farmAccess = await tx.buyerFarmerAccess.upsert({
-        where: { buyerId_farmerId: { buyerId, farmerId: data.farmerId } },
+        where: { buyerId_farmerId: { buyerId: input.buyerId, farmerId: input.farmerId } },
         create: {
-          buyerId,
-          farmerId: data.farmerId,
+          buyerId: input.buyerId,
+          farmerId: input.farmerId,
           amount: farmAccessPrice,
-          paymentMethod: data.paymentMethod,
-          transactionId: result.transactionId,
-          status: paymentCompleted ? 'COMPLETED' : 'PENDING',
+          paymentMethod: input.paymentMethod,
+          transactionId: input.transactionId,
+          status: 'COMPLETED',
           expiresAt: accessExpiresAt,
           accessCycleId,
         },
         update: {
           amount: farmAccessPrice,
-          paymentMethod: data.paymentMethod,
-          transactionId: result.transactionId,
-          status: paymentCompleted ? 'COMPLETED' : 'PENDING',
+          paymentMethod: input.paymentMethod,
+          transactionId: input.transactionId,
+          status: 'COMPLETED',
           expiresAt: accessExpiresAt,
           accessCycleId,
           createdAt: new Date(),
@@ -215,35 +324,33 @@ export class PaymentService {
       });
 
       await tx.connectionRequest.upsert({
-        where: { buyerId_farmerId: { buyerId, farmerId: data.farmerId } },
-        create: { buyerId, farmerId: data.farmerId, status: connectionStatus },
-        update: { status: connectionStatus },
+        where: { buyerId_farmerId: { buyerId: input.buyerId, farmerId: input.farmerId } },
+        create: { buyerId: input.buyerId, farmerId: input.farmerId, status: 'ACCEPTED' },
+        update: { status: 'ACCEPTED' },
       });
 
       return {
         farmAccess,
-        message: paymentCompleted
-          ? `Access granted - you can now view ${farmer.firstName}'s farm and products`
-          : `Payment received - farm access will activate once payment is confirmed`,
+        message: `Access granted - you can now view ${farmer.firstName}'s farm and products`,
         amountPaid: farmAccessPrice,
         farmerName: `${farmer.firstName} ${farmer.lastName}`,
-        pendingApproval: !paymentCompleted,
-        accessGranted: paymentCompleted,
+        pendingApproval: false,
+        accessGranted: true,
       };
     });
 
     const buyer = await prisma.user.findUnique({
-      where: { id: buyerId },
+      where: { id: input.buyerId },
       select: { firstName: true, lastName: true, country: true },
     });
     const buyerName = buyer ? `${buyer.firstName} ${buyer.lastName}` : 'A buyer';
     await notifyFarmAccessPaid(
-      buyerId,
-      data.farmerId,
+      input.buyerId,
+      input.farmerId,
       buyerName,
       `${farmer.firstName} ${farmer.lastName}`,
       farmAccessPrice,
-      paymentCompleted,
+      true,
       buyer?.country
     );
 

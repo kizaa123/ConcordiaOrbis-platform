@@ -138,9 +138,13 @@ ANI PLATFORM/
 - Audit logging
 - Buyer access payment gate before full farmer data
 
-## Payment Provider
+## Payments (Paystack)
 
-The `PaymentProvider` interface in `backend/src/services/payment.provider.ts` abstracts payment gateways. Swap `MockPaymentProvider` for Paystack, Stripe, or MTN MoMo in production.
+Farm access, product orders, and research purchases go through Paystack (card, mobile money, bank). The API initializes a charge, the user pays on Paystack, then `/api/payments/paystack/verify` and the webhook mark the order paid.
+
+Set on Render: `PAYSTACK_SECRET_KEY`, `PAYSTACK_PUBLIC_KEY`. Webhook URL: `https://concordiaorbis-platform.onrender.com/api/payments/paystack/webhook`.
+
+Without a secret key, local development still uses an instant mock checkout.
 
 ## Deployment (Vercel + Render)
 
@@ -160,6 +164,7 @@ Copy from the old `ani-platform-api` service (Render → Environment):
 - `JWT_SECRET`, `JWT_REFRESH_SECRET`
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+- `PAYSTACK_SECRET_KEY`, `PAYSTACK_PUBLIC_KEY`
 
 After sync, verify Render shows:
 
