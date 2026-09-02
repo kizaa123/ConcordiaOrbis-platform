@@ -806,3 +806,9 @@ body {
 .notification-bell-active {
   animation: notification-bell-pulse 2s ease-in-out infinite;
 }
+
+iframe[src*="paystack"],
+iframe[src*="checkout.paystack"],
+iframe[name*="paystack" i] {
+  z-index: 2147483000 !important;
+}

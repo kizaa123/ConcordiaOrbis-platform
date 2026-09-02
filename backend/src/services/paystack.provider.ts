@@ -56,7 +56,7 @@ export class PaystackPaymentProvider implements PaymentProvider {
         currency: config.currency,
         reference,
         callback_url: config.callbackUrl,
-        channels: ['card', 'mobile_money', 'bank', 'bank_transfer'],
+        channels: ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer'],
         metadata: {
           ...request.metadata,
           userId: request.userId,

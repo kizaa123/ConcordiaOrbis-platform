@@ -183,13 +183,13 @@ export default function PublisherLibraryPage() {
       )}
 
       {dataLoading ? (
-        <CardGridSkeleton count={3} columns="sm:grid-cols-2 lg:grid-cols-3" imageHeight="h-28" />
+        <CardGridSkeleton count={8} columns="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" imageHeight="h-28" />
       ) : !library || library.publications.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-brand-200 bg-white p-12 text-center text-gray-500">
           No publications found for this publisher.
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {library.publications.map((pub, i) => (
             <ScrollReveal
               key={pub.id}

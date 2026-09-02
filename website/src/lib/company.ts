@@ -20,9 +20,9 @@ export const COMPANY = {
 };
 
 export const CONTACT = {
-  hello: "hello@concordiaorbis.com",
-  payments: "payments@concordiaorbis.com",
-  support: "support@concordiaorbis.com",
+  hello: "concordiaorbisadmin@gmail.com",
+  payments: "concordiaorbisadmin@gmail.com",
+  support: "concordiaorbisadmin@gmail.com",
   phoneDisplay: "+233 20 000 0000",
   phoneTel: "+233200000000",
   whatsapp: "https://wa.me/233200000000",

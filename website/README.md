@@ -18,7 +18,7 @@ Edit `src/lib/company.ts`:
 
 - Real support phone and WhatsApp
 - Live social profile URLs (Instagram, Facebook, LinkedIn, X, YouTube)
-- Email inboxes you actually monitor (`hello@`, `payments@`, `support@`)
+- Platform email (`concordiaorbisadmin@gmail.com`)
 
 Set `NEXT_PUBLIC_PLATFORM_URL` if the trading app URL changes.
 

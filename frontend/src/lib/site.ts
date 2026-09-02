@@ -6,8 +6,9 @@ export const PLATFORM_TEAM_LABEL = `${PLATFORM_NAME} Team`;
 export const SITE_DESCRIPTION =
   "Connect fellows, clients, and liaison officers across Africa and beyond";
 
-export const SUPPORT_EMAIL = "hello@concordiaorbis.com";
-export const PAYMENTS_EMAIL = "payments@concordiaorbis.com";
+export const PLATFORM_EMAIL = "concordiaorbisadmin@gmail.com";
+export const SUPPORT_EMAIL = PLATFORM_EMAIL;
+export const PAYMENTS_EMAIL = PLATFORM_EMAIL;
 
 /** Live public company site (About, Team, Refunds, Contact). */
 export const DEFAULT_COMPANY_SITE_URL = "https://concordiaorbis-website.vercel.app";

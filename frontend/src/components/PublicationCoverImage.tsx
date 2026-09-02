@@ -8,31 +8,39 @@ type PublicationCoverImageProps = {
   coverImage?: string | null;
   title?: string;
   className?: string;
-  aspectClass?: string;
 };
 
 export function PublicationCoverImage({
   coverImage,
   title,
   className = "",
-  aspectClass = "aspect-video",
 }: PublicationCoverImageProps) {
   const src = coverImage ? assetUrl(coverImage) : null;
 
   return (
     <div
-      className={`relative w-full overflow-hidden bg-white ${aspectClass} ${className}`}
+      className={`relative aspect-[16/9] w-full overflow-hidden bg-brand-50 ${className}`}
     >
       {src ? (
-        <ImageLoader
-          src={src}
-          alt={title ? `${title} cover` : "Publication cover"}
-          className="h-full w-full"
-          containerClassName="relative h-full w-full"
-        />
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={src}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+          />
+          <ImageLoader
+            src={src}
+            alt={title ? `${title} cover` : "Publication cover"}
+            className="relative z-10 h-full w-full"
+            containerClassName="relative z-10 h-full w-full overflow-hidden bg-transparent"
+            objectFit="contain"
+          />
+        </>
       ) : (
-        <div className="flex h-full w-full items-center justify-center bg-gray-100">
-          <Icon name="book" className="h-12 w-12 text-gray-300" />
+        <div className="flex h-full w-full items-center justify-center">
+          <Icon name="book" className="h-8 w-8 text-brand-200" />
         </div>
       )}
     </div>

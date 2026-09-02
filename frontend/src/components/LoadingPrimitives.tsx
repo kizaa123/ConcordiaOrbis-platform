@@ -140,7 +140,7 @@ function ImageLoaderInner({
   src,
   alt,
   className = "h-full w-full",
-  containerClassName = "relative h-full w-full overflow-hidden",
+  containerClassName = "relative h-full w-full overflow-hidden bg-white",
   rounded = "",
   width,
   height,
@@ -157,7 +157,7 @@ function ImageLoaderInner({
   }
 
   return (
-    <div className={`${containerClassName} bg-white ${rounded}`}>
+    <div className={`${containerClassName} ${rounded}`}>
       {status !== "loaded" && (
         <SkeletonImage className={`absolute inset-0 ${rounded}`} showSpinner />
       )}

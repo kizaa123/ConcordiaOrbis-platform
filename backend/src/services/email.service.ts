@@ -16,7 +16,7 @@ function getFormattedFrom(): string {
   if (userEmail) {
     return `"${PLATFORM_NAME}" <${userEmail}>`;
   }
-  return `"${PLATFORM_NAME}" <noreply@concordiaorbis.local>`;
+  return `"${PLATFORM_NAME}" <concordiaorbisadmin@gmail.com>`;
 }
 
 function getTransports() {

@@ -29,12 +29,6 @@ export default function ContactPage() {
             <a href={`mailto:${CONTACT.hello}`} className="mt-2 block font-semibold text-brand-800">
               {CONTACT.hello}
             </a>
-            <a href={`mailto:${CONTACT.payments}`} className="mt-1 block text-sm text-gray-600">
-              Payments: {CONTACT.payments}
-            </a>
-            <a href={`mailto:${CONTACT.support}`} className="mt-1 block text-sm text-gray-600">
-              Support: {CONTACT.support}
-            </a>
           </div>
           <div className="rounded-3xl border border-brand-100 bg-white p-6 shadow-sm">
             <p className="text-xs font-bold uppercase tracking-widest text-brand-600">Phone</p>

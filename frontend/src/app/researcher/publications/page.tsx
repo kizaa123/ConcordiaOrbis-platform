@@ -214,8 +214,8 @@ export default function ResearcherPublicationsPage() {
       </div>
 
       {showForm && (
-        <div className="mx-auto mb-8 max-w-lg rounded-2xl border border-brand-100 bg-white p-6 shadow-sm">
-          <div className="mb-5 border-b border-brand-50 pb-4">
+        <div className="mb-8 rounded-2xl border border-brand-100 bg-white p-5 shadow-sm sm:p-6 lg:p-8">
+          <div className="mb-6 border-b border-brand-50 pb-4">
             <h2 className="text-lg font-semibold text-brand-900">
               {editingId ? "Edit publication" : "New publication"}
             </h2>
@@ -225,83 +225,79 @@ export default function ResearcherPublicationsPage() {
           </div>
           {error && <p className="auth-error mb-4">{error}</p>}
 
-          <div className="space-y-5">
-            <div>
-              <label className="auth-label">Title</label>
-              <input
-                className="auth-input"
-                placeholder="Publication title"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-              />
-            </div>
+          <div className="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start lg:gap-10">
+            <FileUploadZone
+              label="Cover (optional)"
+              accept="image/*"
+              icon="image"
+              disabled={uploading}
+              uploading={uploadingCover}
+              onFileSelect={handleCoverSelect}
+              previewUrl={coverPreviewUrl}
+              fileName={
+                coverPreviewUrl && !localCoverPreview ? form.coverImage.split("/").pop() : undefined
+              }
+              hint="PNG, JPG or WebP — any orientation"
+            />
 
-            <div className="grid gap-5 md:grid-cols-[11rem_minmax(0,1fr)]">
-              <div className="space-y-4">
-                <FileUploadZone
-                  compact
-                  label="PDF document"
-                  accept=".pdf,application/pdf"
-                  icon="file"
-                  disabled={uploading}
-                  uploading={uploadingDoc}
-                  onFileSelect={handleDocSelect}
-                  fileName={docFileName}
-                  hint="PDF only"
+            <div className="space-y-5">
+              <div>
+                <label className="auth-label">Title</label>
+                <input
+                  className="auth-input"
+                  placeholder="Publication title"
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
                 />
-                <FileUploadZone
-                  compact
-                  label="Cover (optional)"
-                  accept="image/*"
-                  icon="image"
-                  disabled={uploading}
-                  uploading={uploadingCover}
-                  onFileSelect={handleCoverSelect}
-                  previewUrl={coverPreviewUrl}
-                  fileName={
-                    coverPreviewUrl && !localCoverPreview
-                      ? form.coverImage.split("/").pop()
-                      : undefined
-                  }
-                  hint="16:9 or 4:3 works best"
-                />
-                <div className="rounded-xl border border-brand-100 bg-brand-50/40 p-3">
-                  <label className="flex items-center gap-2 text-sm font-medium text-brand-900">
-                    <input
-                      type="checkbox"
-                      checked={form.isFree}
-                      onChange={(e) => setForm({ ...form, isFree: e.target.checked })}
-                    />
-                    Free to read
-                  </label>
-                  {!form.isFree && (
-                    <div className="mt-3">
-                      <label className="auth-label">Price (GHC)</label>
-                      <input
-                        type="number"
-                        min={0.01}
-                        step={0.01}
-                        className="auth-input"
-                        placeholder="e.g. 25.00"
-                        value={form.priceInput}
-                        onChange={(e) => setForm({ ...form, priceInput: e.target.value })}
-                      />
-                      <p className="mt-1 text-xs text-gray-500">
-                        Buyers pay this exact price. You receive 90% after the platform fee.
-                      </p>
-                    </div>
-                  )}
-                </div>
               </div>
 
-              <div className="flex min-h-[14rem] flex-col md:min-h-0">
+              <FileUploadZone
+                label="PDF document"
+                accept=".pdf,application/pdf"
+                icon="file"
+                disabled={uploading}
+                uploading={uploadingDoc}
+                onFileSelect={handleDocSelect}
+                fileName={docFileName}
+                hint="PDF only"
+              />
+
+              <div>
                 <label className="auth-label">Description</label>
                 <textarea
-                  className="auth-input min-h-[12rem] flex-1 resize-y md:min-h-[18rem]"
+                  className="auth-input min-h-[8rem] resize-y lg:min-h-[11rem]"
                   placeholder="Describe what readers will learn, your qualifications, and key topics covered..."
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                 />
+              </div>
+
+              <div className="rounded-xl border border-brand-100 bg-brand-50/40 p-4">
+                <label className="flex items-center gap-2 text-sm font-medium text-brand-900">
+                  <input
+                    type="checkbox"
+                    checked={form.isFree}
+                    onChange={(e) => setForm({ ...form, isFree: e.target.checked })}
+                  />
+                  Free to read
+                </label>
+                {!form.isFree && (
+                  <div className="mt-3">
+                    <label className="auth-label">Price (GHC)</label>
+                    <input
+                      type="number"
+                      min={0.01}
+                      step={0.01}
+                      className="auth-input"
+                      placeholder="e.g. 25.00"
+                      value={form.priceInput}
+                      onChange={(e) => setForm({ ...form, priceInput: e.target.value })}
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                      Buyers pay this exact price. You receive 90% after the platform fee.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -322,22 +318,17 @@ export default function ResearcherPublicationsPage() {
           No publications yet. Upload your first PDF publication.
         </div>
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {publications.map((pub) => (
             <article
               key={pub.id}
               className="flex flex-col overflow-hidden rounded-xl border border-brand-100 bg-white shadow-sm transition hover:border-brand-200 hover:shadow-md"
             >
-              <PublicationCoverImage
-                coverImage={pub.coverImage}
-                title={pub.title}
-                className="rounded-none"
-                aspectClass="aspect-[2/1]"
-              />
+              <PublicationCoverImage coverImage={pub.coverImage} title={pub.title} />
               <div className="flex flex-1 flex-col gap-1.5 p-3">
                 <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-brand-900">{pub.title}</h3>
                 {pub.description && (
-                  <p className="line-clamp-2 text-xs leading-snug text-gray-500">{pub.description}</p>
+                  <p className="line-clamp-1 text-xs leading-snug text-gray-500">{pub.description}</p>
                 )}
                 <div className="mt-auto pt-2">
                   <div className="flex items-center justify-between text-xs">

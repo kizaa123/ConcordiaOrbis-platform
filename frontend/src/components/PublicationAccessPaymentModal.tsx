@@ -129,7 +129,7 @@ export function PublicationAccessPaymentModal({
               <PaymentCheckout
                 totalLabel="Publication"
                 totalAmount={priceLabel}
-                subtitle={`Pay ${priceLabel} once; 90% goes to ${publication.researcher.name}`}
+                subtitle={`Pay ${priceLabel} to read ${publication.title}.`}
                 payLabel={`Pay ${priceLabel}`}
                 onPay={handlePay}
                 submitting={submitting}

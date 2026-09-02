@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { preloadPaystackScript } from "@/lib/paystackCheckout";
+
 interface PaymentCheckoutProps {
   totalLabel: string;
   totalAmount: string;
@@ -31,6 +34,10 @@ export function PaymentCheckout({
   error,
   disabled = false,
 }: PaymentCheckoutProps) {
+  useEffect(() => {
+    preloadPaystackScript();
+  }, []);
+
   return (
     <div className="space-y-3 sm:space-y-4">
       <div className="rounded-xl border border-brand-100 bg-white px-3 py-2.5 sm:px-4 sm:py-3">

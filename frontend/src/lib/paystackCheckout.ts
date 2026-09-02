@@ -30,16 +30,17 @@ export type PaystackCheckoutHooks = {
   onConfirming?: () => void;
 };
 
+type PaystackCallbacks = {
+  onSuccess?: (transaction: { reference?: string }) => void;
+  onCancel?: () => void;
+  onClose?: () => void;
+  onError?: (error: { message?: string }) => void;
+  onBankTransferConfirmationPending?: () => void;
+};
+
 type PaystackPop = {
-  resumeTransaction: (
-    accessCode: string,
-    callbacks?: {
-      onSuccess?: (transaction: { reference?: string }) => void;
-      onCancel?: () => void;
-      onError?: (error: { message?: string }) => void;
-      onBankTransferConfirmationPending?: () => void;
-    }
-  ) => void;
+  resumeTransaction: (accessCode: string, callbacks?: PaystackCallbacks) => unknown;
+  checkout?: (options: { accessCode: string } & PaystackCallbacks) => unknown;
 };
 
 declare global {
@@ -54,6 +55,10 @@ function isInlineCheckout(result: PaystackCheckoutStart): boolean {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+export function preloadPaystackScript(): void {
+  void loadPaystackScript().catch(() => undefined);
 }
 
 function loadPaystackScript(): Promise<void> {
@@ -81,19 +86,46 @@ function loadPaystackScript(): Promise<void> {
   });
 }
 
-function openPaystackPopup(accessCode: string): Promise<{ reference?: string }> {
+type PopupOutcome = "paid" | "pending" | "dismissed";
+
+function openPaystackPopup(accessCode: string): Promise<PopupOutcome> {
   return new Promise((resolve, reject) => {
     if (!window.PaystackPop) {
       reject(new Error("Paystack is not available."));
       return;
     }
+
+    let settled = false;
+    const finish = (outcome: PopupOutcome) => {
+      if (settled) return;
+      settled = true;
+      resolve(outcome);
+    };
+
+    const callbacks: PaystackCallbacks = {
+      onSuccess: () => finish("paid"),
+      onBankTransferConfirmationPending: () => finish("pending"),
+      // USSD / 3DS / MoMo auth opens a second window and can fire onCancel.
+      // Do not treat that as a failed payment — verify the charge next.
+      onCancel: () => finish("dismissed"),
+      onClose: () => finish("dismissed"),
+      onError: (error) => {
+        if (settled) return;
+        settled = true;
+        reject(new Error(error?.message || "Paystack could not complete this payment."));
+      },
+    };
+
     const popup = new window.PaystackPop();
-    popup.resumeTransaction(accessCode, {
-      onSuccess: (transaction) => resolve(transaction ?? {}),
-      onCancel: () => reject(new Error("Payment was cancelled.")),
-      onError: (error) => reject(new Error(error?.message || "Paystack could not complete this payment.")),
-      onBankTransferConfirmationPending: () => resolve({}),
-    });
+    try {
+      if (typeof popup.checkout === "function") {
+        popup.checkout({ accessCode, ...callbacks });
+        return;
+      }
+    } catch {
+      /* resumeTransaction below */
+    }
+    popup.resumeTransaction(accessCode, callbacks);
   });
 }
 
@@ -126,8 +158,18 @@ export async function completePaystackOnApp(
   if (start.accessCode) {
     hooks?.onAwaitingPayment?.();
     await loadPaystackScript();
-    await openPaystackPopup(start.accessCode);
+    const outcome = await openPaystackPopup(start.accessCode);
     hooks?.onConfirming?.();
+
+    if (outcome === "dismissed") {
+      const snapshot = await api.payments.verifyPaystack(start.reference);
+      if (snapshot.status === "COMPLETED") return snapshot;
+      if (snapshot.status === "FAILED") {
+        throw new Error(snapshot.message || "Payment did not go through.");
+      }
+      // PENDING: USSD or phone authorization may still be in progress.
+    }
+
     return verifyUntilCompleted(start.reference);
   }
 
