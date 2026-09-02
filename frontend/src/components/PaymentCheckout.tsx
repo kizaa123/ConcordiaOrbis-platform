@@ -46,14 +46,6 @@ export function PaymentCheckout({
           </div>
           <PaystackMark className="h-3.5 w-[3.75rem] shrink-0 sm:mt-1 sm:h-4 sm:w-[4.5rem]" />
         </div>
-        <p className="mt-2 border-t border-brand-50 pt-2 text-xs leading-snug text-gray-600 sm:mt-3 sm:pt-3 sm:text-sm sm:leading-relaxed">
-          <span className="sm:hidden">Pay with card, MoMo, or bank. Confirmed by Paystack.</span>
-          <span className="hidden sm:inline">
-            Pay ConcordiaOrbis in this window with{" "}
-            <span className="font-semibold text-brand-900">card, mobile money, or bank transfer</span>.
-            Nothing is marked paid until Paystack confirms the charge.
-          </span>
-        </p>
       </div>
 
       {error && (
