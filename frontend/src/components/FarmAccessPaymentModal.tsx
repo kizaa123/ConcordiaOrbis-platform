@@ -45,12 +45,6 @@ export function FarmAccessPaymentModal({
     try {
       const paid = await api.payments.purchaseFarmAccess(farmer.farmerId, paymentMethod);
       const settled = await completePaystackOnApp(paid, {
-        onAwaitingPayment: () =>
-          setResult({
-            variant: "pending",
-            title: "Waiting for payment",
-            message: "Complete payment in the Paystack sheet.",
-          }),
         onConfirming: () =>
           setResult({
             variant: "pending",
@@ -177,7 +171,6 @@ export function FarmAccessPaymentModal({
             {result?.variant === "pending" && (
               <PaymentResultOverlay
                 variant="pending"
-                compact
                 title={result.title}
                 message={result.message}
               />

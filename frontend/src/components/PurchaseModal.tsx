@@ -232,12 +232,6 @@ function PurchaseModalContent({
     try {
       const purchaseResult = await api.marketplace.purchase(listing.id, { quantity, paymentMethod });
       const settled = await completePaystackOnApp(purchaseResult, {
-        onAwaitingPayment: () =>
-          setResult({
-            variant: "pending",
-            title: "Waiting for payment",
-            message: "Complete payment in the Paystack sheet.",
-          }),
         onConfirming: () =>
           setResult({
             variant: "pending",

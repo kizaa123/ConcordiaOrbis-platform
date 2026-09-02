@@ -45,12 +45,6 @@ export function PublicationAccessPaymentModal({
     try {
       const paid = await api.research.purchase(publication.id, paymentMethod);
       const settled = await completePaystackOnApp(paid, {
-        onAwaitingPayment: () =>
-          setResult({
-            variant: "pending",
-            title: "Waiting for payment",
-            message: "Complete payment in the Paystack sheet.",
-          }),
         onConfirming: () =>
           setResult({
             variant: "pending",
@@ -151,7 +145,6 @@ export function PublicationAccessPaymentModal({
         {result?.variant === "pending" && (
           <PaymentResultOverlay
             variant="pending"
-            compact
             title={result.title}
             message={result.message}
           />

@@ -55,7 +55,9 @@ export function PaymentResultOverlay({
 
   const overlayClass = embedded
     ? "payment-result-embedded"
-    : `payment-result-overlay${compact ? " payment-result-overlay--compact" : ""}`;
+    : isPending
+      ? "payment-result-overlay payment-result-overlay--pending"
+      : `payment-result-overlay${compact ? " payment-result-overlay--compact" : ""}`;
 
   const cardClass = embedded
     ? "payment-result-card payment-result-card--embedded"
@@ -72,7 +74,7 @@ export function PaymentResultOverlay({
       <div className={cardClass}>
         <PaymentStatusIcon
           variant={variant}
-          size={compact || embedded ? "compact" : "default"}
+          size={isPending || compact || embedded ? "compact" : "default"}
         />
         <div className="payment-result-copy">
           <h2 id="payment-result-title" className="payment-result-title">

@@ -37,7 +37,6 @@ type PaystackPop = {
       onSuccess?: (transaction: { reference?: string }) => void;
       onCancel?: () => void;
       onError?: (error: { message?: string }) => void;
-      onLoad?: () => void;
       onBankTransferConfirmationPending?: () => void;
     }
   ) => void;
@@ -82,78 +81,18 @@ function loadPaystackScript(): Promise<void> {
   });
 }
 
-function isPaystackFrame(node: Element): node is HTMLIFrameElement {
-  if (!(node instanceof HTMLIFrameElement)) return false;
-  const haystack = `${node.src} ${node.id} ${node.name} ${node.title}`.toLowerCase();
-  return haystack.includes("paystack");
-}
-
-function findPaystackOverlay(frame: HTMLElement): HTMLElement | null {
-  let node: HTMLElement | null = frame.parentElement;
-  while (node && node !== document.body && node !== document.documentElement) {
-    const style = window.getComputedStyle(node);
-    const zIndex = Number.parseInt(style.zIndex || "0", 10);
-    if (style.position === "fixed" || style.position === "absolute" || zIndex > 1000) {
-      const height = node.getBoundingClientRect().height;
-      if (height > window.innerHeight * 0.7) return node;
-    }
-    node = node.parentElement;
-  }
-  return null;
-}
-
-function applyPaystackMobileSheet(): void {
-  if (typeof window === "undefined") return;
-  if (!window.matchMedia("(max-width: 639.98px)").matches) return;
-
-  const frames = Array.from(document.querySelectorAll("iframe")).filter(isPaystackFrame);
-  for (const frame of frames) {
-    frame.classList.add("paystack-mobile-frame");
-    const overlay = findPaystackOverlay(frame);
-    overlay?.classList.add("paystack-mobile-overlay");
-  }
-}
-
-function startPaystackMobileLayout(): () => void {
-  if (typeof window === "undefined") return () => undefined;
-
-  const root = document.documentElement;
-  root.classList.add("paystack-sheet-open");
-  applyPaystackMobileSheet();
-
-  const observer = new MutationObserver(() => applyPaystackMobileSheet());
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["src", "style", "class"] });
-
-  const interval = window.setInterval(applyPaystackMobileSheet, 250);
-
-  return () => {
-    observer.disconnect();
-    window.clearInterval(interval);
-    root.classList.remove("paystack-sheet-open");
-    document.querySelectorAll(".paystack-mobile-frame").forEach((el) => el.classList.remove("paystack-mobile-frame"));
-    document.querySelectorAll(".paystack-mobile-overlay").forEach((el) => el.classList.remove("paystack-mobile-overlay"));
-  };
-}
-
 function openPaystackPopup(accessCode: string): Promise<{ reference?: string }> {
   return new Promise((resolve, reject) => {
     if (!window.PaystackPop) {
       reject(new Error("Paystack is not available."));
       return;
     }
-    const stopLayout = startPaystackMobileLayout();
-    const settle = (next: () => void) => {
-      stopLayout();
-      next();
-    };
     const popup = new window.PaystackPop();
     popup.resumeTransaction(accessCode, {
-      onLoad: () => applyPaystackMobileSheet(),
-      onSuccess: (transaction) => settle(() => resolve(transaction ?? {})),
-      onCancel: () => settle(() => reject(new Error("Payment was cancelled."))),
-      onError: (error) =>
-        settle(() => reject(new Error(error?.message || "Paystack could not complete this payment."))),
-      onBankTransferConfirmationPending: () => settle(() => resolve({})),
+      onSuccess: (transaction) => resolve(transaction ?? {}),
+      onCancel: () => reject(new Error("Payment was cancelled.")),
+      onError: (error) => reject(new Error(error?.message || "Paystack could not complete this payment.")),
+      onBankTransferConfirmationPending: () => resolve({}),
     });
   });
 }

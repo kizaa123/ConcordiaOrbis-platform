@@ -389,12 +389,39 @@ body {
 /* Payment result overlay - animated success/error feedback */
 @layer components {
   .payment-result-overlay {
-    @apply absolute inset-0 z-10 flex items-center justify-center overflow-y-auto bg-white/95 p-4 backdrop-blur-sm sm:p-6;
+    @apply absolute inset-0 z-10 box-border flex items-center justify-center overflow-x-hidden overflow-y-auto bg-white/95 p-4 backdrop-blur-sm sm:p-6;
     animation: payment-overlay-in 0.25s ease-out both;
   }
 
   .payment-result-overlay--compact {
     @apply p-3 sm:p-5;
+  }
+
+  .payment-result-overlay--pending {
+    @apply fixed inset-0 z-[80] bg-white p-0;
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
+    min-height: 100%;
+    padding-top: max(1rem, env(safe-area-inset-top, 0px));
+    padding-right: max(1rem, env(safe-area-inset-right, 0px));
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+    padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  }
+
+  .payment-result-overlay--pending .payment-result-card {
+    @apply w-full min-w-0;
+    max-width: min(22rem, 100%);
+  }
+
+  .payment-result-overlay--pending .payment-result-title {
+    @apply px-1 text-lg sm:text-2xl;
+    overflow-wrap: anywhere;
+  }
+
+  .payment-result-overlay--pending .payment-result-message {
+    @apply px-1 text-xs sm:text-sm;
+    overflow-wrap: anywhere;
   }
 
   .payment-result-embedded {
@@ -426,7 +453,7 @@ body {
   }
 
   .payment-result-card {
-    @apply flex w-full max-w-sm flex-col items-center text-center;
+    @apply flex w-full min-w-0 max-w-sm flex-col items-center text-center;
     animation: payment-content-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
   }
 
@@ -773,61 +800,4 @@ body {
 
 .notification-bell-active {
   animation: notification-bell-pulse 2s ease-in-out infinite;
-}
-
-/* Paystack Inline injects a full-viewport iframe. On phones pin it as a shorter bottom sheet. */
-@media (max-width: 639.98px) {
-  html.paystack-sheet-open,
-  html.paystack-sheet-open body {
-    overflow: hidden !important;
-  }
-
-  .paystack-mobile-overlay {
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    max-height: 100dvh !important;
-    display: flex !important;
-    align-items: flex-end !important;
-    justify-content: center !important;
-    background: rgba(0, 0, 0, 0.48) !important;
-    padding: 0 !important;
-  }
-
-  .paystack-mobile-overlay > iframe {
-    position: relative !important;
-    inset: auto !important;
-    top: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    left: auto !important;
-    width: 100% !important;
-    max-width: 28rem !important;
-    height: min(30.5rem, calc(100dvh - 4.75rem)) !important;
-    max-height: calc(100dvh - 4.75rem) !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    border: 0 !important;
-    border-radius: 1rem 1rem 0 0 !important;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18) !important;
-    transform: none !important;
-  }
-
-  iframe.paystack-mobile-frame:not(.paystack-mobile-overlay > iframe) {
-    position: fixed !important;
-    top: auto !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    max-width: 28rem !important;
-    height: min(30.5rem, calc(100dvh - 4.75rem)) !important;
-    max-height: calc(100dvh - 4.75rem) !important;
-    min-height: 0 !important;
-    margin: 0 auto !important;
-    border: 0 !important;
-    border-radius: 1rem 1rem 0 0 !important;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18) !important;
-    transform: none !important;
-  }
 }
