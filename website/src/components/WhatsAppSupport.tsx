@@ -7,9 +7,8 @@ import {
   SUPPORT_WHATSAPP_OPEN_EVENT,
   openWhatsAppSupportPicker,
   supportWhatsAppUrl,
-} from "@/lib/site";
+} from "@/lib/company";
 
-/** Remix Icon `ri-whatsapp-fill` */
 function WhatsAppFillIcon({ className = "h-6 w-6" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -18,37 +17,16 @@ function WhatsAppFillIcon({ className = "h-6 w-6" }: { className?: string }) {
   );
 }
 
-type SupportWhatsAppLinkProps = {
-  className?: string;
-  label?: string;
-  iconClassName?: string;
-  showIcon?: boolean;
-};
-
 export function SupportWhatsAppLink({
   className = "",
-  label = "Support & Assistant",
-  iconClassName = "h-5 w-5",
-  showIcon = true,
-}: SupportWhatsAppLinkProps) {
+  label = "WhatsApp Support & Assistant",
+}: {
+  className?: string;
+  label?: string;
+}) {
   return (
     <button type="button" onClick={openWhatsAppSupportPicker} className={`cursor-pointer ${className}`}>
-      {showIcon ? <WhatsAppFillIcon className={iconClassName} /> : null}
       {label}
-    </button>
-  );
-}
-
-export function WhatsAppSupportFab() {
-  return (
-    <button
-      type="button"
-      onClick={openWhatsAppSupportPicker}
-      aria-label="WhatsApp Support and Assistant"
-      title="WhatsApp Support & Assistant"
-      className="fixed z-[70] flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 hover:brightness-110 bottom-[calc(5.25rem+env(safe-area-inset-bottom,0px))] right-4 lg:bottom-6 lg:right-6"
-    >
-      <WhatsAppFillIcon className="h-7 w-7" />
     </button>
   );
 }

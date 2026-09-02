@@ -28,6 +28,34 @@ export const CONTACT = {
   whatsapp: "https://wa.me/message/GW3AIF7DAWTYN1",
 };
 
+export const SUPPORT_WHATSAPP_OPEN_EVENT = "co-open-whatsapp-support";
+
+export const SUPPORT_TOPICS = [
+  { id: "payment", label: "Transaction or payment error" },
+  { id: "access", label: "Farm or publication access" },
+  { id: "order", label: "Orders, delivery, or tracking" },
+  { id: "account", label: "Account, login, or verification" },
+  { id: "listing", label: "Marketplace or listings" },
+  { id: "refund", label: "Refunds or mistaken charges" },
+  { id: "other", label: "Other assistance" },
+] as const;
+
+export function supportWhatsAppUrl(topicLabel: string) {
+  const text = [
+    `Hello ${PLATFORM_NAME},`,
+    "",
+    `I need help with: ${topicLabel}`,
+    "",
+    "Please assist me.",
+  ].join("\n");
+  return `${CONTACT.whatsapp}?text=${encodeURIComponent(text)}`;
+}
+
+export function openWhatsAppSupportPicker() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(SUPPORT_WHATSAPP_OPEN_EVENT));
+}
+
 export const SOCIAL = {
   instagram: "https://www.instagram.com/concordiaorbis",
   facebook: "https://www.facebook.com/concordiaorbis",

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, LegalUpdated } from "@/components/LegalPage";
-import { PAYMENTS_EMAIL, PLATFORM_NAME, SUPPORT_EMAIL, SUPPORT_WHATSAPP_URL, companyUrl } from "@/lib/site";
+import { SupportWhatsAppLink } from "@/components/SupportWhatsAppLink";
+import { PAYMENTS_EMAIL, PLATFORM_NAME, SUPPORT_EMAIL, companyUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: `Terms of use · ${PLATFORM_NAME}`,
@@ -192,9 +193,7 @@ export default function TermsPage() {
       <h2>15. Contact</h2>
       <p>
         Questions:{" "}
-        <a href={SUPPORT_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-          WhatsApp Support & Assistant
-        </a>{" "}
+        <SupportWhatsAppLink showIcon={false} className="support-whatsapp-inline" />{" "}
         or <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>. See also our{" "}
         <Link href="/privacy">privacy policy</Link>.
       </p>

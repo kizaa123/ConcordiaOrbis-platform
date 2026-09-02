@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, LegalUpdated } from "@/components/LegalPage";
-import { PAYMENTS_EMAIL, PLATFORM_NAME, SUPPORT_EMAIL, SUPPORT_WHATSAPP_URL } from "@/lib/site";
+import { SupportWhatsAppLink } from "@/components/SupportWhatsAppLink";
+import { PAYMENTS_EMAIL, PLATFORM_NAME, SUPPORT_EMAIL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: `Privacy · ${PLATFORM_NAME}`,
@@ -21,9 +22,7 @@ export default function PrivacyPage() {
         {PLATFORM_NAME} (“we”) operates this trading platform from Accra, Ghana. This policy
         explains what we collect when you use the marketplace, farm access, escrow orders, liaison
         tools, and research library.         For privacy questions, use{" "}
-        <a href={SUPPORT_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-          WhatsApp Support & Assistant
-        </a>{" "}
+        <SupportWhatsAppLink showIcon={false} className="support-whatsapp-inline" />{" "}
         or email <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
       </p>
 

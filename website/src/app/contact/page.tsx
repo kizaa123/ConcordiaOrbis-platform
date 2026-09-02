@@ -4,6 +4,7 @@ import { ContactForm } from "@/components/ContactForm";
 import { SocialLinks } from "@/components/SocialLinks";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { COMPANY, CONTACT } from "@/lib/company";
+import { SupportWhatsAppLink } from "@/components/WhatsAppSupport";
 
 export const metadata: Metadata = { title: "Contact" };
 
@@ -35,14 +36,10 @@ export default function ContactPage() {
             <a href={`tel:${CONTACT.phoneTel}`} className="mt-2 block font-semibold text-brand-800">
               {CONTACT.phoneDisplay}
             </a>
-            <a
-              href={CONTACT.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 text-sm font-semibold text-brand-700"
-            >
-              WhatsApp Support & Assistant →
-            </a>
+            <SupportWhatsAppLink
+              label="WhatsApp Support & Assistant →"
+              className="mt-1 block text-sm font-semibold text-brand-700"
+            />
           </div>
           <SocialLinks />
         </ScrollReveal>

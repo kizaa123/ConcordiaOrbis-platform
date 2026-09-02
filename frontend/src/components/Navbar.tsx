@@ -9,7 +9,8 @@ import { AvatarWithVerification } from "@/components/AvatarWithVerification";
 import { RolePrefixedName, getRoleNamePrefix } from "@/components/RolePrefixedName";
 import { NotificationBell } from "@/components/NotificationBell";
 import { Logo, LogoIcon } from "@/components/Logo";
-import { PLATFORM_NAME, SUPPORT_WHATSAPP_URL } from "@/lib/site";
+import { PLATFORM_NAME } from "@/lib/site";
+import { SupportWhatsAppLink } from "@/components/SupportWhatsAppLink";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard" },
@@ -110,14 +111,11 @@ export function Navbar() {
               </span>
             </Link>
             <div className="flex items-center gap-1.5 sm:gap-3">
-              <a
-                href={SUPPORT_WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <SupportWhatsAppLink
+                showIcon={false}
+                label="Support"
                 className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-brand-700 hover:bg-brand-100 sm:px-4 sm:py-2 sm:text-sm"
-              >
-                Support
-              </a>
+              />
               <Link
                 href="/login"
                 className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-brand-700 hover:bg-brand-100 sm:px-4 sm:py-2 sm:text-sm"

@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { api } from "@/lib/api";
 import { AppNotification, BuyerOrderLineItem, canPurchaseFromMarketplace } from "@/lib/types";
@@ -69,6 +69,12 @@ const LIVE_NOTIFICATION_MAX_AGE_MS = 60_000;
 const LIVE_NOTIFICATION_RETRY_MS = 400;
 const LIVE_NOTIFICATION_RETRIES = 3;
 
+const PUBLIC_PATHS = new Set(["/", "/login", "/register", "/privacy", "/terms", "/complete-profile"]);
+
+function isPublicPage(pathname: string) {
+  return PUBLIC_PATHS.has(pathname) || pathname.startsWith("/auth/");
+}
+
 function isRecentlyCreatedNotification(notification: AppNotification) {
   return Date.now() - new Date(notification.createdAt).getTime() < LIVE_NOTIFICATION_MAX_AGE_MS;
 }
@@ -107,6 +113,8 @@ function saveCatchUpShownIds(userId: string, ids: Set<string>) {
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const onPublicPage = isPublicPage(pathname);
   const [items, setItems] = useState<AppNotification[]>([]);
   const [unread, setUnread] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -175,6 +183,11 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
   const setToastsEnabled = useCallback(
     (enabled: boolean) => {
+      if (enabled && onPublicPage) {
+        setToastsEnabledState(false);
+        setToasts([]);
+        return;
+      }
       setToastsEnabledState(enabled);
       if (!enabled) {
         setToasts([]);
@@ -184,7 +197,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         showNextCatchUpToast();
       }
     },
-    [showNextCatchUpToast]
+    [onPublicPage, showNextCatchUpToast]
   );
 
   const dismissToast = useCallback(
@@ -199,7 +212,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
   const pushLiveToasts = useCallback(
     (notifications: AppNotification[]) => {
-      if (!toastsEnabled || notifications.length === 0) return;
+      if (!toastsEnabled || onPublicPage || notifications.length === 0) return;
       const sorted = [...notifications].sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
@@ -210,7 +223,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         return [...incoming, ...prev].slice(0, LIVE_MAX_TOASTS);
       });
     },
-    [toastsEnabled, makeToastItem]
+    [toastsEnabled, onPublicPage, makeToastItem]
   );
 
   const diffNewNotifications = useCallback((list: AppNotification[]) => {
@@ -222,7 +235,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   }, []);
 
   const showLiveNotifications = useCallback(async () => {
-    if (!user) return;
+    if (!user || onPublicPage) return;
     try {
       let newOnes: AppNotification[] = [];
       for (let attempt = 0; attempt <= LIVE_NOTIFICATION_RETRIES; attempt += 1) {
@@ -242,7 +255,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     } catch {
       /* ignore */
     }
-  }, [user, diffNewNotifications, pushLiveToasts]);
+  }, [user, onPublicPage, diffNewNotifications, pushLiveToasts]);
 
   const refresh = useCallback(async () => {
     if (!user) return;
@@ -280,15 +293,17 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   }, [user, toastsEnabled, diffNewNotifications, pushLiveToasts, enqueueCatchUp]);
 
   useEffect(() => {
-    if (!user || loading) {
-      seenIdsRef.current = new Set();
-      initializedRef.current = false;
-      catchUpQueueRef.current = [];
-      catchUpActiveRef.current = false;
-      catchUpInitializedRef.current = false;
-      catchUpShownRef.current = new Set();
-      setItems([]);
-      setUnread(0);
+    if (!user || loading || onPublicPage) {
+      if (!user || loading) {
+        seenIdsRef.current = new Set();
+        initializedRef.current = false;
+        catchUpQueueRef.current = [];
+        catchUpActiveRef.current = false;
+        catchUpInitializedRef.current = false;
+        catchUpShownRef.current = new Set();
+        setItems([]);
+        setUnread(0);
+      }
       setToasts([]);
       setToastsEnabledState(false);
       return;
@@ -304,10 +319,10 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     const interval = toastsEnabled ? PORTAL_POLL_MS : POLL_MS;
     const timer = setInterval(refresh, interval);
     return () => clearInterval(timer);
-  }, [user, loading, refresh, toastsEnabled]);
+  }, [user, loading, onPublicPage, refresh, toastsEnabled]);
 
   useEffect(() => {
-    if (!toastsEnabled || !user || catchUpInitializedRef.current) return;
+    if (!toastsEnabled || !user || onPublicPage || catchUpInitializedRef.current) return;
     if (isCatchUpDoneForSession(user.id)) {
       catchUpInitializedRef.current = true;
       return;
@@ -333,7 +348,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       .catch(() => {
         catchUpInitializedRef.current = true;
       });
-  }, [toastsEnabled, user, items, enqueueCatchUp]);
+  }, [toastsEnabled, user, onPublicPage, items, enqueueCatchUp]);
 
   useEffect(() => {
     if (!panelOpen) return;
@@ -430,7 +445,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   return (
     <NotificationContext.Provider value={value}>
       {children}
-      {toastsEnabled && user && (
+      {toastsEnabled && user && !onPublicPage && (
         <NotificationToastStack
           toasts={toasts}
           onDismiss={dismissToast}

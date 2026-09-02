@@ -45,8 +45,7 @@ export type IconName =
   | "image"
   | "send"
   | "phone"
-  | "refresh"
-  | "whatsapp";
+  | "refresh";
 
 type IconProps = SVGProps<SVGSVGElement> & { name: IconName };
 
@@ -280,20 +279,6 @@ const paths: Record<IconName, ReactNode> = {
   refresh: (
     <>
       <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-    </>
-  ),
-  whatsapp: (
-    <>
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M20.5 11.6A8.5 8.5 0 107.4 19.3L3.5 20.5l1.3-3.8A8.5 8.5 0 0020.5 11.6z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M9.2 8.8c.1-.3.2-.3.4-.3h.3c.1 0 .2 0 .3.2l.4 1c.1.2 0 .3 0 .4l-.3.4c-.1.1 0 .3.1.4.2.3.6.8 1.1 1.2.5.4 1 .7 1.4.8.2.1.3.1.4 0l.4-.4c.1-.1.3-.1.4 0l1 .5c.2.1.2.2.2.3v.3c0 .2 0 .3-.2.4A3.4 3.4 0 0114 16a6 6 0 01-4.8-2.4A5 5 0 018.2 10c0-.3.1-.7.3-.9.2-.2.5-.3.7-.3z"
-      />
     </>
   ),
 };

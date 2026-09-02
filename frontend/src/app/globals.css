@@ -55,7 +55,8 @@ html {
     @apply my-2.5 list-disc space-y-1.5 pl-5;
   }
 
-  .prose-legal a {
+  .prose-legal a,
+  .prose-legal button.support-whatsapp-inline {
     @apply font-semibold text-brand-700 underline-offset-2 hover:underline;
   }
 

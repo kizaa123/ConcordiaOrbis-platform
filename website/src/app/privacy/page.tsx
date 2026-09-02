@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { CONTACT, PLATFORM_NAME } from "@/lib/company";
+import { SupportWhatsAppLink } from "@/components/WhatsAppSupport";
 
 export const metadata: Metadata = { title: "Privacy" };
 
@@ -42,9 +43,7 @@ export default function PrivacyPage() {
         <h2>Contact</h2>
         <p>
           Privacy questions:{" "}
-          <a className="font-semibold text-brand-700" href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer">
-            WhatsApp Support & Assistant
-          </a>{" "}
+          <SupportWhatsAppLink className="support-whatsapp-inline font-semibold text-brand-700" />{" "}
           or{" "}
           <a className="font-semibold text-brand-700" href={`mailto:${CONTACT.hello}`}>
             {CONTACT.hello}

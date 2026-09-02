@@ -3,6 +3,7 @@ import { MOTTO, PLATFORM_NAME, TAGLINE } from "@/lib/company";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PageLoader } from "@/components/PageLoader";
+import { WhatsAppSupportHost } from "@/components/WhatsAppSupport";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <WhatsAppSupportHost />
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { companyUrl, PAYMENTS_EMAIL, PLATFORM_NAME, SUPPORT_EMAIL, SUPPORT_WHATSAPP_URL } from "@/lib/site";
+import { companyUrl, PAYMENTS_EMAIL, PLATFORM_NAME, SUPPORT_EMAIL } from "@/lib/site";
+import { SupportWhatsAppLink } from "@/components/SupportWhatsAppLink";
 
 export function LegalPage({
   title,
@@ -35,9 +36,10 @@ export function LegalPage({
           . Payments:{" "}
           <a href={`mailto:${PAYMENTS_EMAIL}`}>{PAYMENTS_EMAIL}</a>
           . Support:{" "}
-          <a href={SUPPORT_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-            WhatsApp Support & Assistant
-          </a>{" "}
+          <SupportWhatsAppLink
+            showIcon={false}
+            className="support-whatsapp-inline"
+          />{" "}
           or <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
         </p>
       </section>

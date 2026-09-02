@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { CONTACT, PLATFORM_NAME, PLATFORM_URL } from "@/lib/company";
+import { PLATFORM_NAME, PLATFORM_URL } from "@/lib/company";
 import { Logo } from "@/components/Logo";
 import { SocialLinks } from "@/components/SocialLinks";
+import { SupportWhatsAppLink } from "@/components/WhatsAppSupport";
 
 const COLUMNS = [
   {
@@ -57,9 +58,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} {PLATFORM_NAME}. All rights reserved. Accra, Ghana.
           </p>
           <div className="flex flex-wrap gap-4">
-            <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-white">
-              WhatsApp Support
-            </a>
+            <SupportWhatsAppLink label="WhatsApp Support" className="hover:text-white" />
             <a href={PLATFORM_URL} target="_blank" rel="noopener noreferrer" className="hover:text-white">
               Trading platform
             </a>

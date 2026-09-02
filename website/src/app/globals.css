@@ -43,8 +43,9 @@ body {
   @apply text-[15px] leading-relaxed text-gray-600;
 }
 
-.prose-legal ul {
-  @apply my-3 list-disc space-y-1.5 pl-5;
+.prose-legal a,
+.prose-legal button.support-whatsapp-inline {
+  @apply font-semibold text-brand-700 underline-offset-2 hover:underline;
 }
 
 @layer components {
