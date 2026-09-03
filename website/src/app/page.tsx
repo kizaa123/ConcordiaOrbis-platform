@@ -138,7 +138,7 @@ export default function HomePage() {
           <ScrollReveal direction="fade-left" duration={560}>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">The company</p>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-brand-900 sm:text-4xl">
-              Built in Ghana for real farms and real buyers.
+            Built in Ghana for real fellows and real clients.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-gray-600">
               ConcordiaOrbis is the team behind the marketplace. We verify who trades, procure and
