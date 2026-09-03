@@ -1,31 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import fs from 'fs';
-import path from 'path';
-import PDFDocument from 'pdfkit';
 import { dedupeAgentAssignments } from './dedupe-agent-assignments';
 import { PLATFORM_NAME, PLATFORM_ACCOUNTANT_LABEL } from '../src/constants/platform';
 
 const prisma = new PrismaClient();
-
-async function ensureSamplePublicationPdf(filename: string, title: string) {
-  const dir = path.join(process.cwd(), 'uploads', 'publications');
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  const filePath = path.join(dir, filename);
-  if (fs.existsSync(filePath)) return;
-
-  await new Promise<void>((resolve, reject) => {
-    const doc = new PDFDocument();
-    const stream = fs.createWriteStream(filePath);
-    stream.on('finish', () => resolve());
-    stream.on('error', reject);
-    doc.pipe(stream);
-    doc.fontSize(18).text(title, { align: 'center' });
-    doc.moveDown();
-    doc.fontSize(12).text(`Sample publication for the ${PLATFORM_NAME} Research Library.`);
-    doc.end();
-  });
-}
 
 const ROLES = [
   { id: 1, roleName: 'Crop Farmer' },
@@ -81,7 +59,7 @@ async function main() {
     });
   }
   if (legacyStudents.length > 0) {
-    console.log(`↪ Migrated ${legacyStudents.length} legacy student account(s) to Client (Buyer) role`);
+    console.log(`Migrated ${legacyStudents.length} legacy student account(s) to Client (Buyer) role`);
   }
 
   for (const role of ROLES) {
@@ -234,7 +212,6 @@ async function main() {
 
   await seedCategoryCommodities('Livestock', livestockData);
 
-  // Legacy flat "Crop" category - keeps existing farmer links valid on re-seed
   const legacyCrop = await prisma.commodityCategory.upsert({
     where: { name: 'Crop' },
     update: {},
@@ -272,7 +249,6 @@ async function main() {
     update: { price: 120 },
     create: { id: '00000000-0000-0000-0000-000000000002', name: 'Premium Buyer Access', price: 120, durationDays: 90 },
   });
-  /** Reference record for farm/production access fee - charged via purchaseFarmAccess at fixed price. */
   await prisma.accessPackage.upsert({
     where: { id: '00000000-0000-0000-0000-000000000003' },
     update: { price: 1, name: 'Farm Access' },
@@ -285,242 +261,24 @@ async function main() {
   });
 
   const hash = await bcrypt.hash('Password123!', 12);
-
-  /** Re-running seed resets demo credentials and roles (idempotent). */
-  const demoUserUpdate = (roleId: number) => ({
-    passwordHash: hash,
-    roleId,
-    verificationStatus: 'VERIFIED' as const,
-  });
-
-  const kwame = await prisma.user.upsert({
-    where: { email: 'kwame@farm.gh' },
-    update: demoUserUpdate(1),
-    create: {
-      firstName: 'Kwame', lastName: 'Mensah', email: 'kwame@farm.gh', phone: '+233241234567',
-      passwordHash: hash, country: 'Ghana', region: 'Central Region', city: 'Cape Coast',
-      roleId: 1, verificationStatus: 'VERIFIED',
-    },
-  });
-
-  const profile = await prisma.farmerProfile.upsert({
-    where: { userId: kwame.id },
-    update: {},
-    create: { userId: kwame.id, farmName: 'Kwame Farm', farmSize: '10 acres', experienceYears: 15, verificationStatus: 'VERIFIED' },
-  });
-
-  const cocoa = await prisma.commodity.findFirst({ where: { name: 'Cocoa' } });
-  const tomato = await prisma.commodity.findFirst({ where: { name: 'Tomato' } });
-
-  if (cocoa) {
-    await prisma.farmerCommodity.upsert({
-      where: { farmerId_commodityId: { farmerId: profile.id, commodityId: cocoa.id } },
-      update: {}, create: { farmerId: profile.id, commodityId: cocoa.id, quantity: 20, unit: 'bags' },
-    });
-    const cocoaListing = await prisma.commodityListing.findFirst({
-      where: { farmerId: profile.id, commodityId: cocoa.id, title: 'Premium Cocoa Available' },
-    });
-    if (!cocoaListing) {
-      await prisma.commodityListing.create({
-        data: { farmerId: profile.id, commodityId: cocoa.id, title: 'Premium Cocoa Available', description: 'High-quality dried cocoa', quantity: 500, price: 25, unit: 'bags', location: 'Central Region', images: [] },
-      });
-    }
-  }
-
-  if (tomato) {
-    await prisma.farmerCommodity.upsert({
-      where: { farmerId_commodityId: { farmerId: profile.id, commodityId: tomato.id } },
-      update: {}, create: { farmerId: profile.id, commodityId: tomato.id, quantity: 500, unit: 'kg' },
-    });
-    const tomatoListing = await prisma.commodityListing.findFirst({
-      where: { farmerId: profile.id, commodityId: tomato.id, title: 'Fresh Tomatoes Available' },
-    });
-    if (!tomatoListing) {
-      await prisma.commodityListing.create({
-        data: { farmerId: profile.id, commodityId: tomato.id, title: 'Fresh Tomatoes Available', description: 'Farm-fresh weekly delivery', quantity: 500, price: 3, unit: 'kg', location: 'Central Region' },
-      });
-    }
-  }
-
-  const ama = await prisma.user.upsert({
-    where: { email: 'ama@buyer.gh' },
-    update: demoUserUpdate(4),
-    create: {
-      firstName: 'Ama', lastName: 'Owusu', email: 'ama@buyer.gh', phone: '+233209876543',
-      passwordHash: hash, country: 'Ghana', region: 'Greater Accra', city: 'Accra',
-      roleId: 4, verificationStatus: 'VERIFIED',
-    },
-  });
-  await prisma.buyerProfile.upsert({ where: { userId: ama.id }, update: {}, create: { userId: ama.id, company: 'Ama Foods Ltd' } });
-
-  const yaw = await prisma.user.upsert({
-    where: { email: 'yaw@handler.gh' },
-    update: demoUserUpdate(3),
-    create: { firstName: 'Yaw', lastName: 'Boateng', email: 'yaw@handler.gh', phone: '+233551112233', passwordHash: hash, country: 'Ghana', region: 'Central Region', city: 'Cape Coast', roleId: 3, verificationStatus: 'VERIFIED' },
-  });
-  await prisma.agentProfile.upsert({ where: { userId: yaw.id }, update: {}, create: { userId: yaw.id, agentType: 'FARMER_REPRESENTATIVE' } });
-
-  const kofi = await prisma.user.upsert({
-    where: { email: 'kofi@handler.gh' },
-    update: demoUserUpdate(5),
-    create: { firstName: 'Kofi', lastName: 'Asante', email: 'kofi@handler.gh', phone: '+233554445566', passwordHash: hash, country: 'Ghana', region: 'Greater Accra', city: 'Accra', roleId: 5, verificationStatus: 'VERIFIED' },
-  });
-  await prisma.agentProfile.upsert({ where: { userId: kofi.id }, update: {}, create: { userId: kofi.id, agentType: 'BUYER_REPRESENTATIVE' } });
-
-  await prisma.user.upsert({
-    where: { email: 'accountant@ani.gh' },
-    update: demoUserUpdate(6),
-    create: { firstName: 'ANI', lastName: 'Accountant', email: 'accountant@ani.gh', phone: '+233500000001', passwordHash: hash, country: 'Ghana', region: 'Greater Accra', city: 'Accra', roleId: 6, verificationStatus: 'VERIFIED' },
-  });
-
   await prisma.user.upsert({
     where: { email: 'admin@ani.gh' },
-    update: demoUserUpdate(7),
-    create: { firstName: 'Platform', lastName: 'Admin', email: 'admin@ani.gh', phone: '+233500000002', passwordHash: hash, country: 'Ghana', region: 'Greater Accra', city: 'Accra', roleId: 7, verificationStatus: 'VERIFIED' },
-  });
-
-  await prisma.user.upsert({
-    where: { email: 'cto@ani.gh' },
-    update: demoUserUpdate(10),
-    create: { firstName: 'ANI', lastName: 'CTO', email: 'cto@ani.gh', phone: '+233500000003', passwordHash: hash, country: 'Ghana', region: 'Greater Accra', city: 'Accra', roleId: 10, verificationStatus: 'VERIFIED' },
-  });
-
-  await prisma.user.upsert({
-    where: { email: 'comms@ani.gh' },
-    update: demoUserUpdate(11),
-    create: { firstName: 'ANI', lastName: 'Communications', email: 'comms@ani.gh', phone: '+233500000004', passwordHash: hash, country: 'Ghana', region: 'Greater Accra', city: 'Accra', roleId: 11, verificationStatus: 'VERIFIED' },
-  });
-
-  async function upsertAgentAssignment(data: {
-    agentId: string;
-    ownerId: string;
-    relationshipType: 'FARMER_REPRESENTATIVE' | 'BUYER_REPRESENTATIVE';
-  }) {
-    const existing = await prisma.agentAssignment.findFirst({
-      where: { ownerId: data.ownerId, relationshipType: data.relationshipType },
-    });
-    if (existing) {
-      if (existing.agentId !== data.agentId) {
-        await prisma.agentAssignment.update({
-          where: { id: existing.id },
-          data: { agentId: data.agentId },
-        });
-      }
-      return;
-    }
-    try {
-      await prisma.agentAssignment.create({ data });
-    } catch (error: unknown) {
-      const code =
-        error && typeof error === 'object' && 'code' in error
-          ? (error as { code?: string }).code
-          : undefined;
-      if (code !== 'P2002') throw error;
-      const raced = await prisma.agentAssignment.findFirst({
-        where: { ownerId: data.ownerId, relationshipType: data.relationshipType },
-      });
-      if (raced && raced.agentId !== data.agentId) {
-        await prisma.agentAssignment.update({
-          where: { id: raced.id },
-          data: { agentId: data.agentId },
-        });
-      }
-    }
-  }
-
-  await upsertAgentAssignment({
-    agentId: yaw.id,
-    ownerId: kwame.id,
-    relationshipType: 'FARMER_REPRESENTATIVE',
-  });
-  await upsertAgentAssignment({
-    agentId: kofi.id,
-    ownerId: ama.id,
-    relationshipType: 'BUYER_REPRESENTATIVE',
-  });
-
-  const akua = await prisma.user.upsert({
-    where: { email: 'akua@research.gh' },
-    update: demoUserUpdate(8),
+    update: { roleId: 7, verificationStatus: 'VERIFIED' },
     create: {
-      firstName: 'Akua', lastName: 'Mensah', email: 'akua@research.gh', phone: '+233201112233',
-      passwordHash: hash, country: 'Ghana', region: 'Ashanti Region', city: 'Kumasi',
-      roleId: 8, verificationStatus: 'VERIFIED',
+      firstName: 'Platform',
+      lastName: 'Admin',
+      email: 'admin@ani.gh',
+      phone: '+233500000002',
+      passwordHash: hash,
+      country: 'Ghana',
+      region: 'Greater Accra',
+      city: 'Accra',
+      roleId: 7,
+      verificationStatus: 'VERIFIED',
     },
   });
-  const researcherProfile = await prisma.researcherProfile.upsert({
-    where: { userId: akua.id },
-    update: {},
-    create: { userId: akua.id, institution: 'University of Ghana', expertise: 'Agricultural Economics' },
-  });
 
-  await Promise.all([
-    ensureSamplePublicationPdf('sample-maize-guide.pdf', 'Climate-Smart Maize Production in Ghana'),
-    ensureSamplePublicationPdf('sample-livestock-study.pdf', 'Livestock Feed Optimization Study 2025'),
-  ]);
-
-  const existingPub = await prisma.researchPublication.findFirst({
-    where: { researcherId: researcherProfile.id },
-  });
-  if (!existingPub) {
-    await prisma.researchPublication.createMany({
-      skipDuplicates: true,
-      data: [
-        {
-          researcherId: researcherProfile.id,
-          title: 'Climate-Smart Maize Production in Ghana',
-          description: 'A comprehensive guide to sustainable maize farming practices adapted for Ghanaian agro-ecological zones.',
-          fileUrl: '/uploads/publications/sample-maize-guide.pdf',
-          category: 'CROP_FARM',
-          isFree: true,
-          viewCount: 42,
-        },
-        {
-          researcherId: researcherProfile.id,
-          title: 'Livestock Feed Optimization Study 2025',
-          description: 'Research findings on cost-effective feed formulations for smallholder poultry and cattle farmers.',
-          fileUrl: '/uploads/publications/sample-livestock-study.pdf',
-          category: 'LIVESTOCK_FARM',
-          price: 25,
-          isFree: false,
-          viewCount: 18,
-        },
-      ],
-    });
-  }
-
-  const adCount = await prisma.ad.count();
-  if (adCount === 0) {
-    await prisma.ad.createMany({
-      data: [
-        {
-          title: `Grow with ${PLATFORM_NAME} Marketplace`,
-          description: 'Connect with verified fellows and discover fresh produce across Ghana.',
-          imageUrl: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&h=400&fit=crop',
-          linkUrl: 'https://ani-platform.example/marketplace',
-          ctaLabel: 'Explore',
-          placement: 'MARKETPLACE',
-          targetRoleIds: [],
-          active: true,
-          priority: 10,
-        },
-        {
-          title: 'Research Library - New Publications',
-          description: `Browse the latest crop and livestock research from ${PLATFORM_NAME} fellows.`,
-          imageUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270def?w=1200&h=400&fit=crop',
-          linkUrl: 'https://ani-platform.example/library',
-          ctaLabel: 'Browse library',
-          placement: 'LIBRARY',
-          targetRoleIds: [],
-          active: true,
-          priority: 5,
-        },
-      ],
-    });
-    console.log('↪ Seeded sample internal ads');
-  }
-
-  console.log('✅ Seed complete. Password for all demo accounts: Password123!');
+  console.log('✅ Seed complete. Admin login: admin@ani.gh (Password123! until you change it).');
 }
 
 main()

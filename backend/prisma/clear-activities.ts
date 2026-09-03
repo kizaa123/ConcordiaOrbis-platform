@@ -3,21 +3,10 @@ import { PLATFORM_NAME } from '../src/constants/platform';
 
 const prisma = new PrismaClient();
 
-/** Neon/large DBs need longer interactive tx windows; batches keep each tx short. */
 const TX_OPTIONS = { timeout: 120_000, maxWait: 30_000 } satisfies Prisma.TransactionOptions;
 
-/** Demo accounts from seed.ts — keep these users and their profiles. */
-export const DEMO_EMAILS = [
-  'kwame@farm.gh',
-  'ama@buyer.gh',
-  'yaw@handler.gh',
-  'kofi@handler.gh',
-  'accountant@ani.gh',
-  'admin@ani.gh',
-  'cto@ani.gh',
-  'comms@ani.gh',
-  'akua@research.gh',
-] as const;
+/** Only this account is kept. Update it in the app with real admin details. */
+export const KEEP_EMAILS = ['admin@ani.gh'] as const;
 
 type DeleteCounts = Record<string, number>;
 
@@ -30,31 +19,27 @@ async function deleteMany(label: string, fn: () => Promise<{ count: number }>): 
 type Tx = Prisma.TransactionClient;
 
 async function runBatch(label: string, fn: (tx: Tx) => Promise<void>): Promise<void> {
-  console.log(`\n  — ${label} —`);
+  console.log(`\n  ${label}`);
   await prisma.$transaction(fn, TX_OPTIONS);
 }
 
 async function clearActivities(options: { dryRun: boolean }): Promise<DeleteCounts> {
   const counts: DeleteCounts = {};
+  const keepFilter = { email: { notIn: [...KEEP_EMAILS] } };
 
-  const demoUsers = await prisma.user.findMany({
-    where: { email: { in: [...DEMO_EMAILS] } },
+  const keepUsers = await prisma.user.findMany({
+    where: { email: { in: [...KEEP_EMAILS] } },
     select: { id: true, email: true },
   });
-  const demoIds = demoUsers.map((u) => u.id);
 
-  console.log(`\nDemo accounts found (${demoUsers.length}/${DEMO_EMAILS.length}):`);
-  for (const email of DEMO_EMAILS) {
-    const found = demoUsers.find((u) => u.email === email);
-    console.log(`  ${found ? '✓' : '✗'} ${email}`);
+  console.log(`\nAccounts to keep (${keepUsers.length}/${KEEP_EMAILS.length}):`);
+  for (const email of KEEP_EMAILS) {
+    const found = keepUsers.find((u) => u.email === email);
+    console.log(`  ${found ? 'keep' : 'missing (seed will recreate)'}: ${email}`);
   }
 
-  const nonDemoFilter = demoIds.length
-    ? { email: { notIn: [...DEMO_EMAILS] } }
-    : {};
-
   if (options.dryRun) {
-    console.log('\n[dry-run] Would delete activity data (counts only):\n');
+    console.log('\n[dry-run] Would delete:\n');
     counts.orderDistributionLines = await prisma.orderDistributionLine.count();
     counts.orderMoneyDistributions = await prisma.orderMoneyDistribution.count();
     counts.productOrders = await prisma.productOrder.count();
@@ -76,19 +61,13 @@ async function clearActivities(options: { dryRun: boolean }): Promise<DeleteCoun
     counts.auditLogs = await prisma.auditLog.count();
     counts.refreshTokens = await prisma.refreshToken.count();
     counts.emailVerificationChallenges = await prisma.emailVerificationChallenge.count();
+    counts.phoneVerificationChallenges = await prisma.phoneVerificationChallenge.count();
     counts.userVerificationTags = await prisma.userVerificationTag.count();
     counts.commodityListings = await prisma.commodityListing.count();
     counts.researchPublications = await prisma.researchPublication.count();
     counts.ads = await prisma.ad.count();
-    counts.nonDemoAgentAssignments = await prisma.agentAssignment.count({
-      where: {
-        OR: [
-          { agentId: { notIn: demoIds } },
-          { ownerId: { notIn: demoIds } },
-        ],
-      },
-    });
-    counts.nonDemoUsers = await prisma.user.count({ where: nonDemoFilter });
+    counts.agentAssignments = await prisma.agentAssignment.count();
+    counts.otherUsers = await prisma.user.count({ where: keepFilter });
 
     for (const [key, value] of Object.entries(counts)) {
       console.log(`  ${key}: ${value}`);
@@ -96,8 +75,7 @@ async function clearActivities(options: { dryRun: boolean }): Promise<DeleteCoun
     return counts;
   }
 
-  console.log('\nDeleting transactional and activity data...');
-  console.log('(Idempotent — safe to re-run if a batch fails partway through.)\n');
+  console.log('\nDeleting marketplace, payments, and other accounts...\n');
 
   await runBatch('orders', async (tx) => {
     counts.orderDistributionLines = await deleteMany(
@@ -132,7 +110,7 @@ async function clearActivities(options: { dryRun: boolean }): Promise<DeleteCoun
     counts.farmerMedia = await deleteMany('farmer_media', () => tx.farmerMedia.deleteMany());
   });
 
-  await runBatch('comms & access', async (tx) => {
+  await runBatch('comms and access', async (tx) => {
     counts.notifications = await deleteMany('notifications', () => tx.notification.deleteMany());
     counts.messages = await deleteMany('messages', () => tx.message.deleteMany());
     counts.connectionRequests = await deleteMany('connection_requests', () => tx.connectionRequest.deleteMany());
@@ -140,7 +118,7 @@ async function clearActivities(options: { dryRun: boolean }): Promise<DeleteCoun
     counts.buyerAccess = await deleteMany('buyer_access', () => tx.buyerAccess.deleteMany());
   });
 
-  await runBatch('payments, audit & auth', async (tx) => {
+  await runBatch('payments, audit and auth', async (tx) => {
     counts.payments = await deleteMany('payments', () => tx.payment.deleteMany());
     counts.platformWithdrawals = await deleteMany('platform_withdrawals', () => tx.platformWithdrawal.deleteMany());
     counts.auditLogs = await deleteMany('audit_logs', () => tx.auditLog.deleteMany());
@@ -149,36 +127,25 @@ async function clearActivities(options: { dryRun: boolean }): Promise<DeleteCoun
       'email_verification_challenges',
       () => tx.emailVerificationChallenge.deleteMany(),
     );
-    // Remove tags on non-demo users; keep demo user verification tags.
-    counts.userVerificationTags = await deleteMany('user_verification_tags (non-demo)', () =>
-      tx.userVerificationTag.deleteMany({
-        where: demoIds.length ? { userId: { notIn: demoIds } } : {},
-      }),
+    counts.phoneVerificationChallenges = await deleteMany(
+      'phone_verification_challenges',
+      () => tx.phoneVerificationChallenge.deleteMany(),
+    );
+    counts.userVerificationTags = await deleteMany('user_verification_tags', () =>
+      tx.userVerificationTag.deleteMany(),
     );
   });
 
-  await runBatch('listings & ads', async (tx) => {
+  await runBatch('listings and ads', async (tx) => {
     counts.commodityListings = await deleteMany('commodity_listings', () => tx.commodityListing.deleteMany());
     counts.ads = await deleteMany('ads', () => tx.ad.deleteMany());
   });
 
-  await runBatch('users (non-demo)', async (tx) => {
-    if (demoIds.length) {
-      counts.nonDemoAgentAssignments = await deleteMany('agent_assignments (non-demo)', () =>
-        tx.agentAssignment.deleteMany({
-          where: {
-            OR: [{ agentId: { notIn: demoIds } }, { ownerId: { notIn: demoIds } }],
-          },
-        }),
-      );
-      counts.nonDemoUsers = await deleteMany('users (non-demo)', () =>
-        tx.user.deleteMany({ where: nonDemoFilter }),
-      );
-    } else {
-      console.warn('  ⚠ No demo users found — skipping user deletion to avoid wiping all accounts.');
-      counts.nonDemoAgentAssignments = 0;
-      counts.nonDemoUsers = 0;
-    }
+  await runBatch('users except admin', async (tx) => {
+    counts.agentAssignments = await deleteMany('agent_assignments', () => tx.agentAssignment.deleteMany());
+    counts.otherUsers = await deleteMany('users (except admin)', () =>
+      tx.user.deleteMany({ where: keepFilter }),
+    );
   });
 
   return counts;
@@ -187,20 +154,17 @@ async function clearActivities(options: { dryRun: boolean }): Promise<DeleteCoun
 async function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run');
-  const reseed = args.includes('--reseed');
   const skipConfirm = args.includes('--yes');
 
   const dbUrl = process.env.DATABASE_URL ?? '';
   const isRemote =
     /neon\.tech|render\.com|supabase\.co|amazonaws\.com|railway\.app/i.test(dbUrl);
 
-  console.log(`🧹 ${PLATFORM_NAME} — clear activity data (preserve demo accounts)`);
+  console.log(`Clear ${PLATFORM_NAME} data. Keep admin@ani.gh only.`);
   if (dryRun) console.log('   Mode: dry-run (no changes)');
 
   if (isRemote && !dryRun && !skipConfirm) {
-    console.error(
-      '\n⚠ DATABASE_URL looks like a remote/production database.',
-    );
+    console.error('\nDATABASE_URL looks like production.');
     console.error('  Re-run with --yes to confirm, or use --dry-run first.');
     process.exit(1);
   }
@@ -213,33 +177,29 @@ async function main() {
   }
 
   const preserved = await prisma.user.findMany({
-    where: { email: { in: [...DEMO_EMAILS] } },
-    select: { email: true, firstName: true, lastName: true, roleId: true },
+    where: { email: { in: [...KEEP_EMAILS] } },
+    select: { email: true, firstName: true, lastName: true },
     orderBy: { email: 'asc' },
   });
 
-  console.log(`\n✅ Activity clear complete. Preserved ${preserved.length} demo account(s).`);
-
-  if (reseed) {
-    console.log('\n🌱 Re-seeding reference data and demo content...');
-    const { execSync } = await import('child_process');
-    execSync('tsx prisma/seed.ts', { stdio: 'inherit', cwd: process.cwd() });
-  } else {
-    console.log('\nTip: run with --reseed to restore demo listings, publications, ads, and passwords.');
+  console.log(`\nDone. Kept ${preserved.length} admin account(s):`);
+  for (const u of preserved) {
+    console.log(`  ${u.email} (${u.firstName} ${u.lastName})`);
+  }
+  if (preserved.length === 0) {
+    console.log('  admin@ani.gh was missing. Run npm run db:seed to create it.');
   }
 }
 
 if (require.main === module) {
   main()
     .catch((error) => {
-      console.error('❌ Clear failed:', error.message || error);
+      console.error('Clear failed:', error.message || error);
       if (error.code === 'P1001') {
-        console.error('\nPostgreSQL is not reachable. Check DATABASE_URL and start the database.');
+        console.error('\nPostgreSQL is not reachable. Check DATABASE_URL.');
       }
       if (/transaction.*(closed|expired|timeout)/i.test(String(error.message))) {
-        console.error(
-          '\nTransaction timed out. Completed batches were committed; re-run the same command to finish.',
-        );
+        console.error('\nTransaction timed out. Re-run the same command to finish.');
       }
       process.exit(1);
     })
