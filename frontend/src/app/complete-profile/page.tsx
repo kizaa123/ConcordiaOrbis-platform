@@ -25,9 +25,9 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { PLATFORM_ACCOUNTANT_LABEL } from "@/lib/site";
 
 const ALL_ROLES = [
-  { group: "Fellow", id: ROLES.CROP_FARMER, label: "Fellow - Crop" },
-  { group: "Fellow", id: ROLES.LIVESTOCK_FARMER, label: "Fellow - Livestock" },
-  { group: "Fellow", id: ROLES.ORGANIZATION_FARMER, label: "Fellow - Organization" },
+  { group: "Fellow", id: ROLES.CROP_FARMER, label: "Fellow Crop" },
+  { group: "Fellow", id: ROLES.LIVESTOCK_FARMER, label: "Fellow Livestock" },
+  { group: "Fellow", id: ROLES.ORGANIZATION_FARMER, label: "Fellow Organization" },
   { group: "Research & Commerce", id: ROLES.RESEARCHER, label: "Researcher" },
   { group: "Research & Commerce", id: ROLES.BUYER, label: "Client" },
   { group: "Support & Operations", id: ROLES.FARMER_HANDLER, label: "Fellow Liaison Officer" },
@@ -247,7 +247,7 @@ export default function CompleteProfilePage() {
           <header>
             <h1 className="text-lg font-bold text-brand-900">Complete account</h1>
             <p className="mt-0.5 text-sm text-gray-500">
-              Step {stepNumber} of {totalSteps} — {stepLabels[displayStep]}
+              Step {stepNumber} of {totalSteps}: {stepLabels[displayStep]}
             </p>
             <p className="mt-1 text-xs text-gray-500">
               Signed in as {user.firstName} {user.lastName} ·{" "}

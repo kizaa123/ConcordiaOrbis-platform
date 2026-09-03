@@ -155,10 +155,10 @@ export function HarvestCalendarModal({
             <button
               type="button"
               onClick={goPrev}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-brand-200 text-brand-800 hover:bg-brand-50"
+              className="flex h-9 min-w-9 items-center justify-center rounded-lg border border-brand-200 px-2 text-xs font-semibold text-brand-800 hover:bg-brand-50"
               aria-label="Previous month"
             >
-              <Icon name="chevron-left" className="h-4 w-4" />
+              Prev
             </button>
             <p className="text-sm font-bold text-brand-900">
               {MONTH_LABELS[viewMonth]} {viewYear}
@@ -166,10 +166,10 @@ export function HarvestCalendarModal({
             <button
               type="button"
               onClick={goNext}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-brand-200 text-brand-800 hover:bg-brand-50"
+              className="flex h-9 min-w-9 items-center justify-center rounded-lg border border-brand-200 px-2 text-xs font-semibold text-brand-800 hover:bg-brand-50"
               aria-label="Next month"
             >
-              <Icon name="chevron-right" className="h-4 w-4" />
+              Next
             </button>
           </div>
 

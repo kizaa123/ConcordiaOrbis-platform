@@ -333,9 +333,9 @@ export function ProductMediaGallery({
               onClick={(e) => { e.stopPropagation(); goPrev(); }}
               disabled={activeIndex === 0}
               aria-label="Previous image"
-              className="absolute left-2 top-1/2 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-xs transition hover:bg-black/60 disabled:opacity-30 md:flex"
+              className="absolute left-2 top-1/2 hidden h-8 min-w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 px-2 text-[10px] font-semibold text-white backdrop-blur-xs transition hover:bg-black/60 disabled:opacity-30 md:flex"
             >
-              <Icon name="chevron-left" className="h-4 w-4" />
+              Prev
             </button>
             <button
               type="button"
@@ -343,9 +343,9 @@ export function ProductMediaGallery({
               onClick={(e) => { e.stopPropagation(); goNext(); }}
               disabled={activeIndex === totalSlides - 1}
               aria-label="Next image"
-              className="absolute right-2 top-1/2 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-xs transition hover:bg-black/60 disabled:opacity-30 md:flex"
+              className="absolute right-2 top-1/2 hidden h-8 min-w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 px-2 text-[10px] font-semibold text-white backdrop-blur-xs transition hover:bg-black/60 disabled:opacity-30 md:flex"
             >
-              <Icon name="chevron-right" className="h-4 w-4" />
+              Next
             </button>
           </>
         )}

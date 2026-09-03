@@ -35,7 +35,7 @@ const CASES = [
   },
   {
     title: "After delivery",
-    body: "Once goods have been delivered, we only review documented quality or shortage issues — not a change of mind.",
+    body: "Once goods have been delivered, we only review documented quality or shortage issues, not a change of mind.",
   },
 ];
 
@@ -45,7 +45,7 @@ export default function RefundsPage() {
       <PageHero
         eyebrow="Mistaken transactions"
         title="Refunds"
-        subtitle="Approved refunds go back through Paystack to the same card, wallet, or bank — typically 5–10 business days."
+        subtitle="Approved refunds go back through Paystack to the same card, wallet, or bank, typically 5 to 10 business days."
       />
       <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:py-24">
         <ScrollReveal>

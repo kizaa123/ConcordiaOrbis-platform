@@ -12,7 +12,6 @@ import { PublicationAccessPaymentModal } from "@/components/PublicationAccessPay
 import { PublicationCommentsModal } from "@/components/PublicationCommentsModal";
 import { PdfViewerModal } from "@/components/PdfViewerModal";
 import { CardGridSkeleton, PageContentSkeleton } from "@/components/LoadingPrimitives";
-import { Icon } from "@/components/icons";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { InlineNameWithVerificationTags } from "@/components/VerificationTagBadge";
 import { QualificationBadges } from "@/components/QualificationBadges";
@@ -148,7 +147,6 @@ export default function PublisherLibraryPage() {
           href="/library"
           className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 hover:text-brand-900"
         >
-          <Icon name="chevron-left" className="h-4 w-4" />
           Back to library
         </Link>
 

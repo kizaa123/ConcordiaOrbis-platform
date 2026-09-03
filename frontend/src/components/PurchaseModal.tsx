@@ -244,7 +244,7 @@ function PurchaseModalContent({
         },
       });
       setPaystackOpen(false);
-      const message = `${quantity} ${unitLabel} - ${format(total)} held in escrow until you confirm delivery.`;
+      const message = `${quantity} ${unitLabel}, ${format(total)} held in escrow until you confirm delivery.`;
       setOrderPlaced(true);
       setResult({
         variant: "success",
@@ -432,7 +432,7 @@ function PurchaseModalContent({
           message={result.message}
           hint={
             result.releaseOtp
-              ? `Your 4-digit release code is ${result.releaseOtp}. Save it - you'll enter it in My Orders when you receive your delivery.`
+              ? `Your 4-digit release code is ${result.releaseOtp}. Save it. You will enter it in My Orders when you receive your delivery.`
               : "Check My Orders for your release code and financial statement PDF."
           }
           actionLabel="View my orders"

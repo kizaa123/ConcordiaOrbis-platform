@@ -51,7 +51,7 @@ export class OrderService {
     if (!isListingOrderable(listing)) {
       throw new AppError(
         400,
-        'This product is no longer available — the harvest period has ended'
+        'This product is no longer available. The harvest period has ended'
       );
     }
 
@@ -64,7 +64,7 @@ export class OrderService {
     if (!(await buyerHasApprovedFarmAccess(buyerId, farmerUserId))) {
       throw new AppError(
         403,
-        'Farm access required — pay the access fee to unlock this farm and place orders',
+        'Farm access required. Pay the access fee to unlock this farm and place orders',
         'FARM_ACCESS_REQUIRED'
       );
     }
@@ -155,7 +155,7 @@ export class OrderService {
       throw new AppError(400, `Only ${listing.quantity} ${listing.unit} available`);
     }
     if (!isListingOrderable(listing)) {
-      throw new AppError(400, 'This product is no longer available — the harvest period has ended');
+      throw new AppError(400, 'This product is no longer available. The harvest period has ended');
     }
 
     const farmerUserId = listing.farmer.userId;
@@ -165,7 +165,7 @@ export class OrderService {
     if (!(await buyerHasApprovedFarmAccess(input.buyerId, farmerUserId))) {
       throw new AppError(
         403,
-        'Farm access required — pay the access fee to unlock this farm and place orders',
+        'Farm access required. Pay the access fee to unlock this farm and place orders',
         'FARM_ACCESS_REQUIRED'
       );
     }

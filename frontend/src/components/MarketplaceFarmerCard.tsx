@@ -175,7 +175,7 @@ export function MarketplaceFarmerCard({
         <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-center">
           <p className="text-sm font-semibold text-amber-900">Access expired</p>
           <p className="mt-0.5 text-xs text-amber-800">
-            Harvest period ended or a new product was listed — pay again to access
+            Harvest period ended or a new product was listed. Pay again to access
           </p>
         </div>
       )}

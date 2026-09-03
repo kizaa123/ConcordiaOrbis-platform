@@ -13,7 +13,7 @@ export default function PrivacyPage() {
   return (
     <LegalPage
       title="Privacy policy"
-      subtitle={`How ${PLATFORM_NAME} collects, uses, and protects information on the trading platform — accounts, farm access, orders, escrow, chat, and the research library.`}
+      subtitle={`How ${PLATFORM_NAME} collects, uses, and protects information on the trading platform: accounts, farm access, orders, escrow, chat, and the research library.`}
     >
       <LegalUpdated />
 

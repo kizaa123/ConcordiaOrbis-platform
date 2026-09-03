@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import type { AdPlacement, PlatformAd } from "@/lib/types";
-import { Icon } from "@/components/icons";
 
 type AdSlotProps = {
   placement: AdPlacement;
@@ -59,9 +58,8 @@ function AdBannerContent({
           <p className="mt-0.5 truncate text-xs text-gray-600 sm:text-sm">{ad.description}</p>
         )}
         {(ad.ctaLabel || clickable) && variant === "banner" && (
-          <span className="mt-3 inline-flex w-fit items-center gap-1 rounded-lg bg-white/95 px-3 py-1.5 text-xs font-semibold text-brand-800 shadow-sm sm:text-sm">
+          <span className="mt-3 inline-flex w-fit items-center rounded-lg bg-white/95 px-3 py-1.5 text-xs font-semibold text-brand-800 shadow-sm sm:text-sm">
             {ad.ctaLabel || "Learn more"}
-            <Icon name="chevron-right" className="h-3.5 w-3.5" />
           </span>
         )}
       </div>

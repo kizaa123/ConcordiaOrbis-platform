@@ -691,7 +691,7 @@ export class ResearcherService {
     if (roleId === ROLES.ADMIN) {
       throw new AppError(
         400,
-        'Platform admins already have free access to every publication — use Read Now instead.'
+        'Platform admins already have free access to every publication. Use Read Now instead.'
       );
     }
     assertAuthorized(
@@ -710,7 +710,7 @@ export class ResearcherService {
     );
 
     if (pub.isFree) {
-      throw new AppError(400, 'This publication is free - no payment required');
+      throw new AppError(400, 'This publication is free. No payment required');
     }
 
     const researcherUserId = pub.researcher.user.id;
@@ -788,7 +788,7 @@ export class ResearcherService {
     );
 
     if (pub.isFree) {
-      throw new AppError(400, 'This publication is free - no payment required');
+      throw new AppError(400, 'This publication is free. No payment required');
     }
 
     const researcherUserId = pub.researcher.user.id;

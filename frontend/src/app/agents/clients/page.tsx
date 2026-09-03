@@ -8,7 +8,6 @@ import { api } from "@/lib/api";
 import { AgentAssignment, isBuyerAssignment, isBuyerHandler, isHandler } from "@/lib/types";
 import { HandlerBuyerClientCard } from "@/components/HandlerAssignmentCards";
 import { PageContentSkeleton } from "@/components/LoadingPrimitives";
-import { Icon } from "@/components/icons";
 
 export default function AssignedClientsPage() {
   const { user, loading } = useAuth();
@@ -68,14 +67,13 @@ export default function AssignedClientsPage() {
         href="/dashboard"
         className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:underline"
       >
-        <Icon name="chevron-left" className="h-4 w-4" />
         Back to dashboard
       </Link>
 
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-brand-900">Assigned Clients</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Clients who assigned you as their liaison officer — view their profiles and order activity.
+          Clients who assigned you as their liaison officer. View their profiles and order activity.
         </p>
       </div>
 

@@ -60,7 +60,7 @@ export default function PaymentsPage() {
           <Link href="/refunds" className="font-bold text-brand-800 underline">
             Refunds
           </Link>
-          — we don’t repeat it here.
+          . We do not repeat it here.
         </ScrollReveal>
       </section>
     </>

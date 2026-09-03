@@ -12,7 +12,7 @@ export function ContactForm() {
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     const to = topic === "payments" ? CONTACT.payments : CONTACT.hello;
-    const subject = encodeURIComponent(`[ConcordiaOrbis] ${topic} — ${name}`);
+    const subject = encodeURIComponent(`[ConcordiaOrbis] ${topic}: ${name}`);
     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nTopic: ${topic}\n\n${message}`);
     window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
   };

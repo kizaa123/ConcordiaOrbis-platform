@@ -113,7 +113,6 @@ function LoginForm() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
                 className="auth-input !py-2.5"
               />
             </div>
@@ -128,7 +127,6 @@ function LoginForm() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
                 className="auth-input !py-2.5"
               />
             </div>

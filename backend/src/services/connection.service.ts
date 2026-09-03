@@ -114,9 +114,9 @@ export class ConnectionService {
         );
       }
       if (existing.status === 'PENDING') {
-        throw new AppError(409, `Access request already pending - wait for ${PLATFORM_NAME} admin approval`);
+        throw new AppError(409, `Access request already pending. Wait for ${PLATFORM_NAME} admin approval`);
       }
-      throw new AppError(409, 'Farm access was declined - you cannot request again');
+      throw new AppError(409, 'Farm access was declined. You cannot request again');
     }
 
     const created = await prisma.connectionRequest.create({

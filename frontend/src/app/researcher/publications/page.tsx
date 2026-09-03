@@ -237,7 +237,7 @@ export default function ResearcherPublicationsPage() {
               fileName={
                 coverPreviewUrl && !localCoverPreview ? form.coverImage.split("/").pop() : undefined
               }
-              hint="PNG, JPG or WebP — any orientation"
+              hint="PNG, JPG or WebP, any orientation"
             />
 
             <div className="space-y-5">

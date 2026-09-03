@@ -13,7 +13,7 @@ export default function TermsPage() {
   return (
     <LegalPage
       title="Terms of use"
-      subtitle={`These terms govern your use of the ${PLATFORM_NAME} trading platform — marketplace, farm access, escrow orders, liaison tools, and research library.`}
+      subtitle={`These terms govern your use of the ${PLATFORM_NAME} trading platform: marketplace, farm access, escrow orders, liaison tools, and research library.`}
     >
       <LegalUpdated />
 
@@ -118,7 +118,7 @@ export default function TermsPage() {
         Fellows and liaison officers must fulfil orders that have been paid. Quality, shortage, or
         non-delivery disputes should be raised with us before you release escrow where possible.
         After you confirm delivery with the release code, we only review documented quality or
-        shortage issues — not a change of mind.
+        shortage issues, not a change of mind.
       </p>
 
       <h2>8. Research library</h2>

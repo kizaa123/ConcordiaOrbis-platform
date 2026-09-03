@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { HandlerOrderNotificationsPanel } from "@/components/HandlerOrderNotificationsPanel";
 import { PageContentSkeleton } from "@/components/LoadingPrimitives";
-import { Icon } from "@/components/icons";
 import { isFarmerHandler, isHandler } from "@/lib/types";
 
 export default function HandlerOrderNotificationsPage() {
@@ -37,7 +36,6 @@ export default function HandlerOrderNotificationsPage() {
         href="/dashboard"
         className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:underline"
       >
-        <Icon name="chevron-left" className="h-4 w-4" />
         Back to dashboard
       </Link>
 

@@ -425,7 +425,7 @@ export async function notifyNewOrder(
     buyerCountry,
     farmerCountry
   );
-  const body = `${buyerName} ordered ${productName} - ${farmerAmountLabel} held in escrow until buyer confirms delivery. Download the order statement from Buyer Orders.`;
+  const body = `${buyerName} ordered ${productName}. ${farmerAmountLabel} held in escrow until buyer confirms delivery. Download the order statement from Buyer Orders.`;
   const orderMeta = buildOrderNotificationMetadata({
     productName,
     totalAmount,
@@ -518,7 +518,7 @@ export async function notifyNewOrder(
       actorId: buyerId,
       type: 'NEW_ORDER',
       title: 'New order from your client',
-      body: `Your client ${buyerName} ordered ${productName} - ${buyerAmountLabel} held in escrow until buyer confirms delivery.`,
+      body: `Your client ${buyerName} ordered ${productName}. ${buyerAmountLabel} held in escrow until buyer confirms delivery.`,
       link,
       metadata: {
         ...handlerMeta,
@@ -546,7 +546,7 @@ export async function notifyProductPurchase(
     userId: buyerId,
     actorId: farmerId,
     type: 'PRODUCT_PURCHASE',
-    title: 'Order placed — save your release code',
+    title: 'Order placed. Save your release code',
     body: `You have placed an order for "${productName}" from ${farmerName} for ${amountLabel}. Open My Orders to view your 4-digit release code.`,
     link,
     metadata: {
@@ -601,7 +601,7 @@ export async function notifyOrderPaymentReleased(order: {
     const body =
       userId === order.buyerId
         ? `You have confirmed delivery for "${orderName}". ${amountLabel} has been released to ${PLATFORM_ACCOUNTANT_LABEL}.`
-        : `${buyerName} confirmed delivery for "${orderName}" — ${amountLabel} released to ${PLATFORM_ACCOUNTANT_LABEL}.`;
+        : `${buyerName} confirmed delivery for "${orderName}". ${amountLabel} released to ${PLATFORM_ACCOUNTANT_LABEL}.`;
     const orderMeta = buildOrderNotificationMetadata({
       productName: orderName,
       totalAmount: order.totalAmount,
@@ -678,7 +678,7 @@ export async function notifyOrderTracked(
   const buyerCountry = orderDetails?.buyerCountry ?? 'Ghana';
   const farmerCountry = orderDetails?.farmerCountry ?? 'Ghana';
   const buyerBody = `Your order for "${productName}" is now at "${stageLabel}".`;
-  const handlerBody = `${farmerName} updated the order for "${productName}" — now at "${stageLabel}".`;
+  const handlerBody = `${farmerName} updated the order for "${productName}", now at "${stageLabel}".`;
   const orderMeta = buildOrderNotificationMetadata({
     productName,
     totalAmount: orderDetails?.totalAmount,
@@ -764,7 +764,7 @@ export async function notifyConnectionRequest(
     actorId: buyerId,
     type: 'CONNECTION_REQUEST',
     title: 'New farm access request',
-    body: `${buyerName} requested access to your farm. ${PLATFORM_NAME} admin will review the request - no action needed from you.`,
+    body: `${buyerName} requested access to your farm. ${PLATFORM_NAME} admin will review the request. No action needed from you.`,
     link: '/connections',
     metadata: {
       actionUrl: '/connections',
@@ -860,7 +860,7 @@ export async function notifyFarmAccessPaid(
     actorId: farmerId,
     type: 'FARM_ACCESS_PAID',
     title: 'Farm access payment',
-    body: `You paid ${amountLabel} for access to ${farmerName}. Recorded on your financial statement - access will activate once payment is confirmed.`,
+    body: `You paid ${amountLabel} for access to ${farmerName}. Recorded on your financial statement. Access will activate once payment is confirmed.`,
     link: statementLink,
     metadata: {
       farmerUserId: farmerId,
@@ -1023,7 +1023,7 @@ export async function notifyFarmProductsAvailable(params: {
     userId: clientId,
     actorId: farmerUserId,
     type: 'FARM_PRODUCTS_AVAILABLE',
-    title: `${farmName} - products available`,
+    title: `${farmName}: products available`,
     body,
     link,
     metadata: {
@@ -1056,7 +1056,7 @@ export async function notifyHandlerFarmProductsAvailable(params: {
     userId: clientId,
     actorId: handlerUserId,
     type: 'FARM_PRODUCTS_AVAILABLE',
-    title: `${handlerName} - farm products available`,
+    title: `${handlerName}: farm products available`,
     body,
     link,
     metadata: {
@@ -1102,7 +1102,7 @@ export async function notifyResearchPublicationsAvailable(params: {
     userId: clientId,
     actorId: researcherUserId,
     type: 'NEW_PUBLICATION',
-    title: `${displayName} - publications available`,
+    title: `${displayName}: publications available`,
     body,
     link,
     metadata: {

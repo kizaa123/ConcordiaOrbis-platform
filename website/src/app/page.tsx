@@ -33,7 +33,7 @@ const STEPS = [
   {
     step: "01",
     title: "Verified fellows list produce",
-    desc: "Crops, livestock, fruit, and fish — with harvest windows and prices.",
+    desc: "Crops, livestock, fruit, and fish, with harvest windows and prices.",
     image: "/verified-users.png",
   },
   {
@@ -73,7 +73,7 @@ export default function HomePage() {
         <div className="relative mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-4 pb-16 pt-28 sm:justify-center sm:px-6 sm:pb-24 sm:pt-20">
           <ScrollReveal trigger="mount" delay={scrollStagger(0, 70)} duration={480}>
             <p className="text-sm font-semibold tracking-[0.12em] text-yellow-400">
-              Ghana farm produce marketplace
+              Premier commodity exchange platform
             </p>
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(1, 70)} duration={540}>
@@ -86,7 +86,7 @@ export default function HomePage() {
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(2, 70)} duration={500}>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-brand-100 sm:text-lg">
-              Trade farm produce in Ghana — crops, livestock, fruit, and fish — with verified fellows
+              Trade produce in Ghana: crops, livestock, fruit, and fish, with verified fellows
               and clients. Pay ConcordiaOrbis on Paystack; a liaison officer procures and delivers
               the order.
             </p>
@@ -199,7 +199,7 @@ export default function HomePage() {
           </div>
           <ScrollReveal className="mt-8 text-center">
             <Link href="/payments" className="text-sm font-bold text-brand-700 hover:underline">
-              Full payment detail →
+              Full payment detail
             </Link>
           </ScrollReveal>
         </div>
@@ -247,7 +247,7 @@ export default function HomePage() {
             Ready to transform how you trade?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-brand-100">
-            Create a free account on the platform. For mistaken charges, use Refunds — not this
+            Create a free account on the platform. For mistaken charges, use Refunds, not this
             button.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

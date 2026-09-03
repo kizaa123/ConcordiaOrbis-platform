@@ -331,7 +331,7 @@ export class PaymentService {
 
       return {
         farmAccess,
-        message: `Access granted - you can now view ${farmer.firstName}'s farm and products`,
+        message: `Access granted. You can now view ${farmer.firstName}'s farm and products`,
         amountPaid: farmAccessPrice,
         farmerName: `${farmer.firstName} ${farmer.lastName}`,
         pendingApproval: false,

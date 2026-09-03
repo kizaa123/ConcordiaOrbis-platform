@@ -211,7 +211,7 @@ export function HandlerAssignmentsPreviewCard({
       {!loading && href && (
         <div className="border-t border-brand-50 px-3 py-1.5 text-[11px] font-medium text-brand-600">
           {remaining > 0
-            ? `+${remaining} more - view all`
+            ? `+${remaining} more. View all`
             : assignments.length > 0
               ? `View all ${clientType === "farmer" ? "fellows" : "clients"}`
               : `View all ${clientType === "farmer" ? "fellows" : "clients"}`}
@@ -421,7 +421,7 @@ export function HandlerOrderAlertsCard({
 
       {!loading && href && (
         <div className="border-t border-brand-50 px-3 py-1.5 text-[11px] font-medium text-brand-600">
-          {remaining > 0 ? `+${remaining} more - view all` : "View all order notifications"}
+          {remaining > 0 ? `+${remaining} more. View all` : "View all order notifications"}
         </div>
       )}
     </>

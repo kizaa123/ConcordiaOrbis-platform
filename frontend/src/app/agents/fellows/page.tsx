@@ -8,7 +8,6 @@ import { api } from "@/lib/api";
 import { AgentAssignment, isFarmerAssignment, isFarmerHandler, isHandler } from "@/lib/types";
 import { HandlerFarmerClientCard } from "@/components/HandlerAssignmentCards";
 import { PageContentSkeleton } from "@/components/LoadingPrimitives";
-import { Icon } from "@/components/icons";
 
 export default function AssignedFellowsPage() {
   const { user, loading } = useAuth();
@@ -68,14 +67,13 @@ export default function AssignedFellowsPage() {
         href="/dashboard"
         className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:underline"
       >
-        <Icon name="chevron-left" className="h-4 w-4" />
         Back to dashboard
       </Link>
 
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-brand-900">Assigned Fellows</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Fellows who assigned you as their liaison officer — view profiles and support their orders.
+          Fellows who assigned you as their liaison officer. View profiles and support their orders.
         </p>
       </div>
 

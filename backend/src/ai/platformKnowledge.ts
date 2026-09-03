@@ -25,12 +25,12 @@ export const PLATFORM_KNOWLEDGE: KnowledgeEntry[] = [
   {
     id: "payment",
     keywords: ["pay", "payment", "paystack", "momo", "mobile money", "card", "transaction", "charge", "checkout", "transaction or payment error"],
-    answer: `All platform charges go through Paystack (card, mobile money, or bank). You pay ${PLATFORM_NAME}, not the fellow directly. Confirm in the Paystack sheet until it succeeds. If Paystack says the payer reached their limit, that is the MoMo wallet or bank limit — try another number or card. Failed charges are not treated as paid until Paystack confirms.`,
+    answer: `All platform charges go through Paystack (card, mobile money, or bank). You pay ${PLATFORM_NAME}, not the fellow directly. Confirm in the Paystack sheet until it succeeds. If Paystack says the payer reached their limit, that is the MoMo wallet or bank limit. Try another number or card. Failed charges are not treated as paid until Paystack confirms.`,
   },
   {
     id: "order",
     keywords: ["order", "delivery", "track", "liaison", "procure", "shipping", "status", "orders delivery or tracking"],
-    answer: `After farm access, place an order from the listing. ${PLATFORM_NAME} takes payment through Paystack. A liaison officer then procures the items, checks quality, and arranges delivery to the agreed location. Track progress on My Orders. Quality issues after delivery are reviewed case by case — use WhatsApp Support with your order details.`,
+    answer: `After farm access, place an order from the listing. ${PLATFORM_NAME} takes payment through Paystack. A liaison officer then procures the items, checks quality, and arranges delivery to the agreed location. Track progress on My Orders. Quality issues after delivery are reviewed case by case. Use WhatsApp Support with your order details.`,
   },
   {
     id: "listing",
@@ -45,7 +45,7 @@ export const PLATFORM_KNOWLEDGE: KnowledgeEntry[] = [
   {
     id: "connection",
     keywords: ["connection", "chat", "message", "contact", "whatsapp"],
-    answer: `After access, clients can request a connection and chat in-app with the fellow or their liaison. Do not move payment off ${PLATFORM_NAME}. For a person, tap Help in the footer — that opens WhatsApp Support.`,
+    answer: `After access, clients can request a connection and chat in-app with the fellow or their liaison. Do not move payment off ${PLATFORM_NAME}. For a person, tap Help in the footer. That opens WhatsApp Support.`,
   },
   {
     id: "other",

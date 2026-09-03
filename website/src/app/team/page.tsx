@@ -43,7 +43,7 @@ export default function TeamPage() {
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(2, 70)} duration={500}>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-brand-200 sm:text-lg">
-              Leadership in Accra — the faces customers, partners, and Paystack can verify.
+              Leadership in Accra, the faces customers, partners, and Paystack can verify.
             </p>
           </ScrollReveal>
         </div>

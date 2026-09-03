@@ -197,22 +197,18 @@ export function FarmerMediaCarousel({ farmerUserId, farmerName }: FarmerMediaCar
               onClick={handlePrev}
               disabled={activeIndex === 0}
               aria-label="Previous slide"
-              className="absolute left-2 top-1/2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-black/40 p-2 text-white backdrop-blur transition hover:bg-black/60 disabled:opacity-30 sm:flex"
+              className="absolute left-2 top-1/2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-black/40 px-2 py-2 text-[10px] font-semibold text-white backdrop-blur transition hover:bg-black/60 disabled:opacity-30 sm:flex"
             >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
+              Prev
             </button>
             <button
               type="button"
               onClick={handleNext}
               disabled={activeIndex === items.length - 1}
               aria-label="Next slide"
-              className="absolute right-2 top-1/2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-black/40 p-2 text-white backdrop-blur transition hover:bg-black/60 disabled:opacity-30 sm:flex"
+              className="absolute right-2 top-1/2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-black/40 px-2 py-2 text-[10px] font-semibold text-white backdrop-blur transition hover:bg-black/60 disabled:opacity-30 sm:flex"
             >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
+              Next
             </button>
           </>
         )}

@@ -110,7 +110,7 @@ export function validateStep2(ctx: RegisterValidationContext): FieldErrors {
 
   if (needsHandler) {
     if (availableHandlersCount === 0) {
-      errors.handlerId = `No liaison officers available yet - one must register first`;
+      errors.handlerId = `No liaison officers available yet. One must register first`;
     } else if (!form.handlerId.trim()) {
       errors.handlerId = handlerLabel;
     }
@@ -229,7 +229,7 @@ export function parseRegistrationError(err: unknown): {
   }
 
   if (/email already registered/i.test(message)) {
-    fieldErrors.email = "This email is already registered - try signing in instead";
+    fieldErrors.email = "This email is already registered. Try signing in instead";
     targetStep = 1;
   }
 
@@ -273,11 +273,11 @@ export function mergeFieldErrors(...sources: FieldErrors[]): FieldErrors {
 export function roleSummaryLabel(roleId: number): string {
   switch (roleId) {
     case ROLES.CROP_FARMER:
-      return "Fellow - Crop";
+      return "Fellow Crop";
     case ROLES.LIVESTOCK_FARMER:
-      return "Fellow - Livestock";
+      return "Fellow Livestock";
     case ROLES.ORGANIZATION_FARMER:
-      return "Fellow - Organization";
+      return "Fellow Organization";
     case ROLES.RESEARCHER:
       return "Researcher";
     case ROLES.BUYER:

@@ -46,7 +46,7 @@ export const COMPANY = {
   country: "Ghana",
   city: "Accra",
   address: "Accra, Ghana",
-  supportHours: "Monday – Friday, 9:00 – 17:00 GMT",
+  supportHours: "Monday to Friday, 9:00 to 17:00 GMT",
 };
 
 export const CONTACT = {

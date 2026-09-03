@@ -124,7 +124,7 @@ export function QualificationSelector({
   const customInputId = `${idPrefix}-custom`;
   const triggerText =
     value.length > 0
-      ? `${value.length} selected - click to add more`
+      ? `${value.length} selected. Click to add more`
       : "Search and add a qualification…";
 
   return (

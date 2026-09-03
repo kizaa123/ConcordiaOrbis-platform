@@ -11,7 +11,7 @@ import { NotifyClientModal } from "@/components/NotifyClientModal";
 import { PageContentSkeleton } from "@/components/LoadingPrimitives";
 
 const ADMIN_NOTIFY_MESSAGE =
-  "Important update from ConcordiaOrbis — please open your dashboard for details.";
+  "Important update from ConcordiaOrbis. Please open your dashboard for details.";
 
 function formatLocation(client: FarmClient): string {
   return [client.city, client.region, client.country].filter(Boolean).join(", ");
@@ -113,7 +113,7 @@ export default function AdminClientsPage() {
       </Link>
       <h1 className="mb-2 mt-4 text-2xl font-bold text-brand-900">Clients</h1>
       <p className="mb-6 text-sm text-gray-500">
-        All fellows, clients, liaison officers, and researchers on the platform — tap a user to
+        All fellows, clients, liaison officers, and researchers on the platform. Tap a user to
         send them a platform notification.
       </p>
 

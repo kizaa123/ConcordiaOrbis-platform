@@ -40,9 +40,9 @@ const GOOGLE_DEV_MODE = process.env.NEXT_PUBLIC_GOOGLE_DEV_MODE === "true";
 
 /** Flat list of all roles for the <select> dropdown */
 const ALL_ROLES = [
-  { group: "Fellow",                  id: ROLES.CROP_FARMER,         label: "Fellow - Crop" },
-  { group: "Fellow",                  id: ROLES.LIVESTOCK_FARMER,    label: "Fellow - Livestock" },
-  { group: "Fellow",                  id: ROLES.ORGANIZATION_FARMER, label: "Fellow - Organization" },
+  { group: "Fellow",                  id: ROLES.CROP_FARMER,         label: "Fellow Crop" },
+  { group: "Fellow",                  id: ROLES.LIVESTOCK_FARMER,    label: "Fellow Livestock" },
+  { group: "Fellow",                  id: ROLES.ORGANIZATION_FARMER, label: "Fellow Organization" },
   { group: "Research & Commerce",      id: ROLES.RESEARCHER,       label: "Researcher" },
   { group: "Research & Commerce",      id: ROLES.BUYER,            label: "Client" },
   { group: "Support & Operations",     id: ROLES.FARMER_HANDLER,   label: "Fellow Liaison Officer" },
@@ -540,7 +540,7 @@ function RegisterForm() {
           <header>
             <h1 className="text-lg font-bold text-brand-900">Create account</h1>
             <p className="mt-0.5 text-sm text-gray-500">
-              Step {step} of {totalSteps} — {stepLabels[step - 1]}
+              Step {step} of {totalSteps}: {stepLabels[step - 1]}
             </p>
           </header>
 

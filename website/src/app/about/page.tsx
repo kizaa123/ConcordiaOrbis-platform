@@ -26,7 +26,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="Our story"
         title={`About ${PLATFORM_NAME}`}
-        subtitle="A Ghana-based commodity exchange for verified fellows and markets — not a copy of the trading screens."
+        subtitle="A Ghana-based commodity exchange for verified fellows and markets, not a copy of the trading screens."
       />
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
         <ScrollReveal direction="fade-right" duration={550}>

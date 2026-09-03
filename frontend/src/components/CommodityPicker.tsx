@@ -167,7 +167,7 @@ export function CommodityPicker({
 
   const triggerText =
     mode === "multi" && totalSelected > 0
-      ? `${totalSelected} selected - click to add more`
+      ? `${totalSelected} selected. Click to add more`
       : mode === "select-add"
         ? "Search and add a commodity…"
         : "Search and select commodities…";

@@ -287,7 +287,7 @@ export function OrderDistributionPanel({
       <PdfViewerModal
         title={
           pdfLine
-            ? `Distribution message - ${recipientDisplayLabel(pdfLine, fellowFirstName)}`
+            ? `Distribution message: ${recipientDisplayLabel(pdfLine, fellowFirstName)}`
             : "Distribution message"
         }
         open={pdfLine !== null}

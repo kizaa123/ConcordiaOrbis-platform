@@ -39,7 +39,7 @@ const HOW_IT_WORKS: { step: number; title: string; desc: string; image: string }
   {
     step: 4,
     title: "Connect & Trade",
-    desc: "Request connections, chat securely, finalise orders and track financials - all in one protected platform.",
+    desc: "Request connections, chat securely, finalise orders and track financials, all in one protected platform.",
     image: HOW_IT_WORKS_IMAGES.connectTrade,
   },
 ];
@@ -85,7 +85,7 @@ const ROLE_CARDS: { icon: IconName; label: string; desc: string; image: string }
   {
     icon: "sprout",
     label: "Crop Fellow",
-    desc: "Register as a crop fellow to list produce, manage prices and delivery schedules, and track interested clients - all from one dashboard.",
+    desc: "Register as a crop fellow to list produce, manage prices and delivery schedules, and track interested clients, all from one dashboard.",
     image: ROLE_CARD_IMAGES.cropFarmer,
   },
   {
@@ -279,7 +279,7 @@ export default function HomePage() {
                 </span>
               </>
             }
-            subtitle={`Whether you produce it, buy it, or broker it — ${PLATFORM_NAME} has a tailored experience designed for your role.`}
+            subtitle={`Whether you produce it, buy it, or broker it, ${PLATFORM_NAME} has a tailored experience designed for your role.`}
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {ROLE_CARDS.map((r, i) => (
@@ -310,7 +310,7 @@ export default function HomePage() {
                 </span>
               </>
             }
-            subtitle="Four simple steps from registration to closed deal — all protected by our secure escrow system."
+            subtitle="Four simple steps from registration to closed deal, all protected by our secure escrow system."
           />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {HOW_IT_WORKS.map((item, i) => (
