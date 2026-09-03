@@ -5,7 +5,7 @@ import { SocialLinks } from "@/components/SocialLinks";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { COMPANY, CONTACT } from "@/lib/company";
 import { pageSeo } from "@/lib/seo";
-import { SupportWhatsAppLink } from "@/components/WhatsAppSupport";
+import { WhatsAppFavicon } from "@/components/WhatsAppSupport";
 
 export const metadata: Metadata = pageSeo({
   title: "Contact us in Accra, Ghana",
@@ -38,14 +38,16 @@ export default function ContactPage() {
             </a>
           </div>
           <div className="rounded-3xl border border-brand-100 bg-white p-6 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-widest text-brand-600">Phone</p>
-            <a href={`tel:${CONTACT.phoneTel}`} className="mt-2 block font-semibold text-brand-800">
-              {CONTACT.phoneDisplay}
+            <p className="text-xs font-bold uppercase tracking-widest text-brand-600">WhatsApp</p>
+            <a
+              href={CONTACT.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-3 font-semibold text-brand-800 transition hover:text-[#128C7E]"
+            >
+              <WhatsAppFavicon className="h-10 w-10 shrink-0" />
+              Chat on WhatsApp
             </a>
-            <SupportWhatsAppLink
-              label="WhatsApp Support & Assistant →"
-              className="mt-1 block text-sm font-semibold text-brand-700"
-            />
           </div>
           <SocialLinks />
         </ScrollReveal>

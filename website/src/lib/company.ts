@@ -53,8 +53,6 @@ export const CONTACT = {
   hello: "concordiaorbisadmin@gmail.com",
   payments: "concordiaorbisadmin@gmail.com",
   support: "concordiaorbisadmin@gmail.com",
-  phoneDisplay: "+233 20 000 0000",
-  phoneTel: "+233200000000",
   whatsapp: "https://wa.me/message/GW3AIF7DAWTYN1",
 };
 
