@@ -6,9 +6,15 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { TeamFlipCard } from "@/components/TeamFlipCard";
 import { scrollStagger } from "@/lib/scrollStagger";
 import { CONTACT, TEAM } from "@/lib/company";
+import { pageSeo } from "@/lib/seo";
 import { SupportWhatsAppLink } from "@/components/WhatsAppSupport";
 
-export const metadata: Metadata = { title: "Team" };
+export const metadata: Metadata = pageSeo({
+  title: "Leadership team in Accra, Ghana",
+  description:
+    "Meet the Accra-based ConcordiaOrbis team behind Ghana farm produce trading: founder, communications, and research leadership.",
+  path: "/team",
+});
 
 export default function TeamPage() {
   return (

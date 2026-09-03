@@ -3,9 +3,15 @@ import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { CONTACT, PLATFORM_NAME } from "@/lib/company";
+import { pageSeo } from "@/lib/seo";
 import { SupportWhatsAppLink } from "@/components/WhatsAppSupport";
 
-export const metadata: Metadata = { title: "Terms" };
+export const metadata: Metadata = pageSeo({
+  title: "Terms of use",
+  description:
+    "Terms for using the ConcordiaOrbis company site and Ghana farm produce trading platform, including payments, farm access, and delivery.",
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (

@@ -3,8 +3,14 @@ import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { scrollStagger } from "@/lib/scrollStagger";
+import { pageSeo } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Payments" };
+export const metadata: Metadata = pageSeo({
+  title: "Paystack payments for Ghana farm orders",
+  description:
+    "How ConcordiaOrbis farm access and produce orders are paid in Ghana. Clients pay ConcordiaOrbis on Paystack with card, mobile money, or bank transfer.",
+  path: "/payments",
+});
 
 const STEPS = [
   {

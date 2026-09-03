@@ -4,9 +4,15 @@ import { ContactForm } from "@/components/ContactForm";
 import { SocialLinks } from "@/components/SocialLinks";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { COMPANY, CONTACT } from "@/lib/company";
+import { pageSeo } from "@/lib/seo";
 import { SupportWhatsAppLink } from "@/components/WhatsAppSupport";
 
-export const metadata: Metadata = { title: "Contact" };
+export const metadata: Metadata = pageSeo({
+  title: "Contact us in Accra, Ghana",
+  description:
+    "Contact ConcordiaOrbis in Accra for partnerships, Paystack payment reviews, farm order questions, and refunds. We reply on Ghana business days.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

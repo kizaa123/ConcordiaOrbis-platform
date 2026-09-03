@@ -4,8 +4,14 @@ import { PageHero } from "@/components/PageHero";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { scrollStagger } from "@/lib/scrollStagger";
 import { PLATFORM_NAME } from "@/lib/company";
+import { pageSeo } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "About" };
+export const metadata: Metadata = pageSeo({
+  title: "About our Ghana farm commodity exchange",
+  description:
+    "ConcordiaOrbis is a Ghana-based farm commodity exchange in Accra. We verify fellows who list produce, connect them with clients, and deliver orders through liaison officers.",
+  path: "/about",
+});
 
 const ROLES = [
   { title: "Fellows", desc: "Crop, livestock, fruit, and fish producers who list harvest-ready goods." },
@@ -32,9 +38,10 @@ export default function AboutPage() {
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">Mission</p>
           <h2 className="mt-2 text-3xl font-black text-brand-900">Fair, traceable trade.</h2>
           <p className="mt-4 text-base leading-relaxed text-gray-600">
-            We built {PLATFORM_NAME} so a fellow in a district and a client in a city can transact
-            without losing money or identity to unverified middlemen. Produce is listed on the
-            platform; this website is the public company record.
+            We built {PLATFORM_NAME} so a fellow on a Ghana farm and a client in Accra or another
+            city can trade produce without losing money or identity to unverified middlemen. Crops,
+            livestock, fruit, and fish are listed on the platform; this website is the public
+            company record.
           </p>
           <p className="mt-3 text-base leading-relaxed text-gray-600">
             Headquarters: Accra, Ghana. The marketplace is used across Africa and beyond.

@@ -2,9 +2,15 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { CONTACT, PLATFORM_NAME } from "@/lib/company";
+import { pageSeo } from "@/lib/seo";
 import { SupportWhatsAppLink } from "@/components/WhatsAppSupport";
 
-export const metadata: Metadata = { title: "Privacy" };
+export const metadata: Metadata = pageSeo({
+  title: "Privacy policy",
+  description:
+    "How ConcordiaOrbis in Ghana collects, uses, and protects personal and Paystack payment information for fellows, clients, and liaison officers.",
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (

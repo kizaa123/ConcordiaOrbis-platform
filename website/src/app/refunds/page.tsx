@@ -3,8 +3,14 @@ import { PageHero } from "@/components/PageHero";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { scrollStagger } from "@/lib/scrollStagger";
 import { CONTACT } from "@/lib/company";
+import { pageSeo } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Refunds" };
+export const metadata: Metadata = pageSeo({
+  title: "Refunds for farm access and produce orders",
+  description:
+    "ConcordiaOrbis refund policy for Ghana farm access fees, produce orders, and mistaken Paystack charges. How to request a refund in Accra business hours.",
+  path: "/refunds",
+});
 
 const CASES = [
   {

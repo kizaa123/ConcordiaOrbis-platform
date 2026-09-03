@@ -1,17 +1,27 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  MOTTO,
   PLATFORM_MARKETPLACE_URL,
   PLATFORM_NAME,
   PLATFORM_REGISTER_URL,
   TAGLINE,
   TEAM,
 } from "@/lib/company";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, pageSeo } from "@/lib/seo";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { SectionHeader } from "@/components/SectionHeader";
 import { AnimatedStat } from "@/components/AnimatedStat";
 import { scrollStagger } from "@/lib/scrollStagger";
+
+export const metadata: Metadata = {
+  ...pageSeo({
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    path: "/",
+  }),
+  title: { absolute: DEFAULT_TITLE },
+};
 
 const STATS = [
   { value: "1,000+", label: "Verified users" },
@@ -52,7 +62,7 @@ export default function HomePage() {
       <section className="relative min-h-[88vh] overflow-hidden bg-brand-950 text-white">
         <Image
           src="/hero.jpg"
-          alt="Agricultural landscape representing ConcordiaOrbis trade"
+          alt="Farm landscape in Ghana for ConcordiaOrbis produce trading"
           fill
           priority
           className="object-cover object-[center_28%]"
@@ -62,7 +72,9 @@ export default function HomePage() {
 
         <div className="relative mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-4 pb-16 pt-28 sm:justify-center sm:px-6 sm:pb-24 sm:pt-20">
           <ScrollReveal trigger="mount" delay={scrollStagger(0, 70)} duration={480}>
-            <p className="text-sm font-semibold tracking-[0.12em] text-yellow-400">{MOTTO}</p>
+            <p className="text-sm font-semibold tracking-[0.12em] text-yellow-400">
+              Ghana farm produce marketplace
+            </p>
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(1, 70)} duration={540}>
             <h1 className="mt-3 max-w-3xl text-4xl font-black leading-[1.08] tracking-tight sm:text-6xl lg:text-[4.25rem]">
@@ -74,8 +86,9 @@ export default function HomePage() {
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(2, 70)} duration={500}>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-brand-100 sm:text-lg">
-              We connect verified fellows with clients across Africa and beyond. Trade is private.
-              Clients pay ConcordiaOrbis directly; a liaison officer then procures and delivers the order.
+              Trade farm produce in Ghana — crops, livestock, fruit, and fish — with verified fellows
+              and clients. Pay ConcordiaOrbis on Paystack; a liaison officer procures and delivers
+              the order.
             </p>
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(3, 70)} duration={480} className="pt-8">

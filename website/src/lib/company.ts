@@ -4,20 +4,32 @@ export const TAGLINE = "Where Fellows Meet Markets";
 
 const DEFAULT_WEBSITE_URL = "https://concordiaorbis.com";
 
+function toOriginUrl(value: string | undefined, fallback: string): URL {
+  const raw = value?.trim() ?? "";
+  const withProtocol = raw
+    ? /^https?:\/\//i.test(raw)
+      ? raw
+      : `https://${raw}`
+    : fallback;
+  try {
+    return new URL(withProtocol.endsWith("/") ? withProtocol : `${withProtocol}/`);
+  } catch {
+    return new URL(`${fallback}/`);
+  }
+}
+
 /** Public company site origin (sitemap, robots, metadata). */
 export function getWebsiteUrl(): URL {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (configured) {
-    return new URL(configured.endsWith("/") ? configured : `${configured}/`);
+  if (process.env.NEXT_PUBLIC_SITE_URL?.trim()) {
+    return toOriginUrl(process.env.NEXT_PUBLIC_SITE_URL, DEFAULT_WEBSITE_URL);
   }
-  if (process.env.VERCEL_ENV === "production") {
-    return new URL(`${DEFAULT_WEBSITE_URL}/`);
+  if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+    return new URL("http://localhost:3002/");
   }
-  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim() || process.env.VERCEL_URL?.trim();
-  if (vercel) {
-    return new URL(`https://${vercel.replace(/^https?:\/\//, "").replace(/\/$/, "")}/`);
-  }
-  return new URL("http://localhost:3002/");
+  return toOriginUrl(
+    process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL,
+    DEFAULT_WEBSITE_URL,
+  );
 }
 
 /** Live trading platform (app). */
