@@ -1,7 +1,9 @@
 import { PLATFORM_NAME } from '../constants/platform';
 
+type SmsProviderName = 'arkesel' | 'hubtel' | 'twilio' | 'custom';
+
 type SmsSendResult =
-  | { sent: true; provider: 'twilio' | 'hubtel' | 'custom' }
+  | { sent: true; provider: SmsProviderName }
   | { sent: false; devMode: true; devCode: string };
 
 function allowDevFallback(): boolean {
@@ -21,6 +23,53 @@ function twilioToAddress(phone: string): string {
 
 function hubtelToAddress(phone: string): string {
   return smsDigits(phone);
+}
+
+/** Arkesel expects country code without + , e.g. 233241234567 */
+function arkeselToAddress(phone: string): string {
+  return smsDigits(phone);
+}
+
+async function sendViaArkesel(toPhone: string, message: string): Promise<boolean> {
+  const apiKey = process.env.ARKESEL_API_KEY?.trim();
+  const sender = (process.env.ARKESEL_SENDER_ID?.trim() || 'Concordia').slice(0, 11);
+
+  if (!apiKey) {
+    return false;
+  }
+
+  const res = await fetch('https://sms.arkesel.com/api/v2/sms/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': apiKey,
+    },
+    body: JSON.stringify({
+      sender,
+      message,
+      recipients: [arkeselToAddress(toPhone)],
+    }),
+  });
+
+  const payload = (await res.json().catch(() => ({}))) as {
+    status?: string;
+    message?: string;
+    code?: string;
+  };
+
+  if (!res.ok) {
+    console.error('[sms:arkesel] Error sending SMS:', payload);
+    throw new Error(payload.message || `Arkesel HTTP ${res.status}`);
+  }
+
+  const status = (payload.status || '').toLowerCase();
+  if (status && status !== 'success' && status !== 'ok') {
+    console.error('[sms:arkesel] Gateway rejected SMS:', payload);
+    throw new Error(payload.message || 'Arkesel rejected the SMS request');
+  }
+
+  console.log(`[sms] Sent SMS to ${toPhone} via Arkesel`);
+  return true;
 }
 
 async function sendViaTwilio(toPhone: string, message: string): Promise<boolean> {
@@ -131,7 +180,8 @@ export async function sendSmsOtp(toPhone: string, code: number): Promise<SmsSend
   const formattedCode = String(code).padStart(4, '0');
   const message = `Your ${PLATFORM_NAME} verification code is: ${formattedCode}. Expires in 15 minutes.`;
 
-  const providers: Array<{ name: 'hubtel' | 'twilio' | 'custom'; send: () => Promise<boolean> }> = [
+  const providers: Array<{ name: SmsProviderName; send: () => Promise<boolean> }> = [
+    { name: 'arkesel', send: () => sendViaArkesel(toPhone, message) },
     { name: 'hubtel', send: () => sendViaHubtel(toPhone, message) },
     { name: 'twilio', send: () => sendViaTwilio(toPhone, message) },
     { name: 'custom', send: () => sendViaCustomGateway(toPhone, message) },
@@ -153,7 +203,7 @@ export async function sendSmsOtp(toPhone: string, code: number): Promise<SmsSend
 
   if (!allowDevFallback()) {
     throw lastError ?? new Error(
-      'SMS is not configured. Set Hubtel or Twilio credentials on the server (see backend/.env.example).'
+      'SMS is not configured. Set ARKESEL_API_KEY on the server (see backend/.env.example).'
     );
   }
 
@@ -163,7 +213,8 @@ export async function sendSmsOtp(toPhone: string, code: number): Promise<SmsSend
 
 export function isSmsConfigured(): boolean {
   return Boolean(
-    (process.env.HUBTEL_CLIENT_ID?.trim() && process.env.HUBTEL_CLIENT_SECRET?.trim()) ||
+    process.env.ARKESEL_API_KEY?.trim() ||
+      (process.env.HUBTEL_CLIENT_ID?.trim() && process.env.HUBTEL_CLIENT_SECRET?.trim()) ||
       (process.env.TWILIO_ACCOUNT_SID?.trim() &&
         process.env.TWILIO_AUTH_TOKEN?.trim() &&
         process.env.TWILIO_PHONE_NUMBER?.trim()) ||

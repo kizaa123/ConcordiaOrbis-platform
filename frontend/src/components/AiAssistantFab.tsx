@@ -60,7 +60,7 @@ export function AiAssistantFab() {
           text:
             e instanceof Error
               ? e.message
-              : "I could not answer just now. Try again, or tap Help in the footer to reach a person.",
+              : "I could not answer just now. Try again, or tap Help in the sidebar to reach a person.",
         },
       ]);
     } finally {

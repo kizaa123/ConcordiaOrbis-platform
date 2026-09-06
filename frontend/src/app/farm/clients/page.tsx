@@ -125,20 +125,15 @@ export default function FarmClientsPage() {
           {search.trim() ? "No users match your search." : "No users registered yet."}
         </p>
       ) : (
-        <>
-          <p className="mb-3 text-xs text-gray-500">
-            {filtered.length} user{filtered.length !== 1 ? "s" : ""}
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((client) => (
-              <ClientCard
-                key={client.id}
-                client={client}
-                onNotify={() => setSelectedClient(client)}
-              />
-            ))}
-          </div>
-        </>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((client) => (
+            <ClientCard
+              key={client.id}
+              client={client}
+              onNotify={() => setSelectedClient(client)}
+            />
+          ))}
+        </div>
       )}
 
       {selectedClient && (

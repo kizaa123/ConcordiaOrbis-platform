@@ -300,15 +300,6 @@ export function PortalSidebarLayout({
           <AdSlot placement="global" variant="strip" />
         </div>
         {children}
-        <footer className="mx-auto flex max-w-6xl items-center justify-center border-t border-brand-100 px-4 py-3 lg:px-6">
-          <button
-            type="button"
-            onClick={openWhatsAppSupportPicker}
-            className="text-xs font-semibold text-brand-700 hover:text-brand-900 hover:underline"
-          >
-            Help
-          </button>
-        </footer>
       </main>
 
       <MobileBottomNav />
