@@ -3,7 +3,6 @@ import { companyUrl, PLATFORM_NAME } from "@/lib/site";
 
 const COMPANY_LINKS = [
   { href: "/", label: "Company" },
-  { href: "/team", label: "Team" },
   { href: "/refunds", label: "Refunds" },
   { href: "/contact", label: "Contact" },
 ] as const;

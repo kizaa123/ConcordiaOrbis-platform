@@ -44,27 +44,6 @@ const HOW_IT_WORKS: { step: number; title: string; desc: string; image: string }
   },
 ];
 
-const TEAM = [
-  {
-    name: "Obeng Stephen Boakye",
-    role: "Founder and Chief Executive Officer ",
-    bio: "Entrepreneur | Supply Chain Strategist | Business Consultant | Diplomatic & Global Partnerships Strategist | Global Food Systems Advocate | Sustainable Development Enthusiast.",
-    img: "/ANI Founder and Chief Executive Officer.png",
-  },
-  {
-    name: "Gloria Bless Dzogbenyuie ",
-    role: "Chief Communications Officer ",
-    bio: "Procurement & Supply Chain Professional | Strategic Communications | Sustainable Agriculture Advocate | Youth & Climate Development Enthusiast.",
-    img: "/ANI Chief Communications Officer.png",
-  },
-  {
-    name: "Lawrence Kennedy Kwarteng ",
-    role: "Director of Research and Quality Assurance",
-    bio: "Head of Extension/Plant Doctor | Agricultural Extension Specialist | 15+ Years Farmer Advisory Experience | Crop Health & Sustainable Agriculture Advocate.",
-    img: "/Replace ANI Director.png",
-  },
-];
-
 /**
  * Role card images - swap any path below with your own file under frontend/public/.
  * Place images in public/roles/ (e.g. public/roles/crop-farmer.jpg) and update the matching entry.
@@ -343,74 +322,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ── TEAM ── */}
-      <section className="relative overflow-hidden bg-brand-950 py-28">
-        {/* Decorative background grid */}
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:48px_48px]" />
-        {/* Radial glow */}
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-brand-700/20 blur-[120px]" />
-
-        <div className="relative z-10 mx-auto max-w-6xl px-6">
-          <SectionHeader
-            theme="dark"
-            badge="The People Behind It"
-            title={
-              <>
-                Meet Our{" "}
-                <span className="bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent">
-                  Team
-                </span>
-              </>
-            }
-            subtitle="A passionate team of industry and technology experts committed to transforming trade across Africa and beyond."
-          />
-
-          {/* Team cards grid */}
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {TEAM.map((member, i) => (
-              <ScrollReveal key={member.name} delay={scrollStagger(i, 120)} duration={600} direction="fade-up">
-                <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-brand-700/50 bg-gradient-to-b from-brand-900 to-brand-950 shadow-xl transition-all duration-500 hover:-translate-y-1 hover:border-yellow-500/30 hover:shadow-[0_24px_48px_rgba(0,0,0,0.45)]">
-                  <div className="flex justify-center px-6 pt-8">
-                    <div className="relative aspect-[3/4] w-full max-w-[220px] overflow-hidden rounded-2xl bg-gradient-to-b from-brand-800 to-brand-900 shadow-[0_16px_40px_rgba(0,0,0,0.35)] ring-1 ring-white/10">
-                      <Image
-                        src={member.img}
-                        alt={member.name}
-                        fill
-                        className="object-contain object-center p-1 transition-transform duration-700 group-hover:scale-[1.02]"
-                        sizes="(max-width: 640px) 45vw, 220px"
-                      />
-                      <div
-                        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(64,145,108,0.12)_0%,transparent_45%)]"
-                        aria-hidden="true"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-1 flex-col gap-3 px-6 pb-8 pt-6 text-center">
-                    <div className="space-y-1.5">
-                      <h3 className="text-xl font-bold leading-snug text-white transition-colors duration-300 group-hover:text-yellow-300">
-                        {member.name.trim()}
-                      </h3>
-                      <p className="text-sm font-semibold leading-snug text-yellow-400">
-                        {member.role.trim()}
-                      </p>
-                    </div>
-                    <p className="text-sm leading-relaxed text-brand-200">
-                      {member.bio
-                        .split("|")
-                        .map((part) => part.trim())
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </p>
-                  </div>
-                </article>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
 
       {/* ── FINAL CTA ── */}
       <section className="relative overflow-hidden bg-gradient-to-br from-brand-800 via-brand-700 to-brand-600 py-28 text-white">
