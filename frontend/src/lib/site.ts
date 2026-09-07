@@ -39,7 +39,7 @@ export function openWhatsAppSupportPicker() {
   window.dispatchEvent(new Event(SUPPORT_WHATSAPP_OPEN_EVENT));
 }
 
-/** Live public company site (About, Team, Refunds, Contact). */
+/** Live public company site (About, Refunds, Contact). */
 export const DEFAULT_COMPANY_SITE_URL = "https://concordiaorbis.com";
 
 /** Public company / Paystack information site (separate from the trading app). */

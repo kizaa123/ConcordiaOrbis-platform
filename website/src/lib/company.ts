@@ -92,31 +92,9 @@ export const SOCIAL = {
   youtube: "https://www.youtube.com/@concordiaorbis",
 };
 
-export const TEAM = [
-  {
-    name: "Obeng Stephen Boakye",
-    role: "Founder and Chief Executive Officer",
-    bio: "Entrepreneur · Supply Chain Strategist · Business Consultant · Diplomatic & Global Partnerships Strategist · Global Food Systems Advocate.",
-    img: "/team/founder.png",
-  },
-  {
-    name: "Gloria Bless Dzogbenyuie",
-    role: "Chief Communications Officer",
-    bio: "Procurement & Supply Chain Professional · Strategic Communications · Sustainable Agriculture Advocate · Youth & Climate Development Enthusiast.",
-    img: "/team/cco.png",
-  },
-  {
-    name: "Lawrence Kennedy Kwarteng",
-    role: "Director of Research and Quality Assurance",
-    bio: "Head of Extension / Plant Doctor · Agricultural Extension Specialist · 15+ years farmer advisory experience · Crop health & sustainable agriculture.",
-    img: "/team/director.png",
-  },
-] as const;
-
 export const NAV = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/team", label: "Team" },
   { href: "/payments", label: "Payments" },
   { href: "/refunds", label: "Refunds" },
   { href: "/contact", label: "Contact" },

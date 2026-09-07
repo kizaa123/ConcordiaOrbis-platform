@@ -6,7 +6,6 @@ import {
   PLATFORM_NAME,
   PLATFORM_REGISTER_URL,
   TAGLINE,
-  TEAM,
 } from "@/lib/company";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, pageSeo } from "@/lib/seo";
 import { ScrollReveal } from "@/components/ScrollReveal";
@@ -141,7 +140,7 @@ export default function HomePage() {
             Built in Ghana for real fellows and real clients.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-gray-600">
-              ConcordiaOrbis is the team behind the marketplace. We verify who trades, procure and
+              ConcordiaOrbis runs the marketplace. We verify who trades, procure and
               deliver orders through liaison officers, and publish how mistaken Paystack charges are
               refunded.
             </p>
@@ -202,40 +201,6 @@ export default function HomePage() {
               Full payment detail
             </Link>
           </ScrollReveal>
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden bg-brand-950 py-24 text-white">
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:48px_48px]" />
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-          <SectionHeader
-            theme="dark"
-            badge="Leadership"
-            title={
-              <>
-                The people behind{" "}
-                <span className="bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent">
-                  ConcordiaOrbis
-                </span>
-              </>
-            }
-            subtitle="A small executive team. Full bios live on the Team page."
-          />
-          <div className="grid gap-6 sm:grid-cols-3">
-            {TEAM.map((member, i) => (
-              <ScrollReveal key={member.name} delay={scrollStagger(i, 110)} duration={560}>
-                <Link href="/team" className="group block">
-                  <div className="relative mx-auto aspect-[3/4] w-full max-w-[220px] overflow-hidden rounded-2xl bg-brand-900 ring-1 ring-white/10 transition duration-500 group-hover:-translate-y-1 group-hover:ring-yellow-400/40">
-                    <Image src={member.img} alt={member.name} fill className="object-contain p-1" />
-                  </div>
-                  <h3 className="mt-4 text-center text-lg font-bold group-hover:text-yellow-300">
-                    {member.name}
-                  </h3>
-                  <p className="mt-1 text-center text-sm font-semibold text-yellow-400">{member.role}</p>
-                </Link>
-              </ScrollReveal>
-            ))}
-          </div>
         </div>
       </section>
 
