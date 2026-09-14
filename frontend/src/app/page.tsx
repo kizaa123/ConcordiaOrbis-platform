@@ -49,10 +49,6 @@ const HOW_IT_WORKS: { step: number; title: string; desc: string; image: string }
  * Place images in public/roles/ (e.g. public/roles/crop-farmer.jpg) and update the matching entry.
  */
 const ROLE_CARD_IMAGES = {
-  cropFarmer: "/famer on pitch.jpg",
-  livestockFarmer: "/herd-of-cattle-grazing-in-green-pasture-looking-at-camera-photo.jpg",
-  fruitFarmer: "/portrait-happy-farmer-couple-holding-baskets-vegetables-fruits-vineyard-77869777.webp",
-  fishFarmer: "/fish-farmer-holding-freshly-caught-fish-aquaculture-farm-fish-farmer-holding-freshly-caught-fish-fish-farm-demonstrating-372101156.webp",
   client: "/farmer and buyer.jpg",
   student: "/agricultural-students-woman-evaluating-crop-growth-notes-focused-documenting-plant-health-check-vegetable-growth-problems-465673929.webp",
   organization: "/CropsBlaringhem-LowRes-265.jpg",
@@ -61,18 +57,6 @@ const ROLE_CARD_IMAGES = {
 } as const;
 
 const ROLE_CARDS: { icon: IconName; label: string; desc: string; image: string }[] = [
-  {
-    icon: "leaf",
-    label: "Fruit Fellow",
-    desc: "Highlight seasonal fruits, orchard yields and delivery windows so clients can discover and order fresh produce directly from your farm.",
-    image: ROLE_CARD_IMAGES.fruitFarmer,
-  },
-  {
-    icon: "leaf",
-    label: "Fish Fellow",
-    desc: "List aquaculture produce, manage pond yields and delivery windows, and connect with clients sourcing fresh fish across the region.",
-    image: ROLE_CARD_IMAGES.fishFarmer,
-  },
   {
     icon: "cart",
     label: "Client",
