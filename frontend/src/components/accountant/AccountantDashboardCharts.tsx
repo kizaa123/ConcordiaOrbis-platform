@@ -10,18 +10,18 @@ import { platformSharePercentOfTotal } from "@/lib/handlerDisplayName";
 import { PLATFORM_NAME } from "@/lib/site";
 
 const STREAM_COLORS = {
-  access: "#40916c",
-  research: "#52b788",
-  orderShare: "#2d6a4f",
+  access: "#3d5a8a",
+  research: "#5b7aa8",
+  orderShare: "#1e3458",
 } as const;
 
 const ACCESS_COLORS = {
-  farmAccess: "#40916c",
-  research: "#52b788",
-  legacyAccess: "#95d5b2",
+  farmAccess: "#3d5a8a",
+  research: "#5b7aa8",
+  legacyAccess: "#c5d4e8",
 } as const;
 
-const DONUT_COLORS = ["#40916c", "#2d6a4f", "#52b788", "#74c69d", "#d4a853"];
+const DONUT_COLORS = ["#3d5a8a", "#1e3458", "#5b7aa8", "#8fa8c9", "#d4a853"];
 
 type TooltipState = {
   content: React.ReactNode;
@@ -95,7 +95,7 @@ function useChartTooltip() {
 function RevenueAreaChart({
   data,
   height = 140,
-  strokeColor = "#2d6a4f",
+  strokeColor = "#1e3458",
   gradientId = "accountantRevenueGradient",
 }: {
   data: { label: string; revenue: number }[];
@@ -169,7 +169,7 @@ function RevenueAreaChart({
                 }}
                 onMouseLeave={() => setHoveredIndex(null)}
               />
-              <circle cx={p.x} cy={p.y} r={active ? 4.5 : 3} fill={active ? "#1b4332" : strokeColor} pointerEvents="none" />
+              <circle cx={p.x} cy={p.y} r={active ? 4.5 : 3} fill={active ? "#0f1c30" : strokeColor} pointerEvents="none" />
             </g>
           );
         })}
@@ -181,7 +181,7 @@ function RevenueAreaChart({
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={strokeColor} />
-            <stop offset="100%" stopColor="#d8f3dc" />
+            <stop offset="100%" stopColor="#e6edf5" />
           </linearGradient>
         </defs>
       </svg>
@@ -609,7 +609,7 @@ function CashFlowChart({
                   )
                 }
               />
-              <rect x={cx - barW - 2} y={pad.top + innerH - incomeH} width={barW} height={incomeH} rx="2" fill="#40916c" pointerEvents="none" />
+              <rect x={cx - barW - 2} y={pad.top + innerH - incomeH} width={barW} height={incomeH} rx="2" fill="#3d5a8a" pointerEvents="none" />
               <rect x={cx + 2} y={pad.top + innerH - withdrawalH} width={barW} height={withdrawalH} rx="2" fill="#d4a853" pointerEvents="none" />
               <text x={cx} y={height - 6} textAnchor="middle" className="fill-gray-500 text-[8px]">
                 {d.label}

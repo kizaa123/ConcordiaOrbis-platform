@@ -1,11 +1,11 @@
 {
   "name": "ConcordiaOrbis",
   "short_name": "ConcordiaOrbis",
-  "description": "Connect fellows, clients, and liaison officers across Africa and beyond",
+  "description": "Africa's Digital B2B Marketplace, Connecting Business with Clients",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#1b4332",
+  "theme_color": "#0f1c30",
   "icons": [
     {
       "src": "/logo.svg",

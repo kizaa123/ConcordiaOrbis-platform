@@ -27,7 +27,7 @@ export const ROLE_NAMES: Record<number, string> = {
   9: 'Student',
   10: 'CTO',
   11: 'Communication Officer',
-  12: 'Organization Fellow',
+  12: 'Organization',
 };
 
 /** Roles that browse marketplace farms and place product orders (same access flow as buyers). */
@@ -97,8 +97,6 @@ export const VERIFIABLE_ROLE_IDS = [...FARMER_ROLES, ROLES.BUYER, ROLES.RESEARCH
 
 /** Roles exposed on the public registration form (Admin is staff-only). */
 export const REGISTERABLE_ROLE_IDS = [
-  ROLES.CROP_FARMER,
-  ROLES.LIVESTOCK_FARMER,
   ROLES.ORGANIZATION_FARMER,
   ROLES.FARMER_HANDLER,
   ROLES.BUYER,
@@ -181,7 +179,7 @@ export function portalDirectoryRoleLabel(roleId: number): string {
     case ROLES.LIVESTOCK_FARMER:
       return 'Livestock Fellow';
     case ROLES.ORGANIZATION_FARMER:
-      return 'Organization Fellow';
+      return 'Organization';
     case ROLES.BUYER:
     case ROLES.STUDENT:
       return 'Client';

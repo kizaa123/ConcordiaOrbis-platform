@@ -94,7 +94,7 @@ function IncomeAreaChart({
           );
         })}
         <path d={areaPath} fill="url(#incomeGradient)" opacity={0.35} />
-        <path d={linePath} fill="none" stroke="#2d6a4f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={linePath} fill="none" stroke="#1e3458" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         {points.map((p) => {
           const active = hoveredIndex === p.index;
           return (
@@ -129,7 +129,7 @@ function IncomeAreaChart({
                 cx={p.x}
                 cy={p.y}
                 r={active ? 4.5 : 3}
-                fill={active ? "#1b4332" : "#2d6a4f"}
+                fill={active ? "#0f1c30" : "#1e3458"}
                 pointerEvents="none"
               />
             </g>
@@ -142,8 +142,8 @@ function IncomeAreaChart({
         ))}
         <defs>
           <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#40916c" />
-            <stop offset="100%" stopColor="#d8f3dc" />
+            <stop offset="0%" stopColor="#3d5a8a" />
+            <stop offset="100%" stopColor="#e6edf5" />
           </linearGradient>
         </defs>
       </svg>

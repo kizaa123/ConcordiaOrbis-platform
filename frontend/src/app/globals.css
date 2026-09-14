@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-50: #fbfdfb;
-  --color-brand-100: #d8f3dc;
-  --color-brand-200: #95d5b2;
-  --color-brand-300: #74c69d;
-  --color-brand-400: #52b788;
-  --color-brand-500: #40916c;
-  --color-brand-600: #357a5b;
-  --color-brand-700: #2d6a4f;
-  --color-brand-800: #245843;
-  --color-brand-900: #1b4332;
-  --color-brand-950: #0d2818;
+  --color-brand-50: #f4f7fb;
+  --color-brand-100: #e6edf5;
+  --color-brand-200: #c5d4e8;
+  --color-brand-300: #8fa8c9;
+  --color-brand-400: #5b7aa8;
+  --color-brand-500: #3d5a8a;
+  --color-brand-600: #2c456e;
+  --color-brand-700: #1e3458;
+  --color-brand-800: #15263f;
+  --color-brand-900: #0f1c30;
+  --color-brand-950: #08111e;
   --color-gold: #d4a853;
   --font-sans: ui-sans-serif, system-ui, sans-serif, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -269,14 +269,14 @@ html {
   .card-elevated-hover:hover {
     @apply border-brand-200/80;
     box-shadow:
-      0 2px 4px rgba(27, 67, 50, 0.05),
-      0 6px 16px rgba(27, 67, 50, 0.05);
+      0 2px 4px rgba(15, 28, 48, 0.05),
+      0 6px 16px rgba(15, 28, 48, 0.05);
   }
 
-  /* Very subtle brand-green glow at the bottom of portal nav card images (dashboard + homepage). */
+  /* Very subtle brand glow at the bottom of portal nav card images (dashboard + homepage). */
   .portal-nav-card-image {
     @apply relative;
-    box-shadow: inset 0 -32px 40px -16px rgba(82, 183, 136, 0.12);
+    box-shadow: inset 0 -32px 40px -16px rgba(61, 90, 138, 0.12);
   }
 
   .portal-nav-card-image::after {
@@ -288,14 +288,14 @@ html {
     pointer-events: none;
     background: radial-gradient(
       ellipse 110% 80% at 50% 100%,
-      rgba(82, 183, 136, 0.14),
-      rgba(116, 198, 157, 0.05) 50%,
+      rgba(61, 90, 138, 0.14),
+      rgba(91, 122, 168, 0.05) 50%,
       transparent 70%
     );
   }
 
   .group:hover .portal-nav-card-image {
-    box-shadow: inset 0 -36px 44px -14px rgba(82, 183, 136, 0.18);
+    box-shadow: inset 0 -36px 44px -14px rgba(61, 90, 138, 0.18);
   }
 
   .group:hover .portal-nav-card-image::after {

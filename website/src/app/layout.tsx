@@ -21,11 +21,11 @@ export const metadata: Metadata = {
   applicationName: PLATFORM_NAME,
   keywords: [
     "ConcordiaOrbis",
-    "Ghana farm marketplace",
-    "farm produce Ghana",
-    "commodity trading Ghana",
-    "buy farm produce Accra",
-    "Paystack farm payment",
+    "B2B marketplace Africa",
+    "business to business Ghana",
+    "digital B2B marketplace",
+    "commodity trading Accra",
+    "Paystack B2B payment",
   ],
   alternates: { canonical: "/" },
   openGraph: {

@@ -5,12 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
 import { api } from "@/lib/api";
-import { CommodityCategory, HandlerProfile, ROLES, farmerCategoryFilter, isFarmer, isOrganizationFarmer } from "@/lib/types";
+import { HandlerProfile, ROLES, isFarmer, isOrganizationFarmer } from "@/lib/types";
 import { normalizePhoneForStorage, onCountryChangePhone } from "@/lib/phone";
 import { CountrySelect } from "@/components/CountrySelect";
 import { PhoneInput } from "@/components/PhoneInput";
 import { HandlerSelect } from "@/components/HandlerSelect";
-import { CommodityPicker } from "@/components/CommodityPicker";
+import { CustomProductInput } from "@/components/CustomProductInput";
 import { QualificationSelector } from "@/components/QualificationSelector";
 import { Icon } from "@/components/icons";
 import { PasswordInput } from "@/components/PasswordInput";
@@ -40,9 +40,7 @@ const GOOGLE_DEV_MODE = process.env.NEXT_PUBLIC_GOOGLE_DEV_MODE === "true";
 
 /** Flat list of all roles for the <select> dropdown */
 const ALL_ROLES = [
-  { group: "Fellow",                  id: ROLES.CROP_FARMER,         label: "Fellow Crop" },
-  { group: "Fellow",                  id: ROLES.LIVESTOCK_FARMER,    label: "Fellow Livestock" },
-  { group: "Fellow",                  id: ROLES.ORGANIZATION_FARMER, label: "Fellow Organization" },
+  { group: "Fellow",                  id: ROLES.ORGANIZATION_FARMER, label: "Organization" },
   { group: "Research & Commerce",      id: ROLES.RESEARCHER,       label: "Researcher" },
   { group: "Research & Commerce",      id: ROLES.BUYER,            label: "Client" },
   { group: "Support & Operations",     id: ROLES.FARMER_HANDLER,   label: "Fellow Liaison Officer" },
@@ -82,7 +80,6 @@ function buildRegisterPayload(
     qualifications: string[];
     handlerId: string;
   },
-  selectedCommodities: number[],
   customProducts: string[],
   isFarmerRole: boolean,
   needsHandler: boolean
@@ -103,7 +100,6 @@ function buildRegisterPayload(
   if (needsHandler && form.handlerId.trim()) payload.handlerId = form.handlerId.trim();
 
   if (isFarmerRole) {
-    if (selectedCommodities.length > 0) payload.commodityIds = selectedCommodities;
     if (customProducts.length > 0) payload.customProducts = customProducts;
     if (form.farmName.trim()) payload.farmName = form.farmName.trim();
     if (form.experienceYears > 0) payload.experienceYears = form.experienceYears;
@@ -210,8 +206,6 @@ function errorsForStep(errors: FieldErrors, fields: RegisterField[]): FieldError
 
 function RegisterForm() {
   const [step, setStep] = useState(1);
-  const [categories, setCategories] = useState<CommodityCategory[]>([]);
-  const [selectedCommodities, setSelectedCommodities] = useState<number[]>([]);
   const [customProducts, setCustomProducts] = useState<string[]>([]);
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
   const [profileFile, setProfileFile] = useState<File | null>(null);
@@ -261,7 +255,6 @@ function RegisterForm() {
   const handlerEmptyMessage = isFarmerRole
     ? "No fellow liaison officers registered yet. One must register first."
     : "No client liaison officers registered yet. One must register first.";
-  const categoryFilter = farmerCategoryFilter(form.roleId);
   const totalSteps = isFarmerRole
     ? SMS_PHONE_VERIFICATION_ENABLED
       ? 4
@@ -292,7 +285,7 @@ function RegisterForm() {
         roleId: form.roleId,
         handlerId: form.handlerId,
       },
-      selectedCommodities,
+      selectedCommodities: [] as number[],
       customProducts,
       isFarmerRole,
       needsHandler,
@@ -310,7 +303,6 @@ function RegisterForm() {
       form.city,
       form.roleId,
       form.handlerId,
-      selectedCommodities,
       customProducts,
       isFarmerRole,
       needsHandler,
@@ -386,13 +378,11 @@ function RegisterForm() {
   };
 
   useEffect(() => {
-    api.commodities.categories().then(setCategories).catch(() => {});
     api.auth.handlers("farmer").then(setFarmerHandlers).catch(() => {});
     api.auth.handlers("buyer").then(setBuyerHandlers).catch(() => {});
   }, []);
 
   useEffect(() => {
-    setSelectedCommodities([]);
     setCustomProducts([]);
     setForm((prev) => ({ ...prev, handlerId: "" }));
   }, [form.roleId]);
@@ -486,7 +476,7 @@ function RegisterForm() {
     setLoading(true);
     try {
       const profile = await register(
-        buildRegisterPayload(form, selectedCommodities, customProducts, isFarmerRole, needsHandler)
+        buildRegisterPayload(form, customProducts, isFarmerRole, needsHandler)
       );
 
       if (isFarmerRole && profileFile) {
@@ -740,14 +730,9 @@ function RegisterForm() {
                   </optgroup>
                 ))}
               </select>
-              {isFarmerRole && categoryFilter && categoryFilter !== "All" && (
+              {isFarmerRole && (
                 <p className="auth-hint text-brand-700 mt-1">
-                  You will only select {categoryFilter.toLowerCase()} commodities in step {COMMODITIES_STEP}.
-                </p>
-              )}
-              {isOrganizationFarmer(form.roleId) && (
-                <p className="auth-hint text-brand-700 mt-1">
-                  You will select crop and livestock commodities in step {COMMODITIES_STEP}.
+                  You will type your commodities in step {COMMODITIES_STEP}.
                 </p>
               )}
               <FieldErrorMessage message={fieldError("roleId")} />
@@ -1038,44 +1023,29 @@ function RegisterForm() {
           </div>
         )}
 
-        {step === COMMODITIES_STEP && isFarmerRole && categoryFilter && (
+        {step === COMMODITIES_STEP && isFarmerRole && (
           <div className="space-y-3.5">
             <div className="auth-section">
               <div className="flex items-start gap-3">
                 <Icon name="leaf" className="mt-0.5 h-5 w-5 shrink-0 text-brand-700" />
                 <div>
-                  <h3 className="auth-section-title">
-                    {categoryFilter === "All"
-                      ? "Commodities"
-                      : `${categoryFilter} Commodities`}
-                  </h3>
+                  <h3 className="auth-section-title">Commodities</h3>
                   <p className="auth-hint mt-1">
-                    Search and choose the{" "}
-                    {categoryFilter === "All"
-                      ? "crop and livestock products"
-                      : categoryFilter?.toLowerCase()}{" "}
-                    you produce, or select Production to type your own. Buyers will see these on your profile.
+                    Type the commodities you supply. Clients will see these on your profile.
                   </p>
                 </div>
               </div>
             </div>
 
-            <CommodityPicker
-              categories={categories}
-              roleId={form.roleId}
-              mode="multi"
-              selectedIds={selectedCommodities}
-              onSelectionChange={(ids) => {
-                clearBackendError("commodities");
-                setSelectedCommodities(ids);
-              }}
-              customProducts={customProducts}
-              onCustomProductsChange={(products) => {
+            <CustomProductInput
+              products={customProducts}
+              onChange={(products) => {
                 clearBackendError("commodities");
                 setCustomProducts(products);
               }}
               idPrefix="reg-commodity"
               invalid={!!fieldError("commodities")}
+              label="Type Commodities"
             />
 
             <FieldErrorMessage message={fieldError("commodities")} />

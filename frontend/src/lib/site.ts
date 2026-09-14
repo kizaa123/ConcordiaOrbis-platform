@@ -4,7 +4,7 @@ export const SITE_SHORT_NAME = PLATFORM_NAME;
 export const PLATFORM_ACCOUNTANT_LABEL = `${PLATFORM_NAME} Accountant`;
 export const PLATFORM_TEAM_LABEL = `${PLATFORM_NAME} Team`;
 export const SITE_DESCRIPTION =
-  "Connect fellows, clients, and liaison officers across Africa and beyond";
+  "Africa's Digital B2B Marketplace, Connecting Business with Clients. ConcordiaOrbis is a Ghana-based commodity exchange in Accra. Verified sellers list products. Clients pay with Paystack; a liaison officer procures and delivers across Ghana and beyond.";
 
 export const PLATFORM_EMAIL = "concordiaorbisadmin@gmail.com";
 export const SUPPORT_EMAIL = PLATFORM_EMAIL;

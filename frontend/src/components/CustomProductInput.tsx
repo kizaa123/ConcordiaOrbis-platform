@@ -8,6 +8,7 @@ export interface CustomProductInputProps {
   onChange: (products: string[]) => void;
   invalid?: boolean;
   idPrefix?: string;
+  label?: string;
 }
 
 export function CustomProductInput({
@@ -15,6 +16,7 @@ export function CustomProductInput({
   onChange,
   invalid = false,
   idPrefix = "product",
+  label = "Type Commodities",
 }: CustomProductInputProps) {
   const [input, setInput] = useState("");
   const [inputError, setInputError] = useState("");
@@ -46,7 +48,7 @@ export function CustomProductInput({
     >
       <div>
         <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-brand-900">
-          Type your products
+          {label}
         </label>
         <div className="flex gap-2">
           <input

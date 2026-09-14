@@ -12,7 +12,10 @@ const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
-  title: SITE_NAME,
+  title: {
+    default: "ConcordiaOrbis: Business to Business Marketplace",
+    template: `%s · ${SITE_NAME}`,
+  },
   description: SITE_DESCRIPTION,
   manifest: "/manifest.webmanifest",
   icons: {
@@ -25,20 +28,20 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "/",
     siteName: SITE_SHORT_NAME,
-    title: SITE_NAME,
+    title: "ConcordiaOrbis: Business to Business Marketplace",
     description: SITE_DESCRIPTION,
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: SITE_NAME,
+        alt: "ConcordiaOrbis: Business to Business Marketplace",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: SITE_NAME,
+    title: "ConcordiaOrbis: Business to Business Marketplace",
     description: SITE_DESCRIPTION,
     images: ["/opengraph-image"],
   },
@@ -57,8 +60,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#1b4332" },
-    { media: "(prefers-color-scheme: dark)", color: "#1b4332" },
+    { media: "(prefers-color-scheme: light)", color: "#0f1c30" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1c30" },
   ],
 };
 

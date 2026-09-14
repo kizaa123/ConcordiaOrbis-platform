@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { COMPANY, PLATFORM_NAME, SOCIAL } from "./company";
 
 export const DEFAULT_TITLE =
-  "ConcordiaOrbis: Ghana farm produce marketplace and commodity trading";
+  "ConcordiaOrbis: Business to Business Marketplace";
 
 export const DEFAULT_DESCRIPTION =
-  "ConcordiaOrbis is a Ghana-based farm commodity exchange in Accra. Verified fellows list crops, livestock, fruit, and fish. Clients pay with Paystack; a liaison officer procures and delivers across Ghana and beyond.";
+  "Africa's Digital B2B Marketplace, Connecting Business with Clients. ConcordiaOrbis is a Ghana-based commodity exchange in Accra. Verified sellers list products. Clients pay with Paystack; a liaison officer procures and delivers across Ghana and beyond.";
 
 export function pageSeo({
   title,

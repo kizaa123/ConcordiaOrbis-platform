@@ -1,17 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
 import { api } from "@/lib/api";
 import {
-  CommodityCategory,
   FarmerCommodity,
   HandlerProfile,
-  ROLES,
-  farmerCategoryFilter,
-  defaultListingUnit,
   isFarmer,
 } from "@/lib/types";
 import {
@@ -24,7 +20,6 @@ import {
 import { PhoneInput } from "@/components/PhoneInput";
 import { ProfilePhoto } from "@/components/FarmerAvatar";
 import { HandlerSelect } from "@/components/HandlerSelect";
-import { CommodityPicker } from "@/components/CommodityPicker";
 import { CustomProductInput } from "@/components/CustomProductInput";
 import { DEFAULT_COUNTRY } from "@/lib/africanCountries";
 import { ProfileIdentityHeader, ProfileEditSection, ProfileEditActions, ProfileInfoSection } from "@/components/ProfileIdentityHeader";
@@ -44,7 +39,6 @@ export default function FarmSettingsPage() {
   const [editing, setEditing] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
-  const [categories, setCategories] = useState<CommodityCategory[]>([]);
   const [registered, setRegistered] = useState<FarmerCommodity[]>([]);
   const [farmerHandlers, setFarmerHandlers] = useState<HandlerProfile[]>([]);
   const [handlerId, setHandlerId] = useState("");
@@ -64,21 +58,12 @@ export default function FarmSettingsPage() {
     customProducts: [] as string[],
   });
 
-  const categoryFilter = user ? farmerCategoryFilter(user.roleId) : null;
-
-  const registeredIds = useMemo(
-    () => new Set(registered.map((r) => r.commodityId ?? r.commodity?.id)),
-    [registered]
-  );
-
   const load = async () => {
-    const [profile, commodities, cats] = await Promise.all([
+    const [profile, commodities] = await Promise.all([
       api.farm.profile() as Promise<FarmProfileData & { user?: unknown }>,
       api.farm.commodities() as Promise<FarmerCommodity[]>,
-      api.commodities.categories(),
     ]);
     setRegistered(commodities);
-    setCategories(cats);
     setFarm({
       experienceYears: profile.experienceYears ?? 0,
       customProducts: profile.customProducts ?? [],
@@ -176,22 +161,6 @@ export default function FarmSettingsPage() {
       setMessage(e instanceof Error ? e.message : "Upload failed");
     } finally {
       setUploading(false);
-    }
-  };
-
-  const addCommodity = async (commodityId: number) => {
-    if (!user || registeredIds.has(commodityId)) return;
-    setMessage("");
-    try {
-      await api.farm.addCommodity({
-        commodityId,
-        quantity: 0,
-        unit: defaultListingUnit(user.roleId),
-      });
-      await load();
-      setMessage("Commodity added to your farm.");
-    } catch (e) {
-      setMessage(e instanceof Error ? e.message : "Could not add commodity");
     }
   };
 
@@ -383,11 +352,13 @@ export default function FarmSettingsPage() {
       <section className="rounded-2xl border border-brand-100 bg-white p-6 shadow-sm">
         <h2 className="mb-1 text-lg font-bold text-brand-900">My Commodities</h2>
         <p className="mb-4 text-sm text-gray-500">
-          These appear when you post products and on your client-facing profile. Add {categoryFilter?.toLowerCase()} commodities you produce.
+          These appear when you post products and on your client-facing profile. Type the commodities you supply.
         </p>
 
         {registered.length === 0 ? (
-          <p className="mb-4 text-sm text-amber-700">No commodities yet. Add at least one to post products.</p>
+          farm.customProducts.length === 0 ? (
+            <p className="mb-4 text-sm text-amber-700">No commodities yet. Type at least one below.</p>
+          ) : null
         ) : (
           <div className="mb-6 flex gap-2 overflow-x-auto overflow-y-hidden pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {registered.map((fc) => (
@@ -409,31 +380,12 @@ export default function FarmSettingsPage() {
           </div>
         )}
 
-        <h3 className="mb-3 text-sm font-semibold text-brand-800">
-          Add {categoryFilter} commodities
-        </h3>
-        <CommodityPicker
-          categories={categories}
-          roleId={user.roleId}
-          mode="select-add"
-          excludeIds={registeredIds}
-          onSelectAdd={addCommodity}
-          idPrefix="farm-commodity"
+        <CustomProductInput
+          products={farm.customProducts}
+          onChange={(products) => setFarm((prev) => ({ ...prev, customProducts: products }))}
+          idPrefix="farm-custom-commodity"
+          label="Type Commodities"
         />
-
-        <div className="mt-8 border-t border-brand-100 pt-6">
-          <h3 className="mb-1 text-sm font-semibold text-brand-800">
-            Custom Commodities / Products
-          </h3>
-          <p className="mb-3 text-xs text-gray-500">
-            If your commodity or produce is not listed in the catalog above, type it below to add it to your profile.
-          </p>
-          <CustomProductInput
-            products={farm.customProducts}
-            onChange={(products) => setFarm((prev) => ({ ...prev, customProducts: products }))}
-            idPrefix="farm-custom-commodity"
-          />
-        </div>
       </section>
 
       <ProfileEditActions

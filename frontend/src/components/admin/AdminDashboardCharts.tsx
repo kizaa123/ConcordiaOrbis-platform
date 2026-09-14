@@ -9,20 +9,20 @@ import { useAnimateOnView } from "@/hooks/useAnimateOnView";
 import { scrollStagger } from "@/lib/scrollStagger";
 
 const CHART_COLORS = [
-  "#2d6a4f",
-  "#40916c",
-  "#52b788",
-  "#74c69d",
-  "#95d5b2",
+  "#1e3458",
+  "#3d5a8a",
+  "#5b7aa8",
+  "#8fa8c9",
+  "#c5d4e8",
   "#d4a853",
-  "#357a5b",
-  "#1b4332",
-  "#245843",
+  "#2c456e",
+  "#0f1c30",
+  "#15263f",
 ];
 
 const VERIFICATION_COLORS: Record<string, string> = {
   PENDING: "#d4a853",
-  VERIFIED: "#40916c",
+  VERIFIED: "#3d5a8a",
   REJECTED: "#dc2626",
 };
 
@@ -142,7 +142,7 @@ function AreaChart({
           );
         })}
         <path d={areaPath} fill="url(#areaGradient)" opacity={0.35} />
-        <path d={linePath} fill="none" stroke="#2d6a4f" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={linePath} fill="none" stroke="#1e3458" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         {points.map((p) => {
           const active = hoveredIndex === p.index;
           return (
@@ -177,7 +177,7 @@ function AreaChart({
                 cx={p.x}
                 cy={p.y}
                 r={active ? 5.5 : 3.5}
-                fill={active ? "#1b4332" : "#2d6a4f"}
+                fill={active ? "#0f1c30" : "#1e3458"}
                 className="transition-all"
                 pointerEvents="none"
               />
@@ -191,8 +191,8 @@ function AreaChart({
         ))}
         <defs>
           <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#40916c" />
-            <stop offset="100%" stopColor="#d8f3dc" />
+            <stop offset="0%" stopColor="#3d5a8a" />
+            <stop offset="100%" stopColor="#e6edf5" />
           </linearGradient>
         </defs>
       </svg>
@@ -263,7 +263,7 @@ function DualBarChart({
                 width={barW}
                 height={orderH}
                 rx="3"
-                fill="#40916c"
+                fill="#3d5a8a"
                 opacity={active || hoveredIndex === null ? 1 : 0.45}
                 pointerEvents="none"
               />
@@ -469,7 +469,7 @@ function VerificationBars({
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${(item.count / max) * 100 * progress}%`,
-                  backgroundColor: VERIFICATION_COLORS[item.status] ?? "#95d5b2",
+                  backgroundColor: VERIFICATION_COLORS[item.status] ?? "#c5d4e8",
                   opacity: hoveredStatus && !active ? 0.45 : 1,
                 }}
               />

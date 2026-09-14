@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-50: #fbfdfb;
-  --color-brand-100: #d8f3dc;
-  --color-brand-200: #95d5b2;
-  --color-brand-300: #74c69d;
-  --color-brand-400: #52b788;
-  --color-brand-500: #40916c;
-  --color-brand-600: #357a5b;
-  --color-brand-700: #2d6a4f;
-  --color-brand-800: #245843;
-  --color-brand-900: #1b4332;
-  --color-brand-950: #0d2818;
+  --color-brand-50: #f4f7fb;
+  --color-brand-100: #e6edf5;
+  --color-brand-200: #c5d4e8;
+  --color-brand-300: #8fa8c9;
+  --color-brand-400: #5b7aa8;
+  --color-brand-500: #3d5a8a;
+  --color-brand-600: #2c456e;
+  --color-brand-700: #1e3458;
+  --color-brand-800: #15263f;
+  --color-brand-900: #0f1c30;
+  --color-brand-950: #08111e;
   --color-gold: #d4a853;
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 }
@@ -26,8 +26,8 @@ body {
 }
 
 ::selection {
-  background: #d8f3dc;
-  color: #1b4332;
+  background: #c5d4e8;
+  color: #0f1c30;
 }
 
 .prose-legal h2 {
@@ -274,8 +274,8 @@ body {
 }
 
 .team-flip-front {
-  background: linear-gradient(to bottom, #1b4332, #0d2818);
-  border: 1px solid rgb(45 106 79 / 0.55);
+  background: linear-gradient(to bottom, #1e3458, #0f1c30);
+  border: 1px solid rgb(30 52 88 / 0.55);
   box-shadow: 0 18px 36px rgb(0 0 0 / 0.35);
   text-align: center;
 }
@@ -286,7 +286,7 @@ body {
   width: 100%;
   overflow: hidden;
   border-radius: 1rem;
-  background: #0d2818;
+  background: #0f1c30;
   box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08);
 }
 
@@ -326,7 +326,7 @@ body {
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.55;
-  color: #1b4332;
+  color: #0f1c30;
 }
 
 .team-flip-fields strong {

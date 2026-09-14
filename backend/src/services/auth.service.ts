@@ -387,17 +387,8 @@ export class AuthService {
 
     if (FARMER_ROLES.includes(input.roleId as typeof ROLES.CROP_FARMER)) {
       const customProducts = normalizeCustomProducts(input.customProducts);
-      const requiredLabel =
-        input.roleId === ROLES.CROP_FARMER
-          ? 'crop'
-          : input.roleId === ROLES.LIVESTOCK_FARMER
-            ? 'livestock'
-            : 'commodity';
-      if (!input.commodityIds?.length && customProducts.length === 0) {
-        throw new AppError(
-          400,
-          `Select at least one ${requiredLabel} commodity or add a custom product`
-        );
+      if (!customProducts.length) {
+        throw new AppError(400, 'Type at least one commodity');
       }
       for (const commodityId of input.commodityIds ?? []) {
         const commodity = await prisma.commodity.findUnique({
@@ -414,7 +405,7 @@ export class AuthService {
             ROLES.ORGANIZATION_FARMER
           )
         ) {
-          throw new AppError(400, `Commodity must belong to a ${requiredLabel} category for this farmer role`);
+          throw new AppError(400, 'Commodity is not valid for this seller role');
         }
       }
     }
@@ -907,17 +898,8 @@ export class AuthService {
 
     if (FARMER_ROLES.includes(input.roleId as typeof ROLES.CROP_FARMER)) {
       const customProducts = normalizeCustomProducts(input.customProducts);
-      const requiredLabel =
-        input.roleId === ROLES.CROP_FARMER
-          ? 'crop'
-          : input.roleId === ROLES.LIVESTOCK_FARMER
-            ? 'livestock'
-            : 'commodity';
-      if (!input.commodityIds?.length && customProducts.length === 0) {
-        throw new AppError(
-          400,
-          `Select at least one ${requiredLabel} commodity or add a custom product`
-        );
+      if (!customProducts.length) {
+        throw new AppError(400, 'Type at least one commodity');
       }
       for (const commodityId of input.commodityIds ?? []) {
         const commodity = await prisma.commodity.findUnique({
@@ -934,7 +916,7 @@ export class AuthService {
             ROLES.ORGANIZATION_FARMER
           )
         ) {
-          throw new AppError(400, `Commodity must belong to a ${requiredLabel} category for this farmer role`);
+          throw new AppError(400, 'Commodity is not valid for this seller role');
         }
       }
     }

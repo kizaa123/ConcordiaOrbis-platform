@@ -17,7 +17,7 @@ const ROLES = [
   { id: 9, roleName: 'Student' },
   { id: 10, roleName: 'CTO' },
   { id: 11, roleName: 'Communication Officer' },
-  { id: 12, roleName: 'Organization Fellow' },
+  { id: 12, roleName: 'Organization' },
 ];
 
 const PERMISSIONS = [

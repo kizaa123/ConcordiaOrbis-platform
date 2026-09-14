@@ -123,8 +123,8 @@ export function validateStep2(ctx: RegisterValidationContext): FieldErrors {
 export function validateStep3(ctx: RegisterValidationContext): FieldErrors {
   const errors: FieldErrors = {};
 
-  if (ctx.selectedCommodities.length === 0 && ctx.customProducts.length === 0) {
-    errors.commodities = "Select at least one commodity or add a custom product";
+  if (ctx.customProducts.length === 0) {
+    errors.commodities = "Type at least one commodity";
   }
 
   if (ctx.needsHandler && !ctx.form.handlerId.trim()) {
@@ -250,7 +250,7 @@ function mapKnownBackendMessage(message: string, fieldErrors: FieldErrors): void
     fieldErrors.phone = PHONE_VALIDATION_MESSAGE;
   } else if (/select a handler/i.test(message)) {
     fieldErrors.handlerId = "Please select a liaison officer";
-  } else if (/select at least one.*commodit/i.test(message)) {
+  } else if (/select at least one.*commodit|type at least one.*commodit/i.test(message)) {
     fieldErrors.commodities = message;
   } else if (/invalid role/i.test(message)) {
     fieldErrors.roleId = "Select a valid role";
@@ -277,7 +277,7 @@ export function roleSummaryLabel(roleId: number): string {
     case ROLES.LIVESTOCK_FARMER:
       return "Fellow Livestock";
     case ROLES.ORGANIZATION_FARMER:
-      return "Fellow Organization";
+      return "Organization";
     case ROLES.RESEARCHER:
       return "Researcher";
     case ROLES.BUYER:

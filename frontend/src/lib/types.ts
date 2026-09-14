@@ -1353,7 +1353,7 @@ export const AD_PLACEMENT_OPTIONS: { value: AdPlacement; label: string }[] = [
 export const AD_TARGET_ROLE_OPTIONS: { id: number; label: string }[] = [
   { id: ROLES.CROP_FARMER, label: "Crop Farmer" },
   { id: ROLES.LIVESTOCK_FARMER, label: "Livestock Farmer" },
-  { id: ROLES.ORGANIZATION_FARMER, label: "Organization Fellow" },
+  { id: ROLES.ORGANIZATION_FARMER, label: "Organization" },
   { id: ROLES.FARMER_HANDLER, label: "Farmer Handler" },
   { id: ROLES.BUYER, label: "Buyer" },
   { id: ROLES.BUYER_HANDLER, label: "Buyer Handler" },

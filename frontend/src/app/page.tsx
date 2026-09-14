@@ -62,18 +62,6 @@ const ROLE_CARD_IMAGES = {
 
 const ROLE_CARDS: { icon: IconName; label: string; desc: string; image: string }[] = [
   {
-    icon: "sprout",
-    label: "Crop Fellow",
-    desc: "Register as a crop fellow to list produce, manage prices and delivery schedules, and track interested clients, all from one dashboard.",
-    image: ROLE_CARD_IMAGES.cropFarmer,
-  },
-  {
-    icon: "wheat",
-    label: "Livestock Fellow",
-    desc: "Showcase your livestock, set availability and pricing, and connect with clients and liaison officers who are ready to trade.",
-    image: ROLE_CARD_IMAGES.livestockFarmer,
-  },
-  {
     icon: "leaf",
     label: "Fruit Fellow",
     desc: "Highlight seasonal fruits, orchard yields and delivery windows so clients can discover and order fresh produce directly from your farm.",

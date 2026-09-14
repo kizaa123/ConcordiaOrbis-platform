@@ -358,7 +358,7 @@ export default function FarmPage() {
           <div className="mb-6 flex items-center justify-between border-b border-brand-100 pb-4">
             <div>
               <h3 className="text-xl font-bold text-brand-900">
-                {editingId ? "Edit Product Listing" : "Add New Product to Your Farm"}
+                {editingId ? "Edit Product Listing" : "Add Product"}
               </h3>
               <p className="mt-0.5 text-xs text-gray-500">
                 Specify your commodity, pricing, and availability for clients.
@@ -378,13 +378,28 @@ export default function FarmPage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="farm-commodity-select" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-brand-900">
-                  Select Commodity <span className="text-red-500">*</span>
+                  Commodity <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="farm-commodity-select"
-                  value={form.commodityId}
+                  value={
+                    form.commodityId === CUSTOM_COMMODITY_ID
+                      ? customProducts.includes(form.customCommodityName)
+                        ? `custom:${form.customCommodityName}`
+                        : String(CUSTOM_COMMODITY_ID)
+                      : String(form.commodityId)
+                  }
                   onChange={(e) => {
-                    const commodityId = parseInt(e.target.value, 10);
+                    const value = e.target.value;
+                    if (value.startsWith("custom:")) {
+                      setForm({
+                        ...form,
+                        commodityId: CUSTOM_COMMODITY_ID,
+                        customCommodityName: value.slice("custom:".length),
+                      });
+                      return;
+                    }
+                    const commodityId = parseInt(value, 10);
                     if (commodityId === CUSTOM_COMMODITY_ID) {
                       setForm({
                         ...form,
@@ -404,13 +419,18 @@ export default function FarmPage() {
                   }}
                   className="select-field w-full rounded-xl border border-brand-200 bg-white px-4 py-2.5 text-sm shadow-xs focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
                 >
-                  <option value={0} disabled hidden>Select a commodity</option>
-                  {registeredCommodities.map((fc) => (
-                    <option key={fc.id} value={fc.commodity.id}>
-                      {fc.commodity.name} ({fc.commodity.category.name})
+                  <option value="0" disabled hidden>Select a commodity</option>
+                  {customProducts.map((product) => (
+                    <option key={`custom-${product}`} value={`custom:${product}`}>
+                      {product}
                     </option>
                   ))}
-                  <option value={CUSTOM_COMMODITY_ID}>Other (not listed)</option>
+                  {registeredCommodities.map((fc) => (
+                    <option key={fc.id} value={fc.commodity.id}>
+                      {fc.commodity.name}
+                    </option>
+                  ))}
+                  <option value={CUSTOM_COMMODITY_ID}>Other</option>
                 </select>
                 {form.commodityId === CUSTOM_COMMODITY_ID && (
                   <input
@@ -691,7 +711,7 @@ export default function FarmPage() {
                 disabled={uploading || productMediaUploading}
                 className="inline-flex w-auto self-start items-center justify-center rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-brand-800 active:scale-98 disabled:opacity-50 sm:rounded-xl sm:px-5 sm:py-2.5"
               >
-                {editingId ? "Save Changes" : "Add Product to Farm"}
+                {editingId ? "Save Changes" : "Add Product"}
               </button>
               <button
                 type="button"
@@ -708,7 +728,7 @@ export default function FarmPage() {
       <div className="space-y-4">
         {listings.length === 0 ? (
           <div className="rounded-xl border border-dashed border-brand-200 p-8 text-center text-gray-500">
-            No products on your farm yet. Click <strong>Add Product</strong> above to list one for clients.
+            No product yet. Click to Add Product above to list one for clients.
           </div>
         ) : (
           listings.map((l) => {
