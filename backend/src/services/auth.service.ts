@@ -426,8 +426,8 @@ export class AuthService {
       if (expectedFarmer && !isFarmerHandler(handler.roleId)) {
         throw new AppError(400, 'Selected handler is not a farmer handler');
       }
-      if (expectedBuyerHandler && !isBuyerHandler(handler.roleId)) {
-        throw new AppError(400, 'Selected handler is not a buyer handler');
+      if (expectedBuyerHandler && !isFarmerHandler(handler.roleId) && !isBuyerHandler(handler.roleId)) {
+        throw new AppError(400, 'Selected handler is not a liaison officer');
       }
     }
 
@@ -507,12 +507,6 @@ export class AuthService {
       if (input.roleId === ROLES.FARMER_HANDLER) {
         await tx.agentProfile.create({
           data: { userId: created.id, agentType: 'FARMER_REPRESENTATIVE' },
-        });
-      }
-
-      if (input.roleId === ROLES.BUYER_HANDLER) {
-        await tx.agentProfile.create({
-          data: { userId: created.id, agentType: 'BUYER_REPRESENTATIVE' },
         });
       }
 
@@ -751,8 +745,8 @@ export class AuthService {
       await prisma.user.findUnique({ where: { id: handlerId } }),
       'Handler not found'
     );
-    if (relationshipType === 'BUYER_REPRESENTATIVE' && !isBuyerHandler(handler.roleId)) {
-      throw new AppError(400, 'Selected user is not a buyer handler');
+    if (relationshipType === 'BUYER_REPRESENTATIVE' && !isFarmerHandler(handler.roleId) && !isBuyerHandler(handler.roleId)) {
+      throw new AppError(400, 'Selected user is not a liaison officer');
     }
     if (relationshipType === 'FARMER_REPRESENTATIVE' && !isFarmerHandler(handler.roleId)) {
       throw new AppError(400, 'Selected user is not a farmer handler');
@@ -937,8 +931,8 @@ export class AuthService {
       if (expectedFarmer && !isFarmerHandler(handler.roleId)) {
         throw new AppError(400, 'Selected handler is not a farmer handler');
       }
-      if (expectedBuyerHandler && !isBuyerHandler(handler.roleId)) {
-        throw new AppError(400, 'Selected handler is not a buyer handler');
+      if (expectedBuyerHandler && !isFarmerHandler(handler.roleId) && !isBuyerHandler(handler.roleId)) {
+        throw new AppError(400, 'Selected handler is not a liaison officer');
       }
     }
 
@@ -1032,12 +1026,6 @@ export class AuthService {
       if (input.roleId === ROLES.FARMER_HANDLER) {
         await tx.agentProfile.create({
           data: { userId, agentType: 'FARMER_REPRESENTATIVE' },
-        });
-      }
-
-      if (input.roleId === ROLES.BUYER_HANDLER) {
-        await tx.agentProfile.create({
-          data: { userId, agentType: 'BUYER_REPRESENTATIVE' },
         });
       }
 

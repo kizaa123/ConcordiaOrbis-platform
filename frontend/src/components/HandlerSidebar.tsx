@@ -13,6 +13,12 @@ export const FLO_NAV_LINKS: PortalNavLink[] = [
     match: (p) => p.startsWith("/agents/fellows") || p.startsWith("/agents/farm/"),
   },
   {
+    href: "/agents/clients",
+    label: "Assigned Clients",
+    icon: "users",
+    match: (p) => p.startsWith("/agents/clients") || p.startsWith("/agents/buyer/"),
+  },
+  {
     href: "/agents/order-notifications",
     label: "Order Notifications",
     icon: "package",

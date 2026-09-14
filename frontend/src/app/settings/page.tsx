@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
 import { api } from "@/lib/api";
-import { HandlerProfile, isBuyer } from "@/lib/types";
+import { HandlerProfile, isBuyer, ROLES } from "@/lib/types";
 import {
   isValidPhone,
   normalizePhoneForStorage,
@@ -63,7 +63,7 @@ export default function BuyerSettingsPage() {
   }, [user?.id, loading, router]);
 
   useEffect(() => {
-    api.auth.handlers("buyer").then(setBuyerHandlers).catch(console.error);
+    api.auth.handlers("farmer").then(setBuyerHandlers).catch(console.error);
   }, []);
 
   const resetForm = () => {
@@ -113,7 +113,7 @@ export default function BuyerSettingsPage() {
         await api.auth.updateHandler(handlerId);
       }
       await refreshUser();
-      await api.auth.handlers("buyer").then(setBuyerHandlers);
+      await api.auth.handlers("farmer").then(setBuyerHandlers);
       setPhotoCacheBust(Date.now());
       setMessage("Profile saved successfully.");
       setEditing(false);
@@ -241,11 +241,12 @@ export default function BuyerSettingsPage() {
             handlers={buyerHandlers}
             value={handlerId}
             onChange={setHandlerId}
-            label="Your Client Liaison Officer"
-            emptyMessage="No client liaison officers registered yet."
+            label="Your Fellow Liaison Officer"
+            emptyMessage="No fellow liaison officers registered yet."
+            handlerRoleId={ROLES.FARMER_HANDLER}
           />
           <p className="mt-2 text-xs text-gray-500">
-            Choose the liaison officer who represents you on the platform. All registered client liaison officers
+            Choose the fellow liaison officer who represents you on the platform. All registered fellow liaison officers
             are listed here.
           </p>
         </section>

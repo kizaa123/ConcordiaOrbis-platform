@@ -9,7 +9,6 @@ import { HandlerProfile, ROLES, isFarmer, isOrganizationFarmer } from "@/lib/typ
 import { normalizePhoneForStorage, onCountryChangePhone } from "@/lib/phone";
 import { CountrySelect } from "@/components/CountrySelect";
 import { PhoneInput } from "@/components/PhoneInput";
-import { HandlerSelect } from "@/components/HandlerSelect";
 import { CustomProductInput } from "@/components/CustomProductInput";
 import { QualificationSelector } from "@/components/QualificationSelector";
 import { Icon } from "@/components/icons";
@@ -35,6 +34,7 @@ import {
   type RegisterField,
 } from "@/lib/registerValidation";
 import { PLATFORM_ACCOUNTANT_LABEL } from "@/lib/site";
+import { floSelectOptionLabel } from "@/lib/handlerDisplayName";
 
 const GOOGLE_DEV_MODE = process.env.NEXT_PUBLIC_GOOGLE_DEV_MODE === "true";
 
@@ -44,7 +44,6 @@ const ALL_ROLES = [
   { group: "Research & Commerce",      id: ROLES.RESEARCHER,       label: "Researcher" },
   { group: "Research & Commerce",      id: ROLES.BUYER,            label: "Client" },
   { group: "Support & Operations",     id: ROLES.FARMER_HANDLER,   label: "Fellow Liaison Officer" },
-  { group: "Support & Operations",     id: ROLES.BUYER_HANDLER,    label: "Client Liaison Officer" },
   { group: "Support & Operations",     id: ROLES.PLATFORM_ACCOUNTANT,   label: PLATFORM_ACCOUNTANT_LABEL },
 ];
 
@@ -70,10 +69,8 @@ function buildRegisterPayload(
     country: string;
     region: string;
     city: string;
-    address: string;
     roleId: number;
     farmName: string;
-    experienceYears: number;
     company: string;
     institution: string;
     expertise: string;
@@ -96,13 +93,11 @@ function buildRegisterPayload(
     roleId: form.roleId,
   };
 
-  if (form.address.trim()) payload.address = form.address.trim();
   if (needsHandler && form.handlerId.trim()) payload.handlerId = form.handlerId.trim();
 
   if (isFarmerRole) {
     if (customProducts.length > 0) payload.customProducts = customProducts;
     if (form.farmName.trim()) payload.farmName = form.farmName.trim();
-    if (form.experienceYears > 0) payload.experienceYears = form.experienceYears;
   } else if (form.roleId === ROLES.BUYER && form.company.trim()) {
     payload.company = form.company.trim();
   } else if (form.roleId === ROLES.RESEARCHER) {
@@ -207,8 +202,6 @@ function errorsForStep(errors: FieldErrors, fields: RegisterField[]): FieldError
 function RegisterForm() {
   const [step, setStep] = useState(1);
   const [customProducts, setCustomProducts] = useState<string[]>([]);
-  const [profilePreview, setProfilePreview] = useState<string | null>(null);
-  const [profileFile, setProfileFile] = useState<File | null>(null);
   const [phoneVerified, setPhoneVerified] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -220,16 +213,14 @@ function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryError = searchParams.get("error");
-  const profileInputRef = useRef<HTMLInputElement>(null);
   const formColumnRef = useRef<HTMLDivElement>(null);
   const skipInitialStepScrollRef = useRef(true);
 
   const [farmerHandlers, setFarmerHandlers] = useState<HandlerProfile[]>([]);
-  const [buyerHandlers, setBuyerHandlers] = useState<HandlerProfile[]>([]);
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "", password: "",
-    country: "", region: "", city: "", address: "",
-    roleId: ROLES.BUYER as number, farmName: "", experienceYears: 0, company: "",
+    country: "", region: "", city: "",
+    roleId: ROLES.BUYER as number, farmName: "", company: "",
     institution: "", expertise: "", qualifications: [] as string[],
     handlerId: "",
   });
@@ -244,17 +235,9 @@ function RegisterForm() {
   const isBuyerRole = form.roleId === ROLES.BUYER;
   const isResearcherRole = form.roleId === ROLES.RESEARCHER;
   const needsHandler = isFarmerRole || isBuyerRole || isResearcherRole;
-  const availableHandlers = isFarmerRole
-    ? farmerHandlers
-    : isBuyerRole || isResearcherRole
-      ? buyerHandlers
-      : [];
-  const handlerLabel = isFarmerRole
-    ? "Choose your Fellow Liaison Officer"
-    : "Choose your Client Liaison Officer";
-  const handlerEmptyMessage = isFarmerRole
-    ? "No fellow liaison officers registered yet. One must register first."
-    : "No client liaison officers registered yet. One must register first.";
+  const availableHandlers = needsHandler ? farmerHandlers : [];
+  const handlerLabel = "Choose your Fellow Liaison Officer";
+  const handlerEmptyMessage = "No fellow liaison officers registered yet. One must register first.";
   const totalSteps = isFarmerRole
     ? SMS_PHONE_VERIFICATION_ENABLED
       ? 4
@@ -379,7 +362,6 @@ function RegisterForm() {
 
   useEffect(() => {
     api.auth.handlers("farmer").then(setFarmerHandlers).catch(() => {});
-    api.auth.handlers("buyer").then(setBuyerHandlers).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -397,11 +379,6 @@ function RegisterForm() {
       formColumnRef.current?.scrollTo({ top: 0, behavior: "smooth" });
     });
   }, [step]);
-
-  const handleProfileSelect = (file: File) => {
-    setProfileFile(file);
-    setProfilePreview(URL.createObjectURL(file));
-  };
 
   const goToPhoneStep = () => {
     if (!stepProceed[1]) {
@@ -475,18 +452,9 @@ function RegisterForm() {
     setError("");
     setLoading(true);
     try {
-      const profile = await register(
+      await register(
         buildRegisterPayload(form, customProducts, isFarmerRole, needsHandler)
       );
-
-      if (isFarmerRole && profileFile) {
-        try {
-          await api.upload.profilePicture(profileFile);
-          await refreshUser();
-        } catch {
-          // Account created - photo can be added on My Production
-        }
-      }
 
       router.push(
         isFarmerRole ? "/farm" : isResearcherRole ? "/researcher/publications" : "/dashboard"
@@ -790,17 +758,6 @@ function RegisterForm() {
 
         {step === DETAILS_STEP && (
           <div className="space-y-3.5">
-            <div className="auth-section">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Selected country
-              </p>
-              <CountrySelect
-                value={form.country}
-                onChange={handleCountryChange}
-                required
-              />
-            </div>
-
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="auth-field">
                 <label htmlFor="reg-region" className="auth-label">
@@ -836,59 +793,13 @@ function RegisterForm() {
                 />
                 <FieldErrorMessage message={fieldError("city")} />
               </div>
-              <div className="auth-field sm:col-span-2">
-                <label htmlFor="reg-address" className="auth-label">
-                  Address <span className="font-normal text-gray-500">(optional)</span>
-                </label>
-                <input
-                  id="reg-address"
-                  value={form.address}
-                  onChange={(e) => setForm({ ...form, address: e.target.value })}
-                  className="auth-input"
-                />
-              </div>
             </div>
 
             {isFarmerRole && (
-              <>
-                <div className="auth-section">
-                  <p className="auth-section-title mb-4">
-                    Profile photo <span className="font-normal text-gray-500">(visible to buyers before payment)</span>
-                  </p>
-                  <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
-                    <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-brand-200 bg-white">
-                      {profilePreview ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={profilePreview} alt="Preview" className="h-full w-full object-cover" />
-                      ) : (
-                        <Icon name="user" className="h-8 w-8 text-brand-400" />
-                      )}
-                    </div>
-                    <div className="text-center sm:text-left">
-                      <input
-                        ref={profileInputRef}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => e.target.files?.[0] && handleProfileSelect(e.target.files[0])}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => profileInputRef.current?.click()}
-                        className="btn-outline inline-flex items-center gap-2"
-                      >
-                        <Icon name="camera" className="h-4 w-4" />
-                        Upload photo
-                      </button>
-                      <p className="auth-hint mt-2">Buyers see this on the marketplace</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="auth-field">
-                  <label htmlFor="reg-farm-name" className="auth-label">
-                    {isOrganizationFarmer(form.roleId) ? "Organization Name" : "Farm Name"}
-                  </label>
+              <div className="auth-field">
+                <label htmlFor="reg-farm-name" className="auth-label">
+                  {isOrganizationFarmer(form.roleId) ? "Organization Name" : "Farm Name"}
+                </label>
                   <input
                     id="reg-farm-name"
                     value={form.farmName}
@@ -898,27 +809,9 @@ function RegisterForm() {
                         ? `${form.firstName || "My"}'s Organization`
                         : `${form.firstName || "My"}'s Farm`
                     }
-                    className="auth-input"
-                  />
-                </div>
-
-                <div className="auth-field">
-                  <label htmlFor="reg-experience" className="auth-label">
-                    Experience (years) <span className="font-normal text-gray-500">(optional)</span>
-                  </label>
-                  <input
-                    id="reg-experience"
-                    type="number"
-                    min={0}
-                    placeholder="e.g. 5"
-                    value={form.experienceYears || ""}
-                    onChange={(e) =>
-                      setForm({ ...form, experienceYears: parseInt(e.target.value, 10) || 0 })
-                    }
-                    className="auth-input"
-                  />
-                </div>
-              </>
+                  className="auth-input"
+                />
+              </div>
             )}
 
             {form.roleId === ROLES.BUYER && (
@@ -975,27 +868,41 @@ function RegisterForm() {
             )}
 
             {needsHandler && (
-              <div className="auth-section">
-                <HandlerSelect
-                  handlers={availableHandlers}
-                  value={form.handlerId}
-                  onChange={(handlerId) => {
-                    clearBackendError("handlerId");
-                    setForm({ ...form, handlerId });
-                  }}
-                  label={handlerLabel}
-                  emptyMessage={handlerEmptyMessage}
-                  variant="compact"
-                  handlerRoleId={isFarmerRole ? ROLES.FARMER_HANDLER : ROLES.BUYER_HANDLER}
-                  invalid={!!fieldError("handlerId")}
-                />
-                <FieldErrorMessage message={fieldError("handlerId")} />
-                {!fieldError("handlerId") && (
-                  <p className="auth-hint mt-3">
-                    All registered {isFarmerRole ? "fellow liaison officers" : "client liaison officers"} appear here. Your
-                    handler supports you on the platform.
+              <div className="auth-field">
+                <label htmlFor="reg-handler" className="auth-label">
+                  Fellow Liaison Officer
+                </label>
+                {availableHandlers.length === 0 ? (
+                  <p
+                    className={`rounded-xl border border-dashed px-4 py-3 text-sm ${
+                      fieldError("handlerId")
+                        ? "border-red-300 bg-red-50 text-red-700"
+                        : "border-brand-200 bg-brand-50/50 text-brand-700"
+                    }`}
+                  >
+                    {handlerEmptyMessage}
                   </p>
+                ) : (
+                  <select
+                    id="reg-handler"
+                    value={form.handlerId}
+                    onChange={(e) => {
+                      clearBackendError("handlerId");
+                      setForm({ ...form, handlerId: e.target.value });
+                    }}
+                    className={`${inputClass("handlerId")} w-full min-w-0`}
+                    aria-invalid={!!fieldError("handlerId")}
+                    required
+                  >
+                    <option value="">Select a Fellow Liaison Officer</option>
+                    {availableHandlers.map((handler) => (
+                      <option key={handler.id} value={handler.id}>
+                        {floSelectOptionLabel(handler)}
+                      </option>
+                    ))}
+                  </select>
                 )}
+                <FieldErrorMessage message={fieldError("handlerId")} />
               </div>
             )}
 

@@ -111,7 +111,7 @@ export default function DashboardPage() {
       {!isAccountantAwaitingAccess(user) && (
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {isFlo && <FarmerHandlerDashboardCards />}
-        {isClo && <BuyerHandlerDashboardCards />}
+        {(isFlo || isClo) && <BuyerHandlerDashboardCards />}
         {isHandlerUser && (
           <HandlerPortalNavCards
             roleId={user.roleId}

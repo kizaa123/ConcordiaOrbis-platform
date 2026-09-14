@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { api } from "@/lib/api";
-import { AgentAssignment, isBuyerAssignment, isBuyerHandler, isHandler } from "@/lib/types";
+import { AgentAssignment, isBuyerAssignment, isHandler } from "@/lib/types";
 import { HandlerBuyerClientCard } from "@/components/HandlerAssignmentCards";
 import { PageContentSkeleton } from "@/components/LoadingPrimitives";
 
@@ -25,13 +25,10 @@ export default function AssignedClientsPage() {
       router.push("/dashboard");
       return;
     }
-    if (!isBuyerHandler(user.roleId)) {
-      router.replace("/agents/fellows");
-    }
   }, [user, loading, router]);
 
   useEffect(() => {
-    if (!user || !isBuyerHandler(user.roleId)) return;
+    if (!user || !isHandler(user.roleId)) return;
 
     let cancelled = false;
     api.agents

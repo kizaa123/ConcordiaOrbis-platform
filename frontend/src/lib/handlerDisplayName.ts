@@ -2,6 +2,18 @@ export function floDisplayName(firstName: string): string {
   return `FLO_${firstName}`;
 }
 
+export function floSelectOptionLabel(handler: {
+  firstName: string;
+  lastName: string;
+  city?: string | null;
+  region?: string | null;
+  country?: string | null;
+}): string {
+  const name = `FLO ${handler.firstName} ${handler.lastName}`.replace(/\s+/g, " ").trim();
+  const location = [handler.city, handler.region, handler.country].filter(Boolean).join(", ");
+  return location ? `${name} — ${location}` : name;
+}
+
 export function cloDisplayName(firstName: string): string {
   return `CLO_${firstName}`;
 }

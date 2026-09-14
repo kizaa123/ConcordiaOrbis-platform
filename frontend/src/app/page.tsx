@@ -33,7 +33,7 @@ const HOW_IT_WORKS: { step: number; title: string; desc: string; image: string }
   {
     step: 3,
     title: "Agents Represent",
-    desc: "Fellow Liaison Officers and Client Liaison Officers negotiate on behalf of clients, manage relationships and streamline deals.",
+    desc: "Fellow Liaison Officers negotiate on behalf of clients, manage relationships and streamline deals.",
     image: HOW_IT_WORKS_IMAGES.agentsRepresent,
   },
   {
@@ -87,8 +87,8 @@ const ROLE_CARDS: { icon: IconName; label: string; desc: string; image: string }
   },
   {
     icon: "handshake",
-    label: "Liaison Officer",
-    desc: "Represent fellows or clients, manage relationships, negotiate deals, and streamline transactions on behalf of your clients.",
+    label: "Fellow Liaison Officer",
+    desc: "Represent fellows and clients, manage relationships, negotiate deals, and streamline transactions on the platform.",
     image: ROLE_CARD_IMAGES.handler,
   },
   {

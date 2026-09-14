@@ -82,7 +82,7 @@ export function FarmerHandlerDashboardCards() {
 export function FarmerHandlerDashboardHint() {
   return (
     <p className="mb-6 text-sm text-gray-500">
-      Manage your assigned fellows, track their orders, and view your liaison commission.{" "}
+      Manage your assigned fellows and clients, track their orders, and view your liaison commission.{" "}
       <Link href="/library" className="font-semibold text-brand-700 hover:underline">
         Research Library
       </Link>{" "}

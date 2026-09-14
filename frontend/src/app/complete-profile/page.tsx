@@ -11,7 +11,6 @@ import {
   onCountryChangePhone,
 } from "@/lib/phone";
 import { PhoneInput } from "@/components/PhoneInput";
-import { HandlerSelect } from "@/components/HandlerSelect";
 import { CustomProductInput } from "@/components/CustomProductInput";
 import { QualificationSelector } from "@/components/QualificationSelector";
 import { SMS_PHONE_VERIFICATION_ENABLED } from "@/lib/smsVerification";
@@ -23,13 +22,13 @@ import { AuthHeroPanel } from "@/components/AuthHeroPanel";
 import { useCancelRegistration } from "@/components/RegistrationTopBar";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { PLATFORM_ACCOUNTANT_LABEL } from "@/lib/site";
+import { floSelectOptionLabel } from "@/lib/handlerDisplayName";
 
 const ALL_ROLES = [
   { group: "Fellow", id: ROLES.ORGANIZATION_FARMER, label: "Organization" },
   { group: "Research & Commerce", id: ROLES.RESEARCHER, label: "Researcher" },
   { group: "Research & Commerce", id: ROLES.BUYER, label: "Client" },
   { group: "Support & Operations", id: ROLES.FARMER_HANDLER, label: "Fellow Liaison Officer" },
-  { group: "Support & Operations", id: ROLES.BUYER_HANDLER, label: "Client Liaison Officer" },
   { group: "Support & Operations", id: ROLES.PLATFORM_ACCOUNTANT, label: PLATFORM_ACCOUNTANT_LABEL },
 ];
 
@@ -46,10 +45,8 @@ function buildCompletePayload(
     country: string;
     region: string;
     city: string;
-    address: string;
     roleId: number;
     farmName: string;
-    experienceYears: number;
     company: string;
     institution: string;
     expertise: string;
@@ -69,12 +66,10 @@ function buildCompletePayload(
     roleId: form.roleId,
   };
   if (!hasGoogleAuth && form.password.trim()) payload.password = form.password;
-  if (form.address.trim()) payload.address = form.address.trim();
   if (needsHandler && form.handlerId.trim()) payload.handlerId = form.handlerId.trim();
   if (isFarmerRole) {
     if (customProducts.length > 0) payload.customProducts = customProducts;
     if (form.farmName.trim()) payload.farmName = form.farmName.trim();
-    if (form.experienceYears > 0) payload.experienceYears = form.experienceYears;
   } else if (form.roleId === ROLES.BUYER && form.company.trim()) {
     payload.company = form.company.trim();
   } else if (form.roleId === ROLES.RESEARCHER) {
@@ -89,16 +84,12 @@ export default function CompleteProfilePage() {
   const { user, loading, refreshUser } = useAuth();
   const cancelRegistration = useCancelRegistration();
   const router = useRouter();
-  const profileInputRef = useRef<HTMLInputElement>(null);
   const formColumnRef = useRef<HTMLDivElement>(null);
   const skipInitialStepScrollRef = useRef(true);
 
   const [step, setStep] = useState(0);
   const [customProducts, setCustomProducts] = useState<string[]>([]);
-  const [profilePreview, setProfilePreview] = useState<string | null>(null);
-  const [profileFile, setProfileFile] = useState<File | null>(null);
   const [farmerHandlers, setFarmerHandlers] = useState<HandlerProfile[]>([]);
-  const [buyerHandlers, setBuyerHandlers] = useState<HandlerProfile[]>([]);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -108,10 +99,8 @@ export default function CompleteProfilePage() {
     country: "",
     region: "",
     city: "",
-    address: "",
     roleId: ROLES.BUYER as number,
     farmName: "",
-    experienceYears: 0,
     company: "",
     institution: "",
     expertise: "",
@@ -132,7 +121,6 @@ export default function CompleteProfilePage() {
 
   useEffect(() => {
     api.auth.handlers("farmer").then(setFarmerHandlers).catch(() => {});
-    api.auth.handlers("buyer").then(setBuyerHandlers).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -150,7 +138,7 @@ export default function CompleteProfilePage() {
   const isBuyerRole = form.roleId === ROLES.BUYER;
   const isResearcherRole = form.roleId === ROLES.RESEARCHER;
   const needsHandler = isFarmerRole || isBuyerRole || isResearcherRole;
-  const availableHandlers = isFarmerRole ? farmerHandlers : isBuyerRole || isResearcherRole ? buyerHandlers : [];
+  const availableHandlers = needsHandler ? farmerHandlers : [];
   const needsPhoneStep = SMS_PHONE_VERIFICATION_ENABLED && !user?.phoneVerified;
   const ACCOUNT_STEP = 0;
   const PHONE_STEP = needsPhoneStep ? 1 : -1;
@@ -195,13 +183,6 @@ export default function CompleteProfilePage() {
         buildCompletePayload(form, customProducts, isFarmerRole, needsHandler, hasGoogleAuth)
       );
       api.setTokens(result.accessToken, result.refreshToken);
-      if (isFarmerRole && profileFile) {
-        try {
-          await api.upload.profilePicture(profileFile);
-        } catch {
-          // optional photo
-        }
-      }
       await refreshUser();
       router.push(
         isFarmerRole ? "/farm" : isResearcherRole ? "/researcher/publications" : "/dashboard"
@@ -407,66 +388,20 @@ export default function CompleteProfilePage() {
                     <label htmlFor="complete-city" className="auth-label">City</label>
                     <input id="complete-city" required value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="auth-input" />
                   </div>
-                  <div className="auth-field sm:col-span-2">
-                    <label htmlFor="complete-address" className="auth-label">Address <span className="font-normal text-gray-500">(optional)</span></label>
-                    <input id="complete-address" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="auth-input" />
-                  </div>
                 </div>
 
                 {isFarmerRole && (
-                  <>
-                    <div className="auth-section">
-                      <p className="auth-section-title mb-4">
-                        Profile photo{" "}
-                        <span className="font-normal text-gray-500">(visible to buyers before payment)</span>
-                      </p>
-                      <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
-                        <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-brand-200 bg-white">
-                          {profilePreview ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={profilePreview} alt="Preview" className="h-full w-full object-cover" />
-                          ) : (
-                            <Icon name="user" className="h-8 w-8 text-brand-400" />
-                          )}
-                        </div>
-                        <div className="text-center sm:text-left">
-                          <input
-                            ref={profileInputRef}
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                setProfileFile(file);
-                                setProfilePreview(URL.createObjectURL(file));
-                              }
-                            }}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => profileInputRef.current?.click()}
-                            className="btn-outline inline-flex items-center gap-2"
-                          >
-                            <Icon name="camera" className="h-4 w-4" />
-                            Upload photo
-                          </button>
-                          <p className="auth-hint mt-2">Buyers see this on the marketplace</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="auth-field">
-                      <label htmlFor="complete-farm-name" className="auth-label">
-                        {isOrganizationFarmer(form.roleId) ? "Organization Name" : "Production name"}
-                      </label>
-                      <input
-                        id="complete-farm-name"
-                        value={form.farmName}
-                        onChange={(e) => setForm({ ...form, farmName: e.target.value })}
-                        className="auth-input"
-                      />
-                    </div>
-                  </>
+                  <div className="auth-field">
+                    <label htmlFor="complete-farm-name" className="auth-label">
+                      {isOrganizationFarmer(form.roleId) ? "Organization Name" : "Production name"}
+                    </label>
+                    <input
+                      id="complete-farm-name"
+                      value={form.farmName}
+                      onChange={(e) => setForm({ ...form, farmName: e.target.value })}
+                      className="auth-input"
+                    />
+                  </div>
                 )}
 
                 {form.roleId === ROLES.BUYER && (
@@ -500,20 +435,30 @@ export default function CompleteProfilePage() {
                 )}
 
                 {needsHandler && (
-                  <div className="auth-section">
-                    <HandlerSelect
-                      handlers={availableHandlers}
-                      value={form.handlerId}
-                      onChange={(handlerId) => setForm({ ...form, handlerId })}
-                      label={isFarmerRole ? "Choose your Fellow Liaison Officer" : "Choose your Client Liaison Officer"}
-                      emptyMessage={
-                        isFarmerRole
-                          ? "No fellow liaison officers registered yet."
-                          : "No client liaison officers registered yet."
-                      }
-                      variant="compact"
-                      handlerRoleId={isFarmerRole ? ROLES.FARMER_HANDLER : ROLES.BUYER_HANDLER}
-                    />
+                  <div className="auth-field">
+                    <label htmlFor="complete-handler" className="auth-label">
+                      Fellow Liaison Officer
+                    </label>
+                    {availableHandlers.length === 0 ? (
+                      <p className="rounded-xl border border-dashed border-brand-200 bg-brand-50/50 px-4 py-3 text-sm text-brand-700">
+                        No fellow liaison officers registered yet.
+                      </p>
+                    ) : (
+                      <select
+                        id="complete-handler"
+                        value={form.handlerId}
+                        onChange={(e) => setForm({ ...form, handlerId: e.target.value })}
+                        className="auth-input w-full min-w-0"
+                        required
+                      >
+                        <option value="">Select a Fellow Liaison Officer</option>
+                        {availableHandlers.map((handler) => (
+                          <option key={handler.id} value={handler.id}>
+                            {floSelectOptionLabel(handler)}
+                          </option>
+                        ))}
+                      </select>
+                    )}
                   </div>
                 )}
 

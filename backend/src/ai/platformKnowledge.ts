@@ -15,7 +15,7 @@ export const PLATFORM_KNOWLEDGE: KnowledgeEntry[] = [
   {
     id: "roles",
     keywords: ["role", "fellow", "farmer", "client", "buyer", "handler", "agent", "liaison", "researcher", "student", "accountant"],
-    answer: `Roles on ${PLATFORM_NAME}: Fellows (crop, livestock, fruit/fish, organisation) list produce. Clients browse and order after farm access. Fellow Liaison Officers and Client Liaison Officers represent their side. Researchers publish in the library. Accountants and staff handle verification, ads, and settlements. Your dashboard only shows tools for your role.`,
+    answer: `Roles on ${PLATFORM_NAME}: Fellows (organisation) list products. Clients browse and order after access. Fellow Liaison Officers (FLO) are the agents who represent fellows and clients. Researchers publish in the library. Accountants and staff handle verification, ads, and settlements. Your dashboard only shows tools for your role.`,
   },
   {
     id: "access",
@@ -331,7 +331,7 @@ export const PLATFORM_KNOWLEDGE: KnowledgeEntry[] = [
       "handler duty",
       "who checks",
     ],
-    answer: `Liaison officers represent fellows or clients. They help with relationships, negotiation, procurement, quality check, and delivery arranged by ${PLATFORM_NAME}. They do not replace Paystack. Fellows and clients still pay the company through the app. If you are a liaison officer, keep records, visit or inspect lots when you can, and report short weight or spoilage early. Clients and fellows choose a liaison officer at registration when that role requires one.`,
+    answer: `Fellow Liaison Officers (FLO) are the agents on ${PLATFORM_NAME}. They represent fellows and clients: relationships, negotiation, procurement, quality check, and delivery arranged by the company. They do not replace Paystack. Fellows and clients still pay through the app. Clients and fellows choose a Fellow Liaison Officer at registration.`,
   },
   {
     id: "verification",

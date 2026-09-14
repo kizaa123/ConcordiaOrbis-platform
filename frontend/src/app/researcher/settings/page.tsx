@@ -62,7 +62,7 @@ export default function ResearcherSettingsPage() {
   }, [user?.id, loading, router]);
 
   useEffect(() => {
-    api.auth.handlers("buyer").then(setBuyerHandlers).catch(console.error);
+    api.auth.handlers("farmer").then(setBuyerHandlers).catch(console.error);
   }, []);
 
   const populateFormFromUser = () => {
@@ -132,7 +132,7 @@ export default function ResearcherSettingsPage() {
         await api.auth.updateHandler(handlerId);
       }
       await refreshUser();
-      await api.auth.handlers("buyer").then(setBuyerHandlers);
+      await api.auth.handlers("farmer").then(setBuyerHandlers);
       setMessage("Profile updated.");
       setEditing(false);
     } catch (e) {
@@ -312,12 +312,12 @@ export default function ResearcherSettingsPage() {
               handlers={buyerHandlers}
               value={handlerId}
               onChange={setHandlerId}
-              label="Your Client Liaison Officer"
-              emptyMessage="No client liaison officers registered yet."
-              handlerRoleId={ROLES.BUYER_HANDLER}
+              label="Your Fellow Liaison Officer"
+              emptyMessage="No fellow liaison officers registered yet."
+              handlerRoleId={ROLES.FARMER_HANDLER}
             />
             <p className="mt-2 text-xs text-gray-500">
-              Choose the liaison officer who represents you on the platform, same as buyer clients.
+              Choose the fellow liaison officer who represents you on the platform.
             </p>
           </section>
 

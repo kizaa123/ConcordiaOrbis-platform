@@ -67,7 +67,7 @@ export function ProfileIdentityHeader({ user, photoCacheBust, onEditClick }: Pro
             <p className="mt-2 text-sm text-brand-700">
               {isBuyerHandler(user.roleId)
                 ? "Client liaison. Full visibility into your clients"
-                : "Fellow liaison. Manage your assigned fellows"}
+                : "Fellow liaison. Manage your assigned fellows and clients"}
             </p>
           )}
           {hasAssignedHandlerRole(user.roleId) && user.assignedHandler && (
@@ -89,7 +89,7 @@ export function ProfileIdentityHeader({ user, photoCacheBust, onEditClick }: Pro
                 Handler:{" "}
                 <RolePrefixedName
                   user={{
-                    roleId: isFarmer(user.roleId) ? ROLES.FARMER_HANDLER : ROLES.BUYER_HANDLER,
+                    roleId: ROLES.FARMER_HANDLER,
                     firstName: user.assignedHandler.firstName,
                     lastName: user.assignedHandler.lastName,
                     verificationStatus: user.assignedHandler.verificationStatus,

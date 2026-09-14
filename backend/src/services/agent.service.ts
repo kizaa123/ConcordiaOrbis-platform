@@ -34,8 +34,8 @@ export const assignmentSchema = z.object({
 });
 
 export class AgentService {
-  async listHandlers(type: 'farmer' | 'buyer') {
-    const roleId = type === 'farmer' ? ROLES.FARMER_HANDLER : ROLES.BUYER_HANDLER;
+  async listHandlers(_type: 'farmer' | 'buyer') {
+    const roleId = ROLES.FARMER_HANDLER;
     const rows = await prisma.user.findMany({
       where: { roleId },
       select: {
