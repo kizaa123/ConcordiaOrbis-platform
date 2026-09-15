@@ -28,15 +28,9 @@ function handlerNavCards(roleId: number): HandlerNavCard[] {
     },
     {
       href: "/library",
-      title: "Research Library",
+      title: "Library",
       desc: "Browse books & research publications",
       icon: "book",
-    },
-    {
-      href: "/agents/settings",
-      title: "Profile",
-      desc: "Profile photo & contact details",
-      icon: "user",
     },
   ];
 }

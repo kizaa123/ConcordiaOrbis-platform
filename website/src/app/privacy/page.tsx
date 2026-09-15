@@ -8,7 +8,7 @@ import { SupportWhatsAppLink } from "@/components/WhatsAppSupport";
 export const metadata: Metadata = pageSeo({
   title: "Privacy policy",
   description:
-    "How ConcordiaOrbis in Ghana collects, uses, and protects personal and Paystack payment information for fellows, clients, and liaison officers.",
+    "How ConcordiaOrbis, Africa's Digital B2B Marketplace, collects, uses, and protects personal and Paystack payment information for businesses, clients, and liaison officers.",
   path: "/privacy",
 });
 
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
         <p>Last updated: 27 August 2026</p>
         <h2>Information we collect</h2>
         <p>
-          Account details (name, email, phone, country, role), farm and listing data you publish,
+          Account details (name, email, phone, country, role), listing data you publish,
           order and delivery records, verification status, and messages you send on the platform.
         </p>
         <h2>Payments</h2>

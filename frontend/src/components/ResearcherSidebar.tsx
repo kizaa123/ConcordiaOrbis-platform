@@ -29,7 +29,7 @@ export const RESEARCHER_NAV_LINKS: PortalNavLink[] = [
   },
   {
     href: "/library",
-    label: "Research Library",
+    label: "Library",
     icon: "search",
     match: (p) => p.startsWith("/library"),
   },

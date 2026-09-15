@@ -6,7 +6,7 @@ export const STUDENT_NAV_LINKS: PortalNavLink[] = [
   { href: "/dashboard", label: "Dashboard", icon: "home", match: (p) => p === "/dashboard" },
   {
     href: "/library",
-    label: "Research Library",
+    label: "Library",
     icon: "book",
     match: (p) => p.startsWith("/library"),
   },

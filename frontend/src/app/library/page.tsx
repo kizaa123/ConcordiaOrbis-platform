@@ -51,7 +51,7 @@ export default function LibraryPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <ScrollReveal trigger="mount" delay={0} duration={450} direction="fade-up" className="mb-6">
-        <h1 className="text-3xl font-extrabold text-brand-900">Research Library</h1>
+        <h1 className="text-3xl font-extrabold text-brand-900">Library</h1>
         <p className="mt-1 text-sm text-gray-500">
           Browse publishers and explore their research publications
         </p>

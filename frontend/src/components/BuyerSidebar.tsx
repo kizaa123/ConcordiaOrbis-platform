@@ -5,7 +5,7 @@ import { PortalSidebarLayout, type PortalNavLink } from "@/components/PortalSide
 export const BUYER_NAV_LINKS: PortalNavLink[] = [
   { href: "/dashboard", label: "Dashboard", icon: "home", match: (p) => p === "/dashboard" },
   { href: "/marketplace", label: "Marketplace", icon: "store", match: (p) => p.startsWith("/marketplace") },
-  { href: "/library", label: "Research Library", icon: "book", match: (p) => p.startsWith("/library") },
+  { href: "/library", label: "Library", icon: "book", match: (p) => p.startsWith("/library") },
   { href: "/financials", label: "Financials", icon: "chart", match: (p) => p.startsWith("/financials") },
   { href: "/orders", label: "My Orders", icon: "package", match: (p) => p.startsWith("/orders") },
   {

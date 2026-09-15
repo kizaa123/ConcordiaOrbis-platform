@@ -6,9 +6,9 @@ import { CONTACT } from "@/lib/company";
 import { pageSeo } from "@/lib/seo";
 
 export const metadata: Metadata = pageSeo({
-  title: "Refunds for farm access and produce orders",
+  title: "Refunds for B2B marketplace orders",
   description:
-    "ConcordiaOrbis refund policy for Ghana farm access fees, produce orders, and mistaken Paystack charges. How to request a refund in Accra business hours.",
+    "ConcordiaOrbis refund policy for B2B marketplace access, product orders, and mistaken Paystack charges. How to request a refund in Accra business hours.",
   path: "/refunds",
 });
 
@@ -26,7 +26,7 @@ const CASES = [
     body: "Overcharge: we refund the difference. Entire transaction in error: we refund the full amount.",
   },
   {
-    title: "Farm access paid by mistake",
+    title: "Marketplace access paid by mistake",
     body: "Unused access: request within 48 hours. After you unlock listings and start ordering, the fee is generally kept.",
   },
   {

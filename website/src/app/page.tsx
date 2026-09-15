@@ -31,14 +31,14 @@ const STATS = [
 const STEPS = [
   {
     step: "01",
-    title: "Verified fellows list produce",
-    desc: "Crops, livestock, fruit, and fish, with harvest windows and prices.",
+    title: "Verified businesses list products",
+    desc: "Organizations and sellers publish catalogues with prices, quantities, and delivery windows.",
     image: "/verified-users.png",
   },
   {
     step: "02",
-    title: "Clients unlock a farm",
-    desc: "A one-time access fee opens production details so they can order with confidence.",
+    title: "Clients unlock a listing",
+    desc: "A one-time access fee opens full product details so they can order with confidence.",
     image: "/unlock-access.png",
   },
   {
@@ -61,7 +61,7 @@ export default function HomePage() {
       <section className="relative min-h-[88vh] overflow-hidden bg-brand-950 text-white">
         <Image
           src="/hero.jpg"
-          alt="Farm landscape in Ghana for ConcordiaOrbis produce trading"
+          alt="ConcordiaOrbis B2B marketplace in Ghana"
           fill
           priority
           className="object-cover object-[center_28%]"
@@ -72,7 +72,7 @@ export default function HomePage() {
         <div className="relative mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-4 pb-16 pt-28 sm:justify-center sm:px-6 sm:pb-24 sm:pt-20">
           <ScrollReveal trigger="mount" delay={scrollStagger(0, 70)} duration={480}>
             <p className="text-sm font-semibold tracking-[0.12em] text-yellow-400">
-              Premier commodity exchange platform
+              Africa&apos;s Digital B2B Marketplace
             </p>
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(1, 70)} duration={540}>
@@ -85,9 +85,9 @@ export default function HomePage() {
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(2, 70)} duration={500}>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-brand-100 sm:text-lg">
-              Trade produce in Ghana: crops, livestock, fruit, and fish, with verified fellows
-              and clients. Pay ConcordiaOrbis on Paystack; a liaison officer procures and delivers
-              the order.
+              Africa&apos;s Digital B2B Marketplace, connecting business with clients. Verified
+              sellers list products. Pay ConcordiaOrbis on Paystack; a liaison officer procures and
+              delivers.
             </p>
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(3, 70)} duration={480} className="pt-8">
@@ -137,7 +137,7 @@ export default function HomePage() {
           <ScrollReveal direction="fade-left" duration={560}>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">The company</p>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-brand-900 sm:text-4xl">
-            Built in Ghana for real fellows and real clients.
+            Built in Ghana for real businesses and real clients.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-gray-600">
               ConcordiaOrbis runs the marketplace. We verify who trades, procure and

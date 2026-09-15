@@ -12,8 +12,8 @@
 
  * 3. Keys must match the card `href` values in `frontend/src/app/dashboard/page.tsx`.
 
- * 4. Crop vs livestock farmers have separate sections - edit the one that matches your role.
- *    Buyers have their own section (`PORTAL_NAV_IMAGES_BUYER`); Marketplace uses the shared image.
+ * 4. Organization / crop farmers use `PORTAL_NAV_IMAGES_CROP_FARMER`.
+ *    Buyers use `PORTAL_NAV_IMAGES_BUYER`. FLO uses `PORTAL_NAV_IMAGES_HANDLER`.
 
  * 5. For custom portal paths (e.g. `/portal/crop-marketplace.jpg`), add the file under
 
@@ -39,17 +39,17 @@ import { ROLES } from "./types";
 
 export const PORTAL_NAV_IMAGES_SHARED = {
 
-  /** Change image here: Marketplace card (buyer, handler, staff, researcher - farmers use crop/livestock sections) */
+  /** Change image here: Marketplace card (buyer, staff, researcher - farmers use PORTAL_NAV_IMAGES_CROP_FARMER) */
 
-  "/marketplace": "/a-seller-arranging-fresh-produce-at-a-farmers-market.avif",
+  "/marketplace": "/orbismarket place.jpg",
 
   /** Change image here: Research Library card (farmer, buyer, handler, staff) */
 
-  "/library": "/Research Library.jpg",
+  "/library": "/happy-students-reading-books-library-people-knowledge-education-literature-school-concept-preparing-to-exams-62791377.webp",
 
   /** Change image here: Connections card (all roles that see it) */
 
-  "/connections": "/connections.avif",
+  "/connections": "/african-business-male-people-shaking-hands-photo.jpg",
 
 } as const;
 
@@ -67,11 +67,11 @@ export const PORTAL_NAV_IMAGES_CROP_FARMER = {
 
   /** CROP: Marketplace */
 
-  "/marketplace": "/a-seller-arranging-fresh-produce-at-a-farmers-market.avif",
+  "/marketplace": "/orbismarket place.jpg",
 
   /** CROP: My Production */
 
-  "/farm": "/young-farmer-is-writing-notes-in-his-growing-corn-field-2XCDAWT.jpg",
+  "/farm": "/factory-worker-packaging-boxes_23-2151994449.avif",
 
   /** CROP: Financial Statement card */
 
@@ -81,47 +81,10 @@ export const PORTAL_NAV_IMAGES_CROP_FARMER = {
 
   "/farm/settings": "/happy-couple-agriculturists-using-touchpad-260nw-2667020919.webp",
   /** CROP: Buyer Orders card */
-  "/farm/orders": "/order agric image.jpg",
+  "/farm/orders": "/client order.webp",
 
   /** CROP: Clients card */
-  "/farm/clients": "/all the client image card.jpg",
-
-} as const;
-
-
-
-/**
-
- * Livestock farmer portal dashboard (role 2).
-
- * Edit images in this section for livestock farmer cards only.
-
- */
-
-export const PORTAL_NAV_IMAGES_LIVESTOCK_FARMER = {
-
-  /** LIVESTOCK: Marketplace */
-
-  "/marketplace": "/poultry.webp",
-
-  /** LIVESTOCK: My Production */
-
-  "/farm": "/live stock farm.jpg",
-
-  /** LIVESTOCK: Financial Statement card */
-
-  "/farm/financials": "/accountant-filing-invoice.webp",
-
-  /** LIVESTOCK: Profile card */
-
-  "/farm/settings": "/happy-couple-agriculturists-using-touchpad-260nw-2667020919.webp",
-
-  /** LIVESTOCK: Buyer Orders card */
-
-  "/farm/orders": "/order agric image.jpg",
-
-  /** LIVESTOCK: Clients card */
-  "/farm/clients": "/all the client image card.jpg",
+  "/farm/clients": "/gettyimages-1285891455-640x640.jpg",
 
 } as const;
 
@@ -137,7 +100,7 @@ export const PORTAL_NAV_IMAGES_BUYER = {
 
   /** Change image here: My Orders card */
 
-  "/orders": "/my order.webp",
+  "/orders": "/ghana-logistics-company-overview-r4titjj2il5zgdzn94d9lvhdsl4x213fb0esq49dd0.jpg",
 
   /** Change image here: Buyer Profile card */
 
@@ -166,7 +129,7 @@ export const PORTAL_NAV_IMAGES_RESEARCHER = {
 
 
 
-/** Handler portal dashboard cards (farmer handler + buyer handler) */
+/** FLO portal dashboard cards (farmer liaison only) */
 
 export const PORTAL_NAV_IMAGES_HANDLER = {
 
@@ -242,8 +205,6 @@ export const PORTAL_NAV_IMAGES: Record<string, string> = {
 
   ...PORTAL_NAV_IMAGES_RESEARCHER,
 
-  ...PORTAL_NAV_IMAGES_HANDLER,
-
   ...PORTAL_NAV_IMAGES_STAFF,
 
 };
@@ -259,8 +220,6 @@ export const PORTAL_NAV_IMAGE_FALLBACK = "/login_cover.png";
 type RoleNavImages =
 
   | typeof PORTAL_NAV_IMAGES_CROP_FARMER
-
-  | typeof PORTAL_NAV_IMAGES_LIVESTOCK_FARMER
 
   | typeof PORTAL_NAV_IMAGES_BUYER
 
@@ -298,14 +257,6 @@ export function getPortalNavImage(href: string, roleId?: number): string {
 
   }
 
-  if (roleId === ROLES.LIVESTOCK_FARMER) {
-
-    const livestock = roleNavImage(PORTAL_NAV_IMAGES_LIVESTOCK_FARMER, href);
-
-    if (livestock) return livestock;
-
-  }
-
   if (roleId === ROLES.BUYER) {
 
     const buyer = roleNavImage(PORTAL_NAV_IMAGES_BUYER, href);
@@ -314,7 +265,7 @@ export function getPortalNavImage(href: string, roleId?: number): string {
 
   }
 
-  if (roleId === ROLES.FARMER_HANDLER || roleId === ROLES.BUYER_HANDLER) {
+  if (roleId === ROLES.FARMER_HANDLER) {
 
     const handler = roleNavImage(PORTAL_NAV_IMAGES_HANDLER, href);
 

@@ -7,17 +7,17 @@ import { PLATFORM_NAME } from "@/lib/company";
 import { pageSeo } from "@/lib/seo";
 
 export const metadata: Metadata = pageSeo({
-  title: "About our Ghana farm commodity exchange",
+  title: "About ConcordiaOrbis B2B Marketplace",
   description:
-    "ConcordiaOrbis is a Ghana-based farm commodity exchange in Accra. We verify fellows who list produce, connect them with clients, and deliver orders through liaison officers.",
+    "Africa's Digital B2B Marketplace, Connecting Business with Clients. ConcordiaOrbis is a Ghana-based B2B marketplace in Accra for verified businesses, clients, and liaison officers.",
   path: "/about",
 });
 
 const ROLES = [
-  { title: "Fellows", desc: "Crop, livestock, fruit, and fish producers who list harvest-ready goods." },
-  { title: "Clients", desc: "Buyers and organisations who pay for farm access, then place product orders." },
-  { title: "Liaison officers", desc: "They procure orders from verified suppliers, check quality, and arrange delivery to the client." },
-  { title: "Library users", desc: "Researchers who publish, and students who read field knowledge." },
+  { title: "Businesses", desc: "Organizations and sellers who list products for clients on the ConcordiaOrbis B2B marketplace." },
+  { title: "Clients", desc: "Companies and buyers who unlock listings, then place product orders." },
+  { title: "Liaison officers", desc: "Fellow Liaison Officers who represent businesses and clients, procure orders, check quality, and arrange delivery." },
+  { title: "Library users", desc: "Researchers who publish, and readers who buy field knowledge." },
 ];
 
 export default function AboutPage() {
@@ -26,7 +26,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="Our story"
         title={`About ${PLATFORM_NAME}`}
-        subtitle="A Ghana-based commodity exchange for verified fellows and markets, not a copy of the trading screens."
+        subtitle="Africa's Digital B2B Marketplace, connecting verified businesses with clients from Accra across Ghana and beyond."
       />
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
         <ScrollReveal direction="fade-right" duration={550}>
@@ -38,10 +38,9 @@ export default function AboutPage() {
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">Mission</p>
           <h2 className="mt-2 text-3xl font-black text-brand-900">Fair, traceable trade.</h2>
           <p className="mt-4 text-base leading-relaxed text-gray-600">
-            We built {PLATFORM_NAME} so a fellow on a Ghana farm and a client in Accra or another
-            city can trade produce without losing money or identity to unverified middlemen. Crops,
-            livestock, fruit, and fish are listed on the platform; this website is the public
-            company record.
+            We built {PLATFORM_NAME} so businesses and clients can trade on a verified B2B
+            marketplace without losing money or identity to unverified middlemen. Sellers list
+            products; clients pay ConcordiaOrbis. This website is the public company record.
           </p>
           <p className="mt-3 text-base leading-relaxed text-gray-600">
             Headquarters: Accra, Ghana. The marketplace is used across Africa and beyond.

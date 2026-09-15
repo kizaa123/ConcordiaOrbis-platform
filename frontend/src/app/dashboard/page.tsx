@@ -61,9 +61,8 @@ export default function DashboardPage() {
 
   const cards = ([
     { href: "/marketplace", title: "Marketplace", desc: "Browse fellows & place orders", icon: "store", all: true, hideForLiaison: true },
-    { href: "/library", title: "Research Library", desc: "Browse books & research publications", icon: "book", all: true },
+    { href: "/library", title: "Library", desc: "Browse books & research publications", icon: "book", all: true },
     { href: "/researcher/publications", title: "My Publications", desc: "Upload & manage research files", icon: "book", show: isResearcher(user.roleId) },
-    { href: "/researcher/settings", title: "Profile", desc: "Institution & researcher profile", icon: "user", show: isResearcher(user.roleId) },
     { href: "/farm", title: "My Production", desc: "Manage products & profile", icon: "sprout", show: isFarmer(user.roleId) },
     { href: "/farm/financials", title: "Financial Statement", desc: "View production finances", icon: "chart", show: isFarmer(user.roleId) },
     { href: "/farm/orders", title: "Client Orders", desc: "Track & manage orders placed by clients", icon: "package", show: isFarmer(user.roleId) },
@@ -71,7 +70,6 @@ export default function DashboardPage() {
     { href: "/researcher/clients", title: "Clients", desc: "Notify fellows & clients when publications are ready", icon: "users", show: isResearcher(user.roleId) },
     { href: "/financials", title: "Purchase Financials", desc: "Spending & production access fees", icon: "chart", show: canPurchaseFromMarketplace(user.roleId) },
     { href: "/orders", title: "My Order", desc: "Track marketplace purchases", icon: "package", show: canPurchaseFromMarketplace(user.roleId) },
-    { href: "/student/settings", title: "Profile", desc: "Account & contact details", icon: "user", show: isStudent(user.roleId) },
     { href: "/connections", title: "Connections", desc: "Manage client-fellow requests", icon: "handshake", show: !isResearcher(user.roleId) && !isLiaison },
     { href: "/admin", title: "Admin Panel", desc: "Analytics, verification & moderation", icon: "shield", show: isAdmin(user.roleId) },
     { href: "/admin/staff", title: PLATFORM_TEAM_LABEL, desc: "Manage staff accounts & roles", icon: "users", show: isAdmin(user.roleId) },
@@ -82,9 +80,6 @@ export default function DashboardPage() {
     { href: "/accountant/transactions", title: "Access Ledger", desc: "Production & publication access payments", icon: "credit-card", show: isAccountant(user.roleId) && isAccountantApproved(user) },
     { href: "/accountant/withdrawals", title: "Order Shared & Withdrawals", desc: "Distribute orders & record withdrawals", icon: "coins", show: isAccountant(user.roleId) && isAccountantApproved(user) },
     { href: "/accountant/receipts", title: "Order Receipts", desc: "Released order statement PDFs", icon: "package", show: isAccountant(user.roleId) && isAccountantApproved(user) },
-    { href: "/farm/settings", title: "Profile", desc: "Profile, liaison officer, production & commodities", icon: "user", show: isFarmer(user.roleId) },
-    { href: "/settings", title: "Profile", desc: "Profile, location & liaison officer", icon: "user", show: isBuyer(user.roleId) },
-    { href: "/profile", title: "Profile", desc: "Your account settings", icon: "user", show: isAdmin(user.roleId) || isAccountant(user.roleId) },
   ] satisfies (DashboardCard & { hideForLiaison?: boolean })[]).filter(
     (c) =>
       (c.all || c.show) &&

@@ -9,7 +9,7 @@ import { SupportWhatsAppLink } from "@/components/WhatsAppSupport";
 export const metadata: Metadata = pageSeo({
   title: "Terms of use",
   description:
-    "Terms for using the ConcordiaOrbis company site and Ghana farm produce trading platform, including payments, farm access, and delivery.",
+    "Terms for using the ConcordiaOrbis company site and Africa's Digital B2B Marketplace, including payments, marketplace access, and delivery.",
   path: "/terms",
 });
 
@@ -26,7 +26,7 @@ export default function TermsPage() {
         <p>Last updated: 27 August 2026</p>
         <h2>The service</h2>
         <p>
-          ConcordiaOrbis provides a digital commodity marketplace and research library. Clients pay
+          ConcordiaOrbis provides Africa&apos;s Digital B2B Marketplace and research library. Clients pay
           ConcordiaOrbis directly. You must register with accurate information.
         </p>
         <h2>Payments</h2>
@@ -43,7 +43,7 @@ export default function TermsPage() {
         <h2>Acceptable use</h2>
         <ul>
           <li>No fake listings, stolen photos, or misrepresented quantities</li>
-          <li>No attempts to bypass farm access or checkout</li>
+          <li>No attempts to bypass marketplace access or checkout</li>
           <li>No abuse of other users or staff</li>
         </ul>
         <h2>Liability</h2>

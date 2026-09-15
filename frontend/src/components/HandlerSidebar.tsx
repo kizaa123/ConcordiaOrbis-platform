@@ -30,7 +30,7 @@ export const FLO_NAV_LINKS: PortalNavLink[] = [
     icon: "chart",
     match: (p) => p.startsWith("/agents/financials"),
   },
-  { href: "/library", label: "Research Library", icon: "book", match: (p) => p.startsWith("/library") },
+  { href: "/library", label: "Library", icon: "book", match: (p) => p.startsWith("/library") },
   {
     href: "/agents/settings",
     label: "Profile",
@@ -59,7 +59,7 @@ export const CLO_NAV_LINKS: PortalNavLink[] = [
     icon: "chart",
     match: (p) => p.startsWith("/agents/financials"),
   },
-  { href: "/library", label: "Research Library", icon: "book", match: (p) => p.startsWith("/library") },
+  { href: "/library", label: "Library", icon: "book", match: (p) => p.startsWith("/library") },
   {
     href: "/agents/settings",
     label: "Profile",
@@ -76,7 +76,7 @@ export const HANDLER_NAV_LINKS: PortalNavLink[] = [
     icon: "chart",
     match: (p) => p.startsWith("/agents/financials"),
   },
-  { href: "/library", label: "Research Library", icon: "book", match: (p) => p.startsWith("/library") },
+  { href: "/library", label: "Library", icon: "book", match: (p) => p.startsWith("/library") },
   {
     href: "/agents/settings",
     label: "Profile",

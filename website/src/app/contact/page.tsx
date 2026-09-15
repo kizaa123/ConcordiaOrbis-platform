@@ -8,9 +8,9 @@ import { pageSeo } from "@/lib/seo";
 import { WhatsAppFavicon } from "@/components/WhatsAppSupport";
 
 export const metadata: Metadata = pageSeo({
-  title: "Contact us in Accra, Ghana",
+  title: "Contact ConcordiaOrbis B2B Marketplace",
   description:
-    "Contact ConcordiaOrbis in Accra for partnerships, Paystack payment reviews, farm order questions, and refunds. We reply on Ghana business days.",
+    "Contact ConcordiaOrbis in Accra for B2B partnerships, Paystack payment reviews, marketplace orders, and refunds. We reply on Ghana business days.",
   path: "/contact",
 });
 

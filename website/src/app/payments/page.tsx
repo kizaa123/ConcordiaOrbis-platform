@@ -6,16 +6,16 @@ import { scrollStagger } from "@/lib/scrollStagger";
 import { pageSeo } from "@/lib/seo";
 
 export const metadata: Metadata = pageSeo({
-  title: "Paystack payments for Ghana farm orders",
+  title: "Paystack payments for B2B orders",
   description:
-    "How ConcordiaOrbis farm access and produce orders are paid in Ghana. Clients pay ConcordiaOrbis on Paystack with card, mobile money, or bank transfer.",
+    "Africa's Digital B2B Marketplace. How ConcordiaOrbis orders are paid in Ghana: clients pay ConcordiaOrbis on Paystack with card, mobile money, or bank transfer.",
   path: "/payments",
 });
 
 const STEPS = [
   {
     title: "Pay ConcordiaOrbis",
-    body: "Farm access, product orders, and research purchases start in the app. Clients pay ConcordiaOrbis directly. Paystack handles card, mobile money, and bank transfer.",
+    body: "Marketplace access, product orders, and research purchases start in the app. Clients pay ConcordiaOrbis directly. Paystack handles card, mobile money, and bank transfer.",
   },
   {
     title: "Pending until Paystack confirms",

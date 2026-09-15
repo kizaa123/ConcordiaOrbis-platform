@@ -85,7 +85,7 @@ export function BuyerHandlerDashboardHint() {
     <p className="mb-6 text-sm text-gray-500">
       Manage your assigned clients, track their orders, and view your liaison commission.{" "}
       <Link href="/library" className="font-semibold text-brand-700 hover:underline">
-        Research Library
+        Library
       </Link>{" "}
       is available for industry and academic resources.
     </p>

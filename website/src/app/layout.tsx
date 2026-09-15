@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getWebsiteUrl, PLATFORM_NAME } from "@/lib/company";
-import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, organizationJsonLd } from "@/lib/seo";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -43,6 +43,11 @@ export const metadata: Metadata = {
     description: DEFAULT_DESCRIPTION,
     images: ["/hero.jpg"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
   icons: { icon: [{ url: "/logo.svg", type: "image/svg+xml" }] },
 };
 
@@ -59,6 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="flex min-h-screen flex-col font-sans">
         <JsonLd data={organizationJsonLd(origin)} />
+        <JsonLd data={websiteJsonLd(origin)} />
         <PageLoader />
         <SiteHeader />
         <main className="flex-1">{children}</main>

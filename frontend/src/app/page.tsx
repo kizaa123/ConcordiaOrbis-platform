@@ -45,10 +45,18 @@ const HOW_IT_WORKS: { step: number; title: string; desc: string; image: string }
 ];
 
 /**
- * Role card images - swap any path below with your own file under frontend/public/.
- * Place images in public/roles/ (e.g. public/roles/crop-farmer.jpg) and update the matching entry.
+ * Role card images live in frontend/public/roles/.
+ * Replace these four files (keep the same names) with the photos you downloaded:
+ *   frontend/public/roles/supplier.jpg
+ *   frontend/public/roles/trader.jpg
+ *   frontend/public/roles/manufacturer.jpg
+ *   frontend/public/roles/exporter.jpg
  */
 const ROLE_CARD_IMAGES = {
+  supplier: "/roles/supliers.jpeg",
+  trader: "/roles/business-deal-handshake-over-contract-documents-white-table-two-individuals-shaking-hands-over-table-contract-385032306.webp",
+  manufacturer: "/roles/istockphoto-1056447582-612x612.jpg",
+  exporter: "/roles/istockphoto-1056447582-612x612.jpg",
   client: "/farmer and buyer.jpg",
   student: "/agricultural-students-woman-evaluating-crop-growth-notes-focused-documenting-plant-health-check-vegetable-growth-problems-465673929.webp",
   organization: "/CropsBlaringhem-LowRes-265.jpg",
@@ -57,6 +65,30 @@ const ROLE_CARD_IMAGES = {
 } as const;
 
 const ROLE_CARDS: { icon: IconName; label: string; desc: string; image: string }[] = [
+  {
+    icon: "store",
+    label: "Supplier",
+    desc: "List wholesale stock, set prices and delivery windows, and reach verified clients across the marketplace.",
+    image: ROLE_CARD_IMAGES.supplier,
+  },
+  {
+    icon: "handshake",
+    label: "Trader",
+    desc: "Source and resell products, manage orders, and close deals with clients and fellow liaison officers.",
+    image: ROLE_CARD_IMAGES.trader,
+  },
+  {
+    icon: "package",
+    label: "Manufacturer",
+    desc: "Showcase finished goods, production capacity, and fulfilment dates so clients can order at scale.",
+    image: ROLE_CARD_IMAGES.manufacturer,
+  },
+  {
+    icon: "truck",
+    label: "Exporter",
+    desc: "Offer cross-border supply, shipping windows, and export-ready lots to clients buying from Ghana and beyond.",
+    image: ROLE_CARD_IMAGES.exporter,
+  },
   {
     icon: "cart",
     label: "Client",

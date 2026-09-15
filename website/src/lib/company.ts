@@ -1,6 +1,6 @@
 export const PLATFORM_NAME = "ConcordiaOrbis";
-export const MOTTO = "The Premier Commodity Exchange Platform";
-export const TAGLINE = "Where Fellows Meet Markets";
+export const MOTTO = "Africa's Digital B2B Marketplace";
+export const TAGLINE = "Connecting Business with Clients";
 
 const DEFAULT_WEBSITE_URL = "https://concordiaorbis.com";
 

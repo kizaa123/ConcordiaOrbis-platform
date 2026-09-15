@@ -10,7 +10,7 @@ import { PLATFORM_TEAM_LABEL } from "@/lib/site";
 export const ADMIN_NAV_LINKS: PortalNavLink[] = [
   { href: "/dashboard", label: "Dashboard", icon: "home", match: (p) => p === "/dashboard" },
   { href: "/marketplace", label: "Marketplace", icon: "store", match: (p) => p.startsWith("/marketplace") },
-  { href: "/library", label: "Research Library", icon: "book", match: (p) => p.startsWith("/library") },
+  { href: "/library", label: "Library", icon: "book", match: (p) => p.startsWith("/library") },
   {
     href: "/connections",
     label: "Connections",
@@ -67,7 +67,7 @@ export const STAFF_NAV_LINKS = ADMIN_NAV_LINKS;
 export const STAFF_GENERAL_NAV_LINKS: PortalNavLink[] = [
   { href: "/dashboard", label: "Dashboard", icon: "home", match: (p) => p === "/dashboard" },
   { href: "/marketplace", label: "Marketplace", icon: "store", match: (p) => p.startsWith("/marketplace") },
-  { href: "/library", label: "Research Library", icon: "book", match: (p) => p.startsWith("/library") },
+  { href: "/library", label: "Library", icon: "book", match: (p) => p.startsWith("/library") },
   { href: "/profile", label: "Profile", icon: "user", match: (p) => p.startsWith("/profile") },
 ];
 

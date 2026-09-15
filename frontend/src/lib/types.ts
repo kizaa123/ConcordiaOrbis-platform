@@ -1345,7 +1345,7 @@ export interface PlatformAd {
 
 export const AD_PLACEMENT_OPTIONS: { value: AdPlacement; label: string }[] = [
   { value: "marketplace", label: "Marketplace" },
-  { value: "library", label: "Research Library" },
+  { value: "library", label: "Library" },
   { value: "dashboard", label: "Dashboard" },
   { value: "global", label: "Global strip (all portals)" },
 ];

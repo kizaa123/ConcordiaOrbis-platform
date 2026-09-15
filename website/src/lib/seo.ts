@@ -5,7 +5,7 @@ export const DEFAULT_TITLE =
   "ConcordiaOrbis: Business to Business Marketplace";
 
 export const DEFAULT_DESCRIPTION =
-  "Africa's Digital B2B Marketplace, Connecting Business with Clients. ConcordiaOrbis is a Ghana-based commodity exchange in Accra. Verified sellers list products. Clients pay with Paystack; a liaison officer procures and delivers across Ghana and beyond.";
+  "Africa's Digital B2B Marketplace, Connecting Business with Clients. ConcordiaOrbis in Accra, Ghana connects verified businesses with clients. Pay with Paystack; a liaison officer procures and delivers.";
 
 export function pageSeo({
   title,
@@ -29,11 +29,26 @@ export function pageSeo({
       url,
       locale: "en_GH",
       type: "website",
+      siteName: PLATFORM_NAME,
     },
     twitter: {
       card: "summary_large_image",
       title: ogTitle,
       description,
+    },
+  };
+}
+
+export function websiteJsonLd(origin: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: PLATFORM_NAME,
+    url: origin,
+    description: DEFAULT_DESCRIPTION,
+    publisher: {
+      "@type": "Organization",
+      name: PLATFORM_NAME,
     },
   };
 }
