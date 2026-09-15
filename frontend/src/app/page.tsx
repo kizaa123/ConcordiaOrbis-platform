@@ -45,18 +45,18 @@ const HOW_IT_WORKS: { step: number; title: string; desc: string; image: string }
 ];
 
 /**
- * Role card images live in frontend/public/roles/.
- * Replace these four files (keep the same names) with the photos you downloaded:
- *   frontend/public/roles/supplier.jpg
- *   frontend/public/roles/trader.jpg
- *   frontend/public/roles/manufacturer.jpg
- *   frontend/public/roles/exporter.jpg
+ * Homepage role card photos live in frontend/public/.
+ * Supplier / Trader / Manufacturer / Exporter files:
+ *   frontend/public/supliers.jpeg
+ *   frontend/public/business-deal-handshake-over-contract-documents-white-table-two-individuals-shaking-hands-over-table-contract-385032306.webp
+ *   frontend/public/istockphoto-1056447582-612x612.jpg
+ *   frontend/public/foreman-control-loading-containers-box-to-truck-for-logistic-import-export-.jpg
  */
 const ROLE_CARD_IMAGES = {
-  supplier: "/roles/supliers.jpeg",
-  trader: "/roles/business-deal-handshake-over-contract-documents-white-table-two-individuals-shaking-hands-over-table-contract-385032306.webp",
-  manufacturer: "/roles/istockphoto-1056447582-612x612.jpg",
-  exporter: "/roles/istockphoto-1056447582-612x612.jpg",
+  supplier: "/supliers.jpeg",
+  trader: "/business-deal-handshake-over-contract-documents-white-table-two-individuals-shaking-hands-over-table-contract-385032306.webp",
+  manufacturer: "/istockphoto-1056447582-612x612.jpg",
+  exporter: "/foreman-control-loading-containers-box-to-truck-for-logistic-import-export-.jpg",
   client: "/farmer and buyer.jpg",
   student: "/agricultural-students-woman-evaluating-crop-growth-notes-focused-documenting-plant-health-check-vegetable-growth-problems-465673929.webp",
   organization: "/CropsBlaringhem-LowRes-265.jpg",
