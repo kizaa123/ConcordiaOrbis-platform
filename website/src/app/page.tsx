@@ -85,7 +85,7 @@ export default function HomePage() {
           </ScrollReveal>
           <ScrollReveal trigger="mount" delay={scrollStagger(2, 70)} duration={500}>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-brand-100 sm:text-lg">
-              Africa&apos;s Digital B2B Marketplace, connecting business with clients. Verified
+              Africa&apos;s Digital B2B Marketplace, connecting businesses with clients. Verified
               sellers list products. Pay ConcordiaOrbis on Paystack; a liaison officer procures and
               delivers.
             </p>
