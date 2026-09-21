@@ -12,6 +12,26 @@ interface ApiResult<T> {
   details?: ApiValidationIssue[];
 }
 
+function isBrowserPublicPath() {
+  if (typeof window === "undefined") return true;
+  const path = window.location.pathname;
+  return (
+    path === "/" ||
+    path === "/login" ||
+    path === "/register" ||
+    path === "/privacy" ||
+    path === "/terms" ||
+    path.startsWith("/auth/") ||
+    path.startsWith("/payments/")
+  );
+}
+
+/** Expired session: send users to login, but never kick them off the public homepage. */
+function bounceToLoginIfPrivate() {
+  if (typeof window === "undefined" || isBrowserPublicPath()) return;
+  window.location.href = "/login";
+}
+
 class ApiClient {
   private accessToken: string | null = null;
   private refreshToken: string | null = null;
@@ -60,7 +80,7 @@ class ApiClient {
         res = await fetch(`${API}${path}`, { ...options, headers });
       } else {
         this.clearTokens();
-        if (typeof window !== "undefined") window.location.href = "/login";
+        bounceToLoginIfPrivate();
         throw new Error("Session expired");
       }
     }
@@ -132,7 +152,7 @@ class ApiClient {
         }
       } else {
         this.clearTokens();
-        if (typeof window !== "undefined") window.location.href = "/login";
+        bounceToLoginIfPrivate();
         throw new Error("Session expired");
       }
     }

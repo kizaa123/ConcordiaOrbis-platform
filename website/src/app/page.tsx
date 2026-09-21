@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  PLATFORM_MARKETPLACE_URL,
   PLATFORM_NAME,
   PLATFORM_REGISTER_URL,
+  PLATFORM_URL,
   TAGLINE,
 } from "@/lib/company";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, pageSeo } from "@/lib/seo";
@@ -99,10 +99,10 @@ export default function HomePage() {
                 Join {PLATFORM_NAME}
               </a>
               <a
-                href={PLATFORM_MARKETPLACE_URL}
+                href={PLATFORM_URL}
                 className="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-xl border border-white/30 bg-white/5 px-3 py-2.5 text-xs font-semibold text-white backdrop-blur transition hover:border-white/60 hover:bg-white/10 sm:flex-none sm:px-5 sm:text-sm"
               >
-                Browse marketplace
+                Open platform
               </a>
             </div>
           </ScrollReveal>

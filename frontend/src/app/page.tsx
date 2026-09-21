@@ -268,7 +268,7 @@ export default function HomePage() {
             {ROLE_CARDS.map((r, i) => (
               <ScrollReveal key={r.label} delay={scrollStagger(i, 100)} duration={500} direction="fade-up">
                 <PortalNavCard
-                  href="/login"
+                  href="/register"
                   title={r.label}
                   desc={r.desc}
                   icon={r.icon}
